@@ -1,0 +1,4 @@
+CREATE TABLE baz
+(
+    id INTEGER PRIMARY KEY
+);

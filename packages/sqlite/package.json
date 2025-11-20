@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@tymber/sqlite",
+  "version": "0.0.1",
+  "description": "SQLite module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/",
+    "format:fix": "prettier -w src/ test/",
+    "test": "tsx --test"
+  },
+  "peerDependencies": {
+    "@tymber/common": "*"
+  },
+  "dependencies": {
+    "sqlite": "~5.1.1",
+    "sqlite3": "~5.1.7"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  }
+}

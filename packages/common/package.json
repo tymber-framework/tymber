@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "@tymber/common",
+  "version": "0.0.1",
+  "description": "The base of the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/ bun-tests/",
+    "format:fix": "prettier -w src/ test/ bun-tests/",
+    "test": "tsx --test 'test/**/*.test.ts'"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  },
+  "dependencies": {
+    "ajv": "~8.17.1",
+    "ajv-formats": "~3.0.1"
+  }
+}

@@ -1,0 +1,4 @@
+CREATE TABLE foobar
+(
+    id INTEGER PRIMARY KEY
+) STRICT;
