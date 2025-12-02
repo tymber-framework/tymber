@@ -1,0 +1,247 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.adminUsers.adminUsers")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.adminUsers.adminUsers") %></a></li>
+  </ul>
+</nav>
+
+<h1 class="title"><%= $t("tymber.adminUsers.adminUsers") %></h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import { doFetch, DataTable, snakeToCamelCase, camelToSnakeCase, LazyInput, Toast, Modal } from "./utils";
+
+  createApp({
+    components: {
+      DataTable,
+      LazyInput,
+      Modal,
+      Toast,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "#",
+            value: "id",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.common.username') %>",
+            value: "username",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.common.createdAt') %>",
+            value: "createdAt",
+          },
+          {
+            text: "<%= $t('tymber.common.updatedAt') %>",
+            value: "updatedAt",
+          }
+        ],
+        showCreationModal: false,
+        showSuccessToast: false,
+        showUnknownErrorToast: false,
+        isFormLoading: false,
+        form: {
+          username: "",
+          password: "",
+        },
+        isLoading: false,
+        shouldRerun: false,
+        searchText: "",
+        value: [],
+        options: {
+          sortBy: "id",
+          sortDesc: false,
+        }
+      }
+    },
+
+    computed: {
+      isValid() {
+        return this.form.username.length >= 2 && this.form.password.length >= 8;
+      },
+    },
+
+    methods: {
+      readQueryParams() {
+        const query = new URLSearchParams(window.location.search);
+        this.searchText = query.get("q") || "";
+
+        const sort = query.get("s");
+
+        if (sort) {
+          const parts = sort.split("|");
+          const column = snakeToCamelCase(parts[0]);
+          if (this.headers.some(h => h.value === column) && ["asc", "desc"].includes(parts[1])) {
+            this.options.sortBy = column;
+            this.options.sortDesc = parts[1] === "desc";
+          }
+        }
+      },
+
+      updateQueryParams() {
+        const query = new URLSearchParams();
+
+        query.set("q", this.searchText);
+        query.set("s", `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`);
+
+        window.history.replaceState(null, '', `${window.location.pathname}?${query}`);
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: "/api/admin/admin_users",
+          query: {
+            q: this.searchText,
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`
+          }
+        })
+
+        this.value = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onSearchUpdate(value) {
+        this.searchText = value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      async onSubmit() {
+        this.isFormLoading = true;
+
+        const res = await doFetch({
+          method: "POST",
+          path: "/api/admin/admin_users",
+          payload: this.form
+        });
+
+        if (res.ok) {
+          this.showSuccessToast = true;
+          this.showCreationModal = false;
+          this.form.username = "";
+          this.form.password = "";
+          this.loadItems();
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isFormLoading = false;
+        }, 200);
+      }
+    },
+
+    created() {
+      this.readQueryParams();
+      this.loadItems();
+    },
+
+    template: `
+      <Toast v-model="showSuccessToast" class="is-success">
+        <%= $t("tymber.adminUsers.success") %>
+      </Toast>
+
+      <Toast v-model="showUnknownErrorToast" class="is-danger">
+        <%= $t("tymber.common.unknownError") %>
+      </Toast>
+
+      <Modal v-model="showCreationModal">
+        <template #header>
+          <p class="modal-card-title"><%= $t("tymber.adminUsers.new") %></p>
+        </template>
+
+        <template #content>
+          <form @submit.prevent="onSubmit">
+            <div class="field">
+              <label class="label" for="username"><%= $t("tymber.common.username") %></label>
+              <div class="control">
+                <input class="input" type="text" id="username" name="username" v-model="form.username" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="password"><%= $t("tymber.common.password") %></label>
+              <div class="control">
+                <input class="input" type="password" id="password" name="password" v-model="form.password" />
+              </div>
+            </div>
+
+            <div class="field is-grouped is-grouped-right">
+              <div class="control">
+                <button class="button" type="reset" @click="showCreationModal = false"><%= $t("tymber.common.cancel") %></button>
+              </div>
+              <div class="control">
+                <button class="button is-primary" type="submit" :disabled="!isValid" :class="{ 'is-loading': isFormLoading }"><%= $t("tymber.common.create") %></button>
+              </div>
+            </div>
+          </form>
+        </template>
+      </Modal>
+
+      <div class="is-flex">
+        <button class="button is-primary is-outlined mb-3" @click="showCreationModal = true">
+          <span class="icon is-small">
+            <svg width="50" height="50">
+              <use xlink:href="#plus"></use>
+            </svg>
+          </span>
+          <span><%= $t("tymber.adminUsers.new") %></span>
+        </button>
+
+        <div class="control has-icons-left ml-auto">
+          <LazyInput class="input" :model-value="searchText" @update:model-value="onSearchUpdate" autofocus></LazyInput>
+
+          <span class="icon is-left">
+            <svg width="24" height="24">
+              <use xlink:href="#magnify"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <DataTable
+          :headers="headers"
+          :value="value"
+          :is-loading="isLoading"
+          :options="options"
+          @update:options="onOptionsUpdate"
+      >
+        <template #["item.createdAt"]="{ value }">
+          {{ value ? new Date(value).toLocaleString() : "" }}
+        </template>
+
+        <template #["item.updatedAt"]="{ value }">
+          {{ value ? new Date(value).toLocaleString() : "" }}
+        </template>
+      </DataTable>
+    `
+  }).mount("#app");
+</script>

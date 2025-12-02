@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "ENV=production tsx main.ts",
+    "dev": "tsx --watch main.ts"
+  }
+}

@@ -28,13 +28,18 @@ export class PostgresDB extends DB {
     return ((ctx.tx as pg.PoolClient) || this.pgPool)
       .query(text, values)
       .then((res) => ({ affectedRows: res.rowCount ?? 0 }))
-      .catch((e) => {
-        if (e.code === UNIQUE_VIOLATION_ERROR_CODE) {
-          throw new DuplicateKeyError(e.message);
-        } else {
-          throw e;
-        }
-      });
+      .catch((e) => this.handleError(e));
+  }
+
+  override exec(ctx: Context, query: Statement) {
+    const { text, values } = query.build();
+
+    debug("query: %s", text);
+
+    return ((ctx.tx as pg.PoolClient) || this.pgPool)
+      .query(text, values)
+      .then(() => {})
+      .catch((e) => this.handleError(e));
   }
 
   override query<T extends Record<string, any>>(
@@ -48,13 +53,15 @@ export class PostgresDB extends DB {
     return ((ctx.tx as pg.PoolClient) || this.pgPool)
       .query(text, values)
       .then((res) => res.rows as T[])
-      .catch((e) => {
-        if (e.code === UNIQUE_VIOLATION_ERROR_CODE) {
-          throw new DuplicateKeyError(e.message);
-        } else {
-          throw e;
-        }
-      });
+      .catch((e) => this.handleError(e));
+  }
+
+  private handleError(e: any): never {
+    if (e.code === UNIQUE_VIOLATION_ERROR_CODE) {
+      throw new DuplicateKeyError(e.message);
+    } else {
+      throw e;
+    }
   }
 
   override async startTransaction(ctx: Context, fn: () => Promise<void>) {
@@ -86,7 +93,7 @@ export class PostgresDB extends DB {
     await this.run(
       ctx,
       sql.rawStatement(`
-        CREATE TABLE IF NOT EXISTS migrations
+        CREATE TABLE IF NOT EXISTS t_migrations
         (
             module TEXT,
             id     INTEGER,

@@ -17,8 +17,7 @@ export interface HttpContext<Payload = any, PathParams = any, QueryParams = any>
   adminSessionId?: string;
 
   render: (
-    layout: string | null,
-    view: string,
+    view: string | string[],
     data?: Record<string, any>,
   ) => Promise<Response>;
 

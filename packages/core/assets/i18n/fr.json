@@ -1,0 +1,77 @@
+{
+  "tymber": {
+    "common": {
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "create": "Créer",
+      "unknownError": "Une erreur inconnue s'est produite !",
+      "home": "Accueil",
+      "name": "Nom",
+      "createdAt": "Créé le",
+      "createdBy": "Créé par",
+      "updatedAt": "Mis à jour le",
+      "key": "Clé",
+      "value": "Valeur",
+      "logOut": "Déconnexion",
+      "modules": "Modules",
+      "version": "Version",
+      "cancel": "Annuler"
+    },
+    "init": {
+      "title": "Initialiser votre application",
+      "applicationName": "Le nom de votre application",
+      "environmentName": "Le nom de votre environnement",
+      "environmentColor": "La couleur de votre environnement",
+      "adminUsername": "Nom d'utilisateur administrateur",
+      "init": "Initialiser",
+      "success": "L'application a été initialisée avec succès."
+    },
+    "initPassword": {
+      "title": "Mettre à jour votre mot de passe",
+      "success": "Votre mot de passe a été mis à jour avec succès."
+    },
+    "logIn": {
+      "logIn": "Connexion",
+      "success": "Vous êtes maintenant connecté.",
+      "invalidCredentials": "Identifiants invalides !",
+      "logOutSuccess": "Vous avez été déconnecté avec succès."
+    },
+    "migrations": {
+      "migrations": "Migrations",
+      "module": "Module",
+      "runAt": "Exécutée le"
+    },
+    "routes": {
+      "routes": "Routes",
+      "views": "Vues",
+      "endpoints": "Points d'accès",
+      "adminViews": "Vues (admin)",
+      "adminEndpoints": "Points d'accès (admin)",
+      "method": "Méthode",
+      "path": "Chemin",
+      "handler": "Gestionnaire"
+    },
+    "adminUsers": {
+      "adminUsers": "Administrateurs",
+      "new": "Nouvel administrateur",
+      "success": "L'administrateur a été créé avec succès."
+    },
+    "config": {
+      "config": "Configuration",
+      "source": "Source : variables d'environnement",
+      "isDefault": "Par défaut ?",
+      "emptyList": "liste vide"
+    },
+    "adminQueries": {
+      "adminQueries": "Requêtes",
+      "query": "Requête",
+      "comment": "Commentaire",
+      "dryRun": "Simulation",
+      "run": "Exécuter",
+      "affectedRows": "Cette requête affectera ${this.affectedRows} ligne(s).",
+      "success": "La requête a été exécutée avec succès.",
+      "invalidQuery": "La requête est invalide !",
+      "history": "Historique"
+    }
+  }
+}

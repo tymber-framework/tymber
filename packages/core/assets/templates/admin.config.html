@@ -1,0 +1,61 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.config.config")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.config.config") %></a></li>
+  </ul>
+</nav>
+
+<h1 class="title"><%= $t("tymber.config.config") %></h1>
+
+<p><%= $t("tymber.config.source") %></p>
+
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.common.key") %></th>
+      <th><%= $t("tymber.common.value") %></th>
+      <th><%= $t("tymber.config.isDefault") %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const conf of config) { %>
+    <tr>
+      <td>
+        <code><%= conf.key %></code>
+      </td>
+
+      <td>
+        <div class="control">
+          <% if (conf.type === "string[]") { %>
+
+          <% if (conf.value.length === 0) { %>
+          <span class="is-italic"><%= $t("tymber.config.emptyList") %></span>
+          <% } else { %>
+
+          <ul>
+            <% for (const value of conf.value) { %>
+            <li>
+              <code><%= value %></code>
+            </li>
+            <% } %>
+          </ul>
+          <% } %>
+
+          <% } else { %>
+          <code><%= conf.value %></code>
+          <% } %>
+        </div>
+      </td>
+
+      <td>
+        <% if (conf.value === conf.defaultValue) { %>
+        <input type="checkbox" class="" checked disabled />
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

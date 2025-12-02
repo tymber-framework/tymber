@@ -52,7 +52,7 @@ export async function runMigrations(db: DB, modules: ModuleDefinition[]) {
       await db.startTransaction(ctx, async () => {
         const result = await db.query(
           ctx,
-          sql.select().from("migrations").where({
+          sql.select().from("t_migrations").where({
             id: migration.id,
             module: migration.module,
           }),
@@ -72,13 +72,13 @@ export async function runMigrations(db: DB, modules: ModuleDefinition[]) {
           migration.id,
           migration.module,
         );
-        await db.run(ctx, sql.rawStatement(migration.sql));
+        await db.exec(ctx, sql.rawStatement(migration.sql));
 
         await db.run(
           ctx,
           sql
             .insert()
-            .into("migrations")
+            .into("t_migrations")
             .values([
               {
                 module: migration.module,

@@ -13,6 +13,7 @@ export interface AdminSidebarItem {
 
 export interface Module {
   name: string;
+  version: string;
   assetsDir?: string;
   adminSidebarItems?: AdminSidebarItem[];
 
@@ -41,6 +42,7 @@ export interface Route {
 
 export interface ModuleDefinition {
   name: string;
+  version: string;
   assetsDir?: string;
   adminSidebarItems?: AdminSidebarItem[];
 

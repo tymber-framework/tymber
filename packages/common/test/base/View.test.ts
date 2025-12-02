@@ -33,6 +33,7 @@ describe("View", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           assetsDir: join(import.meta.dirname, "test-module", "assets"),
 
           init(app) {
@@ -44,7 +45,7 @@ describe("View", () => {
                 override allowAnonymous = true;
 
                 override handle(ctx: HttpContext) {
-                  return ctx.render("layout", "view", {
+                  return ctx.render(["layout", "view"], {
                     value: "hello",
                   });
                 }
@@ -57,7 +58,7 @@ describe("View", () => {
                 override allowAnonymous = true;
 
                 override handle(ctx: HttpContext) {
-                  return ctx.render(null, "view", {
+                  return ctx.render("view", {
                     value: "hello",
                   });
                 }
@@ -70,7 +71,7 @@ describe("View", () => {
                 override allowAnonymous = true;
 
                 override handle(ctx: HttpContext) {
-                  return ctx.render(null, "localized-view");
+                  return ctx.render("localized-view");
                 }
               },
             );
@@ -81,7 +82,7 @@ describe("View", () => {
                 override allowAnonymous = true;
 
                 override handle(ctx: HttpContext) {
-                  return ctx.render("custom-layout", "custom-view", {
+                  return ctx.render(["custom-layout", "custom-view"], {
                     value: "hello",
                   });
                 }

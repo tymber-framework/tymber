@@ -12,6 +12,7 @@ describe("StaticEndpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           assetsDir: join(import.meta.dirname, "test-module", "assets"),
 
           init(app) {},

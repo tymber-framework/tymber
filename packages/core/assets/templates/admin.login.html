@@ -1,0 +1,116 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.logIn.logIn")}`; %>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import { doFetch, Toast } from "./utils";
+
+  createApp({
+    components: {
+      Toast
+    },
+
+    data() {
+      return {
+        isLoading: false,
+        showInvalidCredentialsToast: false,
+        showUnknownErrorToast: false,
+        showLogOutSuccessToast: false,
+        form: {
+          username: "",
+          password: "",
+        }
+      }
+    },
+
+    methods: {
+      async onSubmit() {
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "POST",
+          path: "/api/admin/login",
+          payload: this.form
+        });
+
+        if (res.ok) {
+          window.location.href = "/admin?logged_in=1";
+        } else {
+          if (res.status === 400) {
+            this.showInvalidCredentialsToast = true;
+          } else {
+            this.showUnknownErrorToast = true;
+          }
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 200);
+        }
+      }
+    },
+
+    computed: {
+      isValid() {
+        return this.form.username.length > 0
+          && this.form.password.length > 0;
+      }
+    },
+
+    mounted() {
+      const url = new URL(window.location.href);
+
+      if (url.searchParams.has("logged_out")) {
+        this.showLogOutSuccessToast = true;
+        url.searchParams.delete("logged_out");
+        window.history.replaceState(null, '', url);
+      }
+    },
+
+    template: `
+      <Toast v-model="showInvalidCredentialsToast" class="is-warning">
+        <%= $t("tymber.logIn.invalidCredentials") %>
+      </Toast>
+
+      <Toast v-model="showUnknownErrorToast" class="is-danger">
+        <%= $t("tymber.common.unknownError") %>
+      </Toast>
+
+      <Toast v-model="showLogOutSuccessToast" class="is-success">
+        <%= $t("tymber.logIn.logOutSuccess") %>
+      </Toast>
+
+      <section class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+              <h1 class="title"><%= CTX.app.name %></h1>
+              <h2 class="subtitle" style="color: <%= CTX.app.environment.color %>"><%= CTX.app.environment.name %></h2>
+
+              <form @submit.prevent="onSubmit">
+                <div class="field">
+                  <label class="label" for="username"><%= $t("tymber.common.username") %></label>
+                  <div class="control">
+                    <input class="input" type="text" id="username" name="username" v-model="form.username" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="password"><%= $t("tymber.common.password") %></label>
+                  <div class="control">
+                    <input class="input" type="password" id="password" name="password" v-model="form.password" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="control">
+                    <button class="button is-primary is-pulled-right" type="submit" :disabled="isLoading || !isValid" :class="{ 'is-loading': isLoading }"><%= $t("tymber.logIn.logIn") %></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    `
+  }).mount("#app");
+</script>

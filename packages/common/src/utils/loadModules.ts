@@ -17,6 +17,7 @@ export async function loadModules(
   for (const module of modules) {
     const moduleDefinition: ModuleDefinition = {
       name: module.name,
+      version: module.version,
       assetsDir: module.assetsDir,
       adminSidebarItems: module.adminSidebarItems,
 

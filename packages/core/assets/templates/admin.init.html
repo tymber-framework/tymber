@@ -1,0 +1,120 @@
+<% TITLE = $t("tymber.init.init"); %>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import { doFetch, Toast } from "./utils";
+
+  createApp({
+    components: {
+      Toast,
+    },
+
+    data() {
+      return {
+        isLoading: false,
+        showSuccessToast: false,
+        showUnknownErrorToast: false,
+        form: {
+          applicationName: "",
+          environmentName: "",
+          environmentColorHex: "#00FF00",
+          username: "",
+          password: "",
+        }
+      }
+    },
+
+    methods: {
+      async onSubmit() {
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "POST",
+          path: "/api/admin/init",
+          payload: this.form
+        });
+
+        if (res.ok) {
+          window.location.href = "/admin?init=1";
+        } else {
+          this.showUnknownErrorToast = true;
+
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 200);
+        }
+      }
+    },
+
+    computed: {
+      isValid() {
+        return this.form.applicationName.length >= 2
+          && this.form.environmentName.length >= 2
+          && this.form.environmentColorHex
+          && this.form.username.length >= 2
+          && this.form.password.length >= 8;
+      }
+    },
+
+    template: `
+      <Toast v-model="showUnknownErrorToast" class="is-danger">
+        <%= $t("tymber.common.unknownError") %>
+      </Toast>
+
+      <section class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+              <h1 class="title"><%= $t("tymber.init.title") %></h1>
+
+              <form @submit.prevent="onSubmit">
+                <div class="field">
+                  <label class="label" for="applicationName"><%= $t("tymber.init.applicationName") %></label>
+                  <div class="control">
+                    <input class="input" type="text" id="applicationName" name="applicationName" v-model="form.applicationName" required autofocus />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="environmentName"><%= $t("tymber.init.environmentName") %></label>
+                  <div class="control">
+                    <input class="input" type="text" id="environmentName" name="environmentName" v-model="form.environmentName" required />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="environmentColorHex"><%= $t("tymber.init.environmentColor") %></label>
+                  <div class="control">
+                    <input class="input" type="color" id="environmentColorHex" name="environmentColorHex" v-model="form.environmentColorHex" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="username"><%= $t("tymber.init.adminUsername") %></label>
+                  <div class="control">
+                    <input class="input" type="text" id="username" name="username" v-model="form.username" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label" for="password"><%= $t("tymber.common.password") %></label>
+                  <div class="control">
+                    <input class="input" type="password" id="password" name="password" v-model="form.password" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div class="control">
+                    <button class="button is-primary is-pulled-right" type="submit" :disabled="isLoading || !isValid" :class="{ 'is-loading': isLoading }"><%= $t("tymber.init.init") %></button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    `
+  }).mount("#app");
+</script>

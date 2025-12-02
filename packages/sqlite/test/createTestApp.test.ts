@@ -11,11 +11,13 @@ describe("SQLite - createTestApp", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           assetsDir: join(import.meta.dirname, "test-assets"),
           init(app: AppInit) {},
         },
         {
           name: "test-nested",
+          version: "0.0.1",
           assetsDir: join(import.meta.dirname, "test-assets-nested"),
           init(app: AppInit) {},
         },
@@ -24,7 +26,7 @@ describe("SQLite - createTestApp", () => {
 
     const rows = await ctx.db.query(
       emptyContext(),
-      sql.select().from("migrations"),
+      sql.select().from("t_migrations"),
     );
 
     assert.equal(rows.length, 3);

@@ -15,6 +15,8 @@ export abstract class DB extends Component {
     query: Statement,
   ): Promise<{ affectedRows: number }>;
 
+  abstract exec(ctx: Context, query: Statement): Promise<void>;
+
   abstract startTransaction(
     ctx: Context,
     fn: () => Promise<void>,

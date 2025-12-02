@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="<%= CTX.locale %>">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= TITLE %></title>
+    <link rel="stylesheet" href="/static/css/bulma.min.css?v=1.0.4"/>
+    <link rel="stylesheet" href="/static/css/common.css?v=0.0.1"/>
+  </head>
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "vue": "/static/js/vue.esm-browser<%= CTX.app.isProduction ? '.prod' : '' %>.js?v=3.5.25",
+          "./utils": "/static/js/utils.js?v=0.0.1"
+        }
+      }
+    </script>
+
+    <%= VIEW %>
+  </body>
+</html>

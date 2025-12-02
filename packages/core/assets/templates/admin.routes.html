@@ -1,0 +1,196 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.routes.routes")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
+    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.routes.routes") %></a></li>
+  </ul>
+</nav>
+
+<h1 class="title is-spaced"><%= $t("tymber.routes.routes") %></h1>
+
+<h2 class="subtitle"><%= $t("tymber.routes.views") %> (<%= views.length %>)</h2>
+
+<% if (views.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of views) { %>
+    <tr>
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td>
+        <%= route.handlerName %>
+      </td>
+
+      <td>
+        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
+
+<h2 class="subtitle"><%= $t("tymber.routes.endpoints") %> (<%= endpoints.length %>)</h2>
+
+<% if (endpoints.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.method") %></th>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of endpoints) { %>
+    <tr>
+      <td>
+        <% if (route.method === "GET") { %>
+        <span class="tag is-success">GET</span>
+        <% } else if (route.method === "POST") { %>
+        <span class="tag is-info">POST</span>
+        <% } else if (route.method === "PUT") { %>
+        <span class="tag is-warning">PUT</span>
+        <% } else if (route.method === "DELETE") { %>
+        <span class="tag is-danger">DELETE</span>
+        <% } else { %>
+        <span class="tag is-link"><%= route.method %></span>
+        <% } %>
+      </td>
+
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td>
+        <%= route.handlerName %>
+      </td>
+
+      <td>
+        <% if (route.method === "GET") { %>
+        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
+
+<h2 class="subtitle"><%= $t("tymber.routes.adminViews") %> (<%= adminViews.length %>)</h2>
+
+<% if (adminViews.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of adminViews) { %>
+    <tr>
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td>
+        <%= route.handlerName %>
+      </td>
+
+      <td>
+        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
+
+<h2 class="subtitle"><%= $t("tymber.routes.adminEndpoints") %> (<%= adminEndpoints.length %>)</h2>
+
+<% if (adminEndpoints.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.method") %></th>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of adminEndpoints) { %>
+    <tr>
+      <td>
+        <% if (route.method === "GET") { %>
+        <span class="tag is-success">GET</span>
+        <% } else if (route.method === "POST") { %>
+        <span class="tag is-info">POST</span>
+        <% } else if (route.method === "PUT") { %>
+        <span class="tag is-warning">PUT</span>
+        <% } else if (route.method === "DELETE") { %>
+        <span class="tag is-danger">DELETE</span>
+        <% } else { %>
+        <span class="tag is-link"><%= route.method %></span>
+        <% } %>
+      </td>
+
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td>
+        <%= route.handlerName %>
+      </td>
+
+      <td>
+        <% if (route.method === "GET") { %>
+        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>

@@ -11,6 +11,7 @@ describe("Endpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.endpoint(
               "GET",
@@ -49,6 +50,7 @@ describe("Endpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.endpoint(
               "GET",
@@ -84,6 +86,7 @@ describe("Endpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.endpoint(
               "GET",
@@ -120,6 +123,7 @@ describe("Endpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.endpoint(
               "POST",
@@ -171,6 +175,7 @@ describe("Endpoint", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.endpoint(
               "GET",

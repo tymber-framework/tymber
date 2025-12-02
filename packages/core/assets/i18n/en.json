@@ -1,0 +1,77 @@
+{
+  "tymber": {
+    "common": {
+      "username": "Username",
+      "password": "Password",
+      "create": "Create",
+      "unknownError": "An unknown error occurred!",
+      "home": "Home",
+      "name": "Name",
+      "createdAt": "Created at",
+      "createdBy": "Created by",
+      "updatedAt": "Updated at",
+      "key": "Key",
+      "value": "Value",
+      "logOut": "Log out",
+      "modules": "Modules",
+      "version": "Version",
+      "cancel": "Cancel"
+    },
+    "init": {
+      "title": "Initialize your application",
+      "applicationName": "The name of your app",
+      "environmentName": "The name of your environment",
+      "environmentColor": "The color of your environment",
+      "adminUsername": "Admin username",
+      "init": "Init",
+      "success": "The app has successfully been initialized."
+    },
+    "initPassword": {
+      "title": "Update your password",
+      "success": "Your password has successfully been updated."
+    },
+    "logIn": {
+      "logIn": "Log in",
+      "success": "You are now logged in.",
+      "invalidCredentials": "Invalid credentials!",
+      "logOutSuccess": "You have been successfully logged out."
+    },
+    "migrations": {
+      "migrations": "Migrations",
+      "module": "Module",
+      "runAt": "Run at"
+    },
+    "routes": {
+      "routes": "Routes",
+      "views": "Views",
+      "endpoints": "Endpoints",
+      "adminViews": "Views (admin)",
+      "adminEndpoints": "Endpoints (admin)",
+      "method": "Method",
+      "path": "Path",
+      "handler": "Handler"
+    },
+    "adminUsers": {
+      "adminUsers": "Admin users",
+      "new": "New admin user",
+      "success": "The admin user has successfully been created."
+    },
+    "config": {
+      "config": "Config",
+      "source": "Source: environment variables",
+      "isDefault": "Is default?",
+      "emptyList": "empty list"
+    },
+    "adminQueries": {
+      "adminQueries": "Queries",
+      "query": "Query",
+      "comment": "Comment",
+      "dryRun": "Dry run",
+      "run": "Run",
+      "affectedRows": "This query will affect ${this.affectedRows} row(s).",
+      "success": "The query was successfully executed.",
+      "invalidQuery": "The query is invalid!",
+      "history": "History"
+    }
+  }
+}

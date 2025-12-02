@@ -139,9 +139,9 @@ export class App {
       abortSignal: req.signal,
       responseHeaders: new Headers(),
 
-      render: async (layout, view, data = {}) => {
+      render: async (view, data = {}) => {
         try {
-          return this.viewRenderer.render(ctx, layout, view, data);
+          return this.viewRenderer.render(ctx, view, data);
         } catch (e) {
           return this.renderHttp500Error(ctx, e as Error);
         }
@@ -152,7 +152,13 @@ export class App {
         code: HttpRedirectCode = HttpRedirectCode.HTTP_302_FOUND,
       ) {
         const baseUrl = computeBaseUrl(ctx.headers);
-        return Response.redirect(`${baseUrl}${path}`, code);
+        // note: `Response.redirect()` does not allow to specify additional headers
+        return new Response(null, {
+          status: code,
+          headers: {
+            Location: `${baseUrl}${path}`,
+          },
+        });
       },
     } as HttpContext;
 
@@ -174,7 +180,10 @@ export class App {
       });
     }
 
-    for (const middleware of this.middlewares) {
+    // make a copy in case a middleware is removed
+    const middlewares = this.middlewares.slice();
+
+    for (const middleware of middlewares) {
       try {
         const httpRes = await middleware.handle(ctx);
 
@@ -244,7 +253,7 @@ export class App {
     const acceptHeader = ctx.headers.get("accept");
 
     if (acceptHeader?.includes("text/html")) {
-      return this.viewRenderer.render(ctx, null, "404");
+      return this.viewRenderer.render(ctx, "404");
     } else {
       return Response.json(
         {
@@ -261,7 +270,7 @@ export class App {
     const acceptHeader = ctx.headers.get("accept");
 
     if (acceptHeader?.includes("text/html")) {
-      return this.viewRenderer.render(ctx, null, "500", {
+      return this.viewRenderer.render(ctx, "500", {
         error,
       });
     } else {

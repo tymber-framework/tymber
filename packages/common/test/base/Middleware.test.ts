@@ -11,6 +11,7 @@ describe("Middleware", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.middleware(
               class extends Middleware {
@@ -45,6 +46,7 @@ describe("Middleware", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.middleware(
               class extends Middleware {

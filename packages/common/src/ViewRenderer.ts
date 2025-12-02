@@ -2,8 +2,9 @@ import { Component, INJECT } from "./Component.js";
 import { BaseTemplateService, TemplateService } from "./TemplateService.js";
 import { I18nService } from "./I18nService.js";
 import { pick } from "./contrib/accept-language-parser.js";
-import { type AdminSidebarItem, ModuleDefinitions } from "./Module.js";
+import { ModuleDefinitions } from "./Module.js";
 import type { HttpContext } from "./HttpContext.js";
+import { isProduction } from "./utils/isProduction.js";
 
 export class ViewRenderer extends Component {
   static [INJECT] = [
@@ -13,54 +14,44 @@ export class ViewRenderer extends Component {
     ModuleDefinitions,
   ];
 
-  private adminSidebarItems: AdminSidebarItem[] = [];
-
   constructor(
     private readonly i18nService: I18nService,
     private readonly templateService: BaseTemplateService,
     private readonly customTemplateService: TemplateService,
-    modules: ModuleDefinitions,
+    private readonly modules: ModuleDefinitions,
   ) {
     super();
-    for (const module of modules.modules) {
-      if (module.adminSidebarItems) {
-        this.adminSidebarItems.push(...module.adminSidebarItems);
-      }
-    }
   }
 
   public async render(
     ctx: HttpContext,
-    layout: string | null,
-    view: string,
+    view: string | string[],
     data: Record<string, any> = {},
   ) {
-    data.CTX = ctx;
+    const templates = Array.isArray(view) ? view.reverse() : [view];
 
-    if (view.startsWith("admin.")) {
-      data.APP = {
-        adminSidebarItems: this.adminSidebarItems,
-      };
-    }
+    data.TITLE = "Tymber";
+    data.CTX = ctx;
+    data.CTX.app = data.CTX.app || {};
+    data.CTX.app.isProduction = isProduction;
+    data.CTX.app.modules = this.modules.modules;
 
     const locale = pick(
       this.i18nService.availableLocales(),
       ctx.headers.get("accept-language") || "",
     );
 
+    data.CTX.locale = locale;
+
     data.$t = (key: string, ...args: any[]) => {
       return this.i18nService.translate(ctx, locale, key, ...args);
     };
 
-    let output = await this.renderTemplate(view, data);
-
-    if (layout) {
-      data.view = output;
-
-      output = await this.renderTemplate(layout, data);
+    for (const template of templates) {
+      data.VIEW = await this.renderTemplate(template, data);
     }
 
-    return new Response(output, {
+    return new Response(data.VIEW, {
       headers: {
         "content-type": "text/html",
         "cache-control": "no-cache",

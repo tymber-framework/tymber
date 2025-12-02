@@ -13,6 +13,7 @@ export abstract class Repository<
 
   protected abstract tableName: string;
   protected idField: string | string[] = "id";
+  protected dateFields: string[] = [];
 
   constructor(protected readonly db: DB) {
     super();
@@ -121,7 +122,16 @@ export abstract class Repository<
     const entity: Record<string, any> = {};
 
     Object.keys(row).forEach((key) => {
-      entity[snakeToCamelCase(key)] = row[key];
+      const fieldName = snakeToCamelCase(key);
+      let fieldValue = row[key];
+
+      if (
+        this.dateFields.includes(fieldName) &&
+        typeof fieldValue === "number"
+      ) {
+        fieldValue = new Date(fieldValue);
+      }
+      entity[fieldName] = fieldValue;
     });
 
     return entity as T;
@@ -142,6 +152,8 @@ export abstract class AuditedRepository<
   ID,
   T extends AuditedEntity,
 > extends Repository<ID, T> {
+  protected override dateFields = ["createdAt", "updatedAt"];
+
   protected override onBeforeInsert(ctx: Context, entity: Partial<T>) {
     entity.createdAt = ctx.startedAt;
     entity.updatedAt = ctx.startedAt;
@@ -157,20 +169,6 @@ export abstract class AuditedRepository<
       entity.updatedBy = ctx.user.id;
     }
   }
-
-  protected override toEntity(row: Record<string, any>): T {
-    const entity = super.toEntity(row);
-
-    if (typeof entity.createdAt === "number") {
-      entity.createdAt = new Date(entity.createdAt);
-    }
-
-    if (typeof entity.updatedAt === "number") {
-      entity.updatedAt = new Date(entity.updatedAt);
-    }
-
-    return entity;
-  }
 }
 
 export interface AdminAuditedEntity {
@@ -184,6 +182,8 @@ export abstract class AdminAuditedRepository<
   ID,
   T extends AdminAuditedEntity,
 > extends Repository<ID, T> {
+  protected override dateFields = ["createdAt", "updatedAt"];
+
   protected override onBeforeInsert(ctx: Context, entity: Partial<T>) {
     entity.createdAt = ctx.startedAt;
     if (ctx.admin) {

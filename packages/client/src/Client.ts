@@ -24,7 +24,7 @@ export class Client {
     private readonly defaultHeaders?: Record<string, string>,
   ) {}
 
-  public async fetch<T>({
+  public async fetch<T = any>({
     method,
     path,
     query,

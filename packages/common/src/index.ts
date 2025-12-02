@@ -1,9 +1,4 @@
-export {
-  Component,
-  type Ctor,
-  ComponentFactory,
-  INJECT,
-} from "./Component.js";
+export { Component, type Ctor, ComponentFactory, INJECT } from "./Component.js";
 export {
   type UserId,
   type User,
@@ -24,7 +19,12 @@ export {
 export { Endpoint, AdminEndpoint } from "./Endpoint.js";
 export { type HttpContext } from "./HttpContext.js";
 export { App } from "./App.js";
-export { type Module, type AppInit } from "./Module.js";
+export {
+  type Module,
+  type AppInit,
+  ModuleDefinitions,
+  type Route,
+} from "./Module.js";
 export { View, AdminView } from "./View.js";
 export { Middleware } from "./Middleware.js";
 export {

@@ -1,0 +1,88 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.common.home")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li class="is-active"><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
+  </ul>
+</nav>
+
+<div class="columns">
+  <div class="column is-one-third">
+    <h1 class="title"><%= $t("tymber.common.modules") %></h1>
+
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th><%= $t("tymber.common.name") %></th>
+          <th><%= $t("tymber.common.version") %></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% for (const module of modules) { %>
+        <tr>
+          <td><%= module.name %></td>
+          <td><%= module.version %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import { Toast } from "./utils";
+
+  createApp({
+    components: {
+      Toast
+    },
+
+    data() {
+      return {
+        showInitSuccessToast: false,
+        showInitPasswordSuccessToast: false,
+        showLoggedInSuccessToast: false
+      }
+    },
+
+    mounted() {
+      const url = new URL(window.location.href);
+
+      if (url.searchParams.has("init")) {
+        this.showInitSuccessToast = true;
+        url.searchParams.delete("init");
+        window.history.replaceState(null, '', url);
+      }
+
+      if (url.searchParams.has("init_password")) {
+        this.showInitPasswordSuccessToast = true;
+        url.searchParams.delete("init_password");
+        window.history.replaceState(null, '', url);
+      }
+
+      if (url.searchParams.has("logged_in")) {
+        this.showLoggedInSuccessToast = true;
+        url.searchParams.delete("logged_in");
+        window.history.replaceState(null, '', url);
+      }
+    },
+
+    template: `
+      <Toast v-model="showInitSuccessToast" class="is-success">
+        <%= $t("tymber.init.success") %>
+      </Toast>
+
+      <Toast v-model="showInitPasswordSuccessToast" class="is-success">
+        <%= $t("tymber.initPassword.success") %>
+      </Toast>
+
+      <Toast v-model="showLoggedInSuccessToast" class="is-success">
+        <%= $t("tymber.logIn.success") %>
+      </Toast>
+    `
+  }).mount("#app");
+</script>

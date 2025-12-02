@@ -24,30 +24,28 @@ export class SQLiteDB extends DB {
     debug("query: %s", text);
 
     try {
-      if (values.length > 0) {
-        const res = await this.db.run(text, values);
-        return {
-          affectedRows: res.changes ?? 0,
-        };
-      } else {
-        await this.db.exec(text);
-        return {
-          affectedRows: 0,
-        };
-      }
+      const res = await this.db.run(text, values);
+      return {
+        affectedRows: res.changes ?? 0,
+      };
     } catch (e) {
-      if (
-        e instanceof Error &&
-        (e as Error & { errno?: number }).errno === 19
-      ) {
-        throw new DuplicateKeyError(e.message);
-      } else {
-        throw e;
-      }
+      this.handleError(e);
     }
   }
 
-  override query<T extends Record<string, any>>(
+  override async exec(_ctx: Context, query: Statement) {
+    const { text } = query.build();
+
+    debug("query: %s", text);
+
+    try {
+      await this.db.exec(text);
+    } catch (e) {
+      this.handleError(e);
+    }
+  }
+
+  override async query<T extends Record<string, any>>(
     _ctx: Context,
     query: Statement,
   ) {
@@ -56,16 +54,17 @@ export class SQLiteDB extends DB {
     debug("query: %s", text);
 
     try {
-      return this.db.all<T[]>(text, values);
+      return await this.db.all<T[]>(text, values);
     } catch (e) {
-      if (
-        e instanceof Error &&
-        (e as Error & { errno?: number }).errno === 19
-      ) {
-        throw new DuplicateKeyError(e.message);
-      } else {
-        throw e;
-      }
+      this.handleError(e);
+    }
+  }
+
+  private handleError(e: any): never {
+    if (e instanceof Error && (e as Error & { errno?: number }).errno === 19) {
+      throw new DuplicateKeyError(e.message);
+    } else {
+      throw e;
     }
   }
 
@@ -89,7 +88,7 @@ export class SQLiteDB extends DB {
     await this.run(
       ctx,
       sql.rawStatement(`
-        CREATE TABLE IF NOT EXISTS migrations
+        CREATE TABLE IF NOT EXISTS t_migrations
         (
             module TEXT,
             id     INTEGER,

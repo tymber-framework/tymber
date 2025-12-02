@@ -9,7 +9,8 @@
     "packages/client",
     "packages/common",
     "packages/postgres",
-    "packages/sqlite"
+    "packages/sqlite",
+    "packages/core"
   ],
   "devDependencies": {
     "@tsconfig/node24": "^24.0.1",
