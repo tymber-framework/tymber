@@ -21,6 +21,7 @@ import { ComponentFactory } from "./Component.js";
 import { PubSubService } from "./PubSubService.js";
 import { FS } from "./utils/fs.js";
 import { EnvironmentBasedConfigService } from "./ConfigService.js";
+import { snakeToCamelCase } from "./utils/snakeToCamelCase.js";
 
 const debug = createDebug("App");
 
@@ -46,6 +47,16 @@ function createRouter(modules: ModuleDefinition[]) {
   }
 
   return router;
+}
+
+function parseQueryParams(url: URL) {
+  const query = Object.create(null);
+
+  url.searchParams.forEach((value, key) => {
+    query[snakeToCamelCase(key)] = value;
+  });
+
+  return query;
 }
 
 export class App {
@@ -133,7 +144,7 @@ export class App {
       startedAt: new Date(),
       method: req.method as HttpMethod,
       path: url.pathname,
-      query: Object.fromEntries(url.searchParams.entries()),
+      query: parseQueryParams(url),
       headers: req.headers,
       cookies: parseCookieHeader(req.headers.get("cookie") || ""),
       abortSignal: req.signal,

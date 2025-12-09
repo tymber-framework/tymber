@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
-import { createTestApp, Endpoint } from "../../src";
+import { createTestApp, Endpoint, HttpContext } from "../../src";
 import { Client } from "@tymber/client";
 import { createTestDB } from "../setup";
 
@@ -164,6 +164,70 @@ describe("Endpoint", () => {
           message: "must have required property 'id'",
         },
       ],
+    });
+
+    return ctx.close();
+  });
+
+  it("should validate the query params", async () => {
+    interface Query {
+      a: string;
+      b: number;
+      snakeCase: boolean;
+    }
+
+    const ctx = await createTestApp(
+      () => createTestDB(),
+      [
+        {
+          name: "test",
+          version: "0.0.1",
+          init(app) {
+            app.endpoint(
+              "GET",
+              "/test",
+              class extends Endpoint {
+                override allowAnonymous = true;
+
+                querySchema = {
+                  type: "object",
+                  properties: {
+                    a: { type: "string" },
+                    b: { type: "number" },
+                    snakeCase: { type: "boolean" },
+                  },
+                  required: [],
+                  additionalProperties: false,
+                };
+
+                handle(ctx: HttpContext<never, never, Query>) {
+                  const { query } = ctx;
+
+                  return Response.json(query);
+                }
+              },
+            );
+          },
+        },
+      ],
+    );
+
+    const client = new Client(ctx.baseUrl);
+    const res = await client.fetch({
+      method: "GET",
+      path: "/test",
+      query: {
+        a: "1",
+        b: "2", // force conversion
+        c: "3", // ignore
+        snake_case: true, // convert case
+      },
+    });
+    assert.equal(res.status, 200);
+    assert.deepEqual(res.body, {
+      a: "1",
+      b: 2,
+      snakeCase: true,
     });
 
     return ctx.close();
