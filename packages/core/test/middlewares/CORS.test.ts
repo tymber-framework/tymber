@@ -19,6 +19,7 @@ describe("CORS", () => {
       [
         {
           name: "test",
+          version: "0.0.1",
           init(app) {
             app.middleware(CORS);
 
