@@ -1,4 +1,4 @@
-<h1>`@tymber/client` module</h1>
+<h1>Core module of the Tymber framework</h1>
 
 Dependency-less client that can be used in a frontend project or for tests.
 
@@ -18,7 +18,7 @@ npm i @tymber/client
 
 ## Usage
 
-```
+```ts
 import { AdminClient } from "@tymber/client";
 
 const client = new AdminClient("https://example.com");

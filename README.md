@@ -82,7 +82,7 @@ export default {
 #### Installation
 
 ```
-npm i @tymber/common @tymber/core @tymber/postgres pg
+npm i @tymber/common @tymber/core @tymber/postgres
 ```
 
 #### Usage

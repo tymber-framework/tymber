@@ -1,6 +1,6 @@
-<h1>PostgreSQL module of the Tymber framework</h1>
+<h1>Common module of the Tymber framework</h1>
 
-The PostgreSQL module (DB & PubSubService components).
+The internals of the framework.
 
 **Table of contents**
 
@@ -13,7 +13,7 @@ The PostgreSQL module (DB & PubSubService components).
 ## Installation
 
 ```
-npm i @tymber/postgres
+npm i @tymber/common
 ```
 
 ## Usage
@@ -21,6 +21,9 @@ npm i @tymber/postgres
 ```ts
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
+import { App, toNodeHandler } from "@tymber/common";
+import { CoreModule } from "@tymber/core";
+import { createServer } from "node:http";
 
 const pgPool = new pg.Pool({
   user: "postgres",
@@ -28,6 +31,14 @@ const pgPool = new pg.Pool({
 });
 
 const db = new PostgresDB(pgPool);
+
+const app = await App.create(db, [
+  CoreModule
+]);
+
+const httpServer = createServer(toNodeHandler(app.fetch));
+
+httpServer.listen(8080);
 ```
 
 ## License
