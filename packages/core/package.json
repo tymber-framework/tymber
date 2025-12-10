@@ -1,10 +1,13 @@
 {
-  "private": true,
   "name": "@tymber/core",
   "version": "0.0.1",
   "description": "Core module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tymber-framework/tymber.git"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,5 +35,10 @@
     "node": "./dist/index.js",
     "bun": "./src/index.ts",
     "deno": "./src/index.ts"
-  }
+  },
+  "keywords": [
+    "tymber",
+    "typescript",
+    "framework"
+  ]
 }

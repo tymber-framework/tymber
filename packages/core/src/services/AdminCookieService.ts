@@ -2,7 +2,7 @@ import { Component, ConfigService, INJECT, createCookie } from "@tymber/common";
 import { type AdminSessionId } from "../repositories/AdminUserRepository.js";
 
 interface Config {
-  COOKIE_MAX_AGE_IN_SECONDS: number;
+  ADMIN_COOKIE_MAX_AGE_IN_SECONDS: number;
 }
 
 export class AdminCookieService extends Component {
@@ -33,7 +33,7 @@ export class AdminCookieService extends Component {
       path: "/",
       httpOnly: true,
       sameSite: isSameSiteRequest ? "strict" : "lax",
-      maxAge: this.config!.COOKIE_MAX_AGE_IN_SECONDS,
+      maxAge: this.config!.ADMIN_COOKIE_MAX_AGE_IN_SECONDS,
     });
   }
 }

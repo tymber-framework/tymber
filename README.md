@@ -135,13 +135,13 @@ Each module has the following structure:
 
 This repository contains the following packages:
 
-| Package            | Description                                                                | Latest release |
-|--------------------|----------------------------------------------------------------------------|----------------|
-| `@tymber/client`   | Dependency-less client that can be used in a frontend project or for tests | -              |
-| `@tymber/common`   | The internals of the framework                                             | -              |
-| `@tymber/core`     | The core module                                                            | -              |
-| `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | -              |
-| `@tymber/sqlite`   | The SQLite module                                                          | -              |
+| Package            | Description                                                                | Latest release                            |
+|--------------------|----------------------------------------------------------------------------|-------------------------------------------|
+| `@tymber/client`   | Dependency-less client that can be used in a frontend project or for tests | [`0.0.1`](packages/client/CHANGELOG.md)   |
+| `@tymber/common`   | The internals of the framework                                             | [`0.0.1`](packages/common/CHANGELOG.md)   |
+| `@tymber/core`     | The core module                                                            | [`0.0.1`](packages/core/CHANGELOG.md)     |
+| `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | [`0.0.1`](packages/postgres/CHANGELOG.md) |
+| `@tymber/sqlite`   | The SQLite module                                                          | [`0.0.1`](packages/sqlite/CHANGELOG.md)   |
 
 ## License
 
