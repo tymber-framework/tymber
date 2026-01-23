@@ -29,7 +29,8 @@
   },
   "files": [
     "src/",
-    "dist/"
+    "dist/",
+    "assets/"
   ],
   "exports": {
     "node": "./dist/index.js",
