@@ -5,6 +5,8 @@ import { DB } from "./DB.js";
 import type { AdminUserId, Context, UserId } from "./Context.js";
 import { sql, Statement } from "./utils/sql.js";
 
+export class EntityNotFoundError extends Error {}
+
 export abstract class Repository<
   ID,
   T extends Record<string, any>,
@@ -23,6 +25,16 @@ export abstract class Repository<
     const query = sql.select().from(this.tableName).where(this.idClause(id));
 
     return this.one(ctx, query);
+  }
+
+  async deleteById(ctx: Context, id: ID) {
+    const query = sql.deleteFrom(this.tableName).where(this.idClause(id));
+
+    const res = await this.db.run(ctx, query);
+
+    if (res.affectedRows !== 1) {
+      throw new EntityNotFoundError();
+    }
   }
 
   private idClause(id: ID) {
