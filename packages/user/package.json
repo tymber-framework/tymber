@@ -19,7 +19,7 @@
     "@tymber/common": "~0.1.0"
   },
   "devDependencies": {
-    "@tymber/client": "^0.0.1",
+    "@tymber/client": "^0.1.0",
     "@tymber/core": "^0.1.0",
     "@tymber/postgres": "^0.0.1",
     "@tymber/sqlite": "^0.0.1"
