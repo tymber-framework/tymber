@@ -16,6 +16,7 @@ export {
   NodeClusterPubSubService,
   initPrimary,
 } from "./PubSubService.js";
+export { I18nService } from "./I18nService.js";
 export { Endpoint, AdminEndpoint } from "./Endpoint.js";
 export { type HttpContext } from "./HttpContext.js";
 export { App } from "./App.js";
@@ -27,7 +28,7 @@ export {
 } from "./Module.js";
 export { View, AdminView } from "./View.js";
 export { Middleware } from "./Middleware.js";
-export { Repository, type Page } from "./Repository.js";
+export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateService } from "./TemplateService.js";
 
 export { createCookie, parseCookieHeader } from "./contrib/cookie.js";
