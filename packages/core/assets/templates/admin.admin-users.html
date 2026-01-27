@@ -2,8 +2,14 @@
 
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
-    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.adminUsers.adminUsers") %></a></li>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"
+        ><%= $t("tymber.adminUsers.adminUsers") %></a
+      >
+    </li>
   </ul>
 </nav>
 
@@ -13,7 +19,15 @@
 
 <script type="module">
   import { createApp } from "vue";
-  import { doFetch, DataTable, snakeToCamelCase, camelToSnakeCase, LazyInput, Toast, Modal } from "./utils";
+  import {
+    doFetch,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+    LazyInput,
+    Toast,
+    Modal,
+  } from "./utils";
 
   createApp({
     components: {
@@ -35,7 +49,7 @@
             text: "<%= $t('tymber.common.username') %>",
             value: "username",
             isSortable: true,
-          }
+          },
         ],
         showCreationModal: false,
         showSuccessToast: false,
@@ -52,8 +66,8 @@
         options: {
           sortBy: "id",
           sortDesc: false,
-        }
-      }
+        },
+      };
     },
 
     computed: {
@@ -72,7 +86,10 @@
         if (sort) {
           const parts = sort.split("|");
           const column = snakeToCamelCase(parts[0]);
-          if (this.headers.some(h => h.value === column) && ["asc", "desc"].includes(parts[1])) {
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
             this.options.sortBy = column;
             this.options.sortDesc = parts[1] === "desc";
           }
@@ -83,9 +100,16 @@
         const query = new URLSearchParams();
 
         query.set("q", this.searchText);
-        query.set("s", `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`);
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
 
-        window.history.replaceState(null, '', `${window.location.pathname}?${query}`);
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
       },
 
       async loadItems() {
@@ -99,9 +123,9 @@
           path: "/api/admin/admin_users",
           query: {
             q: this.searchText,
-            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`
-          }
-        })
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
 
         this.value = res.body.items;
         this.isLoading = false;
@@ -132,7 +156,7 @@
         const res = await doFetch({
           method: "POST",
           path: "/api/admin/admin_users",
-          payload: this.form
+          payload: this.form,
         });
 
         if (res.ok) {
@@ -148,7 +172,7 @@
         setTimeout(() => {
           this.isFormLoading = false;
         }, 200);
-      }
+      },
     },
 
     created() {
@@ -227,6 +251,6 @@
           @update:options="onOptionsUpdate"
       >
       </DataTable>
-    `
+    `,
   }).mount("#app");
 </script>

@@ -13,8 +13,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "rm -rf dist/ && tsc",
-    "format:check": "prettier -c src/ test/",
-    "format:fix": "prettier -w src/ test/",
+    "format:check": "prettier -c src/ test/ assets/templates/",
+    "format:fix": "prettier -w src/ test/ assets/templates/",
     "test": "tsx --test",
     "test:sqlite": "USE_SQLITE=1 npm test"
   },

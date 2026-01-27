@@ -2,8 +2,12 @@
 
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
-    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.routes.routes") %></a></li>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"><%= $t("tymber.routes.routes") %></a>
+    </li>
   </ul>
 </nav>
 
@@ -28,12 +32,14 @@
         <code><%= route.path %></code>
       </td>
 
-      <td>
-        <%= route.handlerName %>
-      </td>
+      <td><%= route.handlerName %></td>
 
       <td>
-        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
           <span class="icon">
             <svg width="48" height="48">
               <use xlink:href="#arrow-top-right"></use>
@@ -47,7 +53,9 @@
 </table>
 <% } %>
 
-<h2 class="subtitle"><%= $t("tymber.routes.endpoints") %> (<%= endpoints.length %>)</h2>
+<h2 class="subtitle">
+  <%= $t("tymber.routes.endpoints") %> (<%= endpoints.length %>)
+</h2>
 
 <% if (endpoints.length > 0) { %>
 <table class="table is-fullwidth">
@@ -81,13 +89,15 @@
         <code><%= route.path %></code>
       </td>
 
-      <td>
-        <%= route.handlerName %>
-      </td>
+      <td><%= route.handlerName %></td>
 
       <td>
         <% if (route.method === "GET") { %>
-        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
           <span class="icon">
             <svg width="48" height="48">
               <use xlink:href="#arrow-top-right"></use>
@@ -102,7 +112,9 @@
 </table>
 <% } %>
 
-<h2 class="subtitle"><%= $t("tymber.routes.adminViews") %> (<%= adminViews.length %>)</h2>
+<h2 class="subtitle">
+  <%= $t("tymber.routes.adminViews") %> (<%= adminViews.length %>)
+</h2>
 
 <% if (adminViews.length > 0) { %>
 <table class="table is-fullwidth">
@@ -121,12 +133,14 @@
         <code><%= route.path %></code>
       </td>
 
-      <td>
-        <%= route.handlerName %>
-      </td>
+      <td><%= route.handlerName %></td>
 
       <td>
-        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
           <span class="icon">
             <svg width="48" height="48">
               <use xlink:href="#arrow-top-right"></use>
@@ -140,7 +154,9 @@
 </table>
 <% } %>
 
-<h2 class="subtitle"><%= $t("tymber.routes.adminEndpoints") %> (<%= adminEndpoints.length %>)</h2>
+<h2 class="subtitle">
+  <%= $t("tymber.routes.adminEndpoints") %> (<%= adminEndpoints.length %>)
+</h2>
 
 <% if (adminEndpoints.length > 0) { %>
 <table class="table is-fullwidth">
@@ -174,13 +190,15 @@
         <code><%= route.path %></code>
       </td>
 
-      <td>
-        <%= route.handlerName %>
-      </td>
+      <td><%= route.handlerName %></td>
 
       <td>
         <% if (route.method === "GET") { %>
-        <a href="<%= route.path %>" target="_blank" class="button is-small is-primary is-outlined is-pulled-right">
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
           <span class="icon">
             <svg width="48" height="48">
               <use xlink:href="#arrow-top-right"></use>

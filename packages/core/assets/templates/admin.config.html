@@ -2,8 +2,12 @@
 
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
-    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.config.config") %></a></li>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"><%= $t("tymber.config.config") %></a>
+    </li>
   </ul>
 </nav>
 
@@ -29,9 +33,8 @@
 
       <td>
         <div class="control">
-          <% if (conf.type === "string[]") { %>
-
-          <% if (conf.value.length === 0) { %>
+          <% if (conf.type === "string[]") { %> <% if (conf.value.length === 0)
+          { %>
           <span class="is-italic"><%= $t("tymber.config.emptyList") %></span>
           <% } else { %>
 
@@ -42,9 +45,7 @@
             </li>
             <% } %>
           </ul>
-          <% } %>
-
-          <% } else { %>
+          <% } %> <% } else { %>
           <code><%= conf.value %></code>
           <% } %>
         </div>

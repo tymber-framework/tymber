@@ -2,8 +2,14 @@
 
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
-    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.adminQueries.adminQueries") %></a></li>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"
+        ><%= $t("tymber.adminQueries.adminQueries") %></a
+      >
+    </li>
   </ul>
 </nav>
 
@@ -13,7 +19,14 @@
 
 <script type="module">
   import { createApp } from "vue";
-  import { doFetch, Toast, DataTable, snakeToCamelCase, camelToSnakeCase, LazyInput } from "./utils";
+  import {
+    doFetch,
+    Toast,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+    LazyInput,
+  } from "./utils";
 
   createApp({
     components: {
@@ -47,7 +60,7 @@
           },
           {
             text: "<%= $t('tymber.common.createdBy') %>",
-            value: "createdBy.username"
+            value: "createdBy.username",
           },
           {
             text: "<%= $t('tymber.adminQueries.comment') %>",
@@ -55,8 +68,8 @@
           },
           {
             text: "",
-            value: "actions"
-          }
+            value: "actions",
+          },
         ],
         isLoading: false,
         shouldRerun: false,
@@ -65,8 +78,8 @@
         options: {
           sortBy: "id",
           sortDesc: true,
-        }
-      }
+        },
+      };
     },
 
     methods: {
@@ -77,7 +90,7 @@
           const res = await doFetch({
             path: "/api/admin/admin_queries/_dry_run",
             method: "POST",
-            payload: this.form
+            payload: this.form,
           });
 
           if (res.ok) {
@@ -94,7 +107,7 @@
           const res = await doFetch({
             path: "/api/admin/admin_queries",
             method: "POST",
-            payload: this.form
+            payload: this.form,
           });
 
           if (res.ok) {
@@ -124,7 +137,10 @@
         if (sort) {
           const parts = sort.split("|");
           const column = snakeToCamelCase(parts[0]);
-          if (this.headers.some(h => h.value === column) && ["asc", "desc"].includes(parts[1])) {
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
             this.options.sortBy = column;
             this.options.sortDesc = parts[1] === "desc";
           }
@@ -135,9 +151,16 @@
         const query = new URLSearchParams();
 
         query.set("q", this.searchText);
-        query.set("s", `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`);
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
 
-        window.history.replaceState(null, '', `${window.location.pathname}?${query}`);
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
       },
 
       async loadItems() {
@@ -151,9 +174,9 @@
           path: "/api/admin/admin_queries",
           query: {
             q: this.searchText,
-            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`
-          }
-        })
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
 
         this.value = res.body.items;
         this.isLoading = false;
@@ -176,7 +199,7 @@
         this.searchText = value;
         this.updateQueryParams();
         this.loadItems();
-      }
+      },
     },
 
     computed: {
@@ -184,12 +207,11 @@
         return this.form.query.length > 2;
       },
       isRunValid() {
-        return this.form.query.length > 2
-          && this.form.comment.length > 2;
+        return this.form.query.length > 2 && this.form.comment.length > 2;
       },
       affectedRowsLabel() {
         return `<%= $t('tymber.adminQueries.affectedRows') %>`;
-      }
+      },
     },
 
     created() {
@@ -272,6 +294,6 @@
           </button>
         </template>
       </DataTable>
-    `
+    `,
   }).mount("#app");
 </script>

@@ -2,8 +2,14 @@
 
 <nav class="breadcrumb" aria-label="breadcrumbs">
   <ul>
-    <li><a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a></li>
-    <li class="is-active"><a href="#" aria-current="page"><%= $t("tymber.migrations.migrations") %></a></li>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"
+        ><%= $t("tymber.migrations.migrations") %></a
+      >
+    </li>
   </ul>
 </nav>
 
@@ -13,11 +19,16 @@
 
 <script type="module">
   import { createApp } from "vue";
-  import { doFetch, DataTable, snakeToCamelCase, camelToSnakeCase } from "./utils";
+  import {
+    doFetch,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+  } from "./utils";
 
   createApp({
     components: {
-      DataTable
+      DataTable,
     },
 
     data() {
@@ -39,7 +50,7 @@
             text: "<%= $t('tymber.migrations.runAt') %>",
             value: "runAt",
             isSortable: true,
-          }
+          },
         ],
         isLoading: false,
         shouldRerun: false,
@@ -47,8 +58,8 @@
         options: {
           sortBy: "runAt",
           sortDesc: true,
-        }
-      }
+        },
+      };
     },
 
     methods: {
@@ -59,7 +70,10 @@
         if (sort) {
           const parts = sort.split("|");
           const column = snakeToCamelCase(parts[0]);
-          if (this.headers.some(h => h.value === column) && ["asc", "desc"].includes(parts[1])) {
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
             this.options.sortBy = column;
             this.options.sortDesc = parts[1] === "desc";
           }
@@ -69,9 +83,16 @@
       updateQueryParams() {
         const query = new URLSearchParams();
 
-        query.set("s", `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`);
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
 
-        window.history.replaceState(null, '', `${window.location.pathname}?${query}`);
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
       },
 
       async loadItems() {
@@ -84,9 +105,9 @@
         const res = await doFetch({
           path: "/api/admin/migrations",
           query: {
-            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`
-          }
-        })
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
 
         this.value = res.body.items;
         this.isLoading = false;
@@ -123,6 +144,6 @@
         {{ new Date(value).toLocaleString() }}
         </template>
       </DataTable>
-    `
+    `,
   }).mount("#app");
 </script>

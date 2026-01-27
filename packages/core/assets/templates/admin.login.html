@@ -8,7 +8,7 @@
 
   createApp({
     components: {
-      Toast
+      Toast,
     },
 
     data() {
@@ -20,8 +20,8 @@
         form: {
           username: "",
           password: "",
-        }
-      }
+        },
+      };
     },
 
     methods: {
@@ -31,7 +31,7 @@
         const res = await doFetch({
           method: "POST",
           path: "/api/admin/login",
-          payload: this.form
+          payload: this.form,
         });
 
         if (res.ok) {
@@ -46,14 +46,13 @@
             this.isLoading = false;
           }, 200);
         }
-      }
+      },
     },
 
     computed: {
       isValid() {
-        return this.form.username.length > 0
-          && this.form.password.length > 0;
-      }
+        return this.form.username.length > 0 && this.form.password.length > 0;
+      },
     },
 
     mounted() {
@@ -62,7 +61,7 @@
       if (url.searchParams.has("logged_out")) {
         this.showLogOutSuccessToast = true;
         url.searchParams.delete("logged_out");
-        window.history.replaceState(null, '', url);
+        window.history.replaceState(null, "", url);
       }
     },
 
@@ -111,6 +110,6 @@
           </div>
         </div>
       </section>
-    `
+    `,
   }).mount("#app");
 </script>
