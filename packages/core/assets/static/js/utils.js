@@ -158,7 +158,7 @@ export const DataTable = {
               </slot>
               <button class="button is-small ml-1" v-if="header.isSortable" @click="updateOptions(header.value)">
                 <span class="icon" :class="{ 'has-text-grey': options.sortBy !== header.value }">
-                  <svg>
+                  <svg width="48" height="48">
                     <use xlink:href="#sort-ascending" v-if="options.sortBy === header.value && options.sortDesc"></use>
                     <use xlink:href="#sort-descending" v-else-if="options.sortBy === header.value && !options.sortDesc"></use>
                     <use xlink:href="#sort" v-else></use>
