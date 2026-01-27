@@ -37,6 +37,7 @@ export interface Query {
 
 export class AdminQueryRepository extends Repository<number, AdminQuery> {
   tableName = "t_admin_queries";
+  dateFields = ["createdAt"];
 
   async dryRunQuery(ctx: Context, query: string) {
     let affectedRows = 0;

@@ -52,3 +52,6 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+      - name: Run tests with SQLite instead of PostgreSQL
+        run: npm run test:sqlite --workspaces --if-present
