@@ -2,7 +2,7 @@ import { camelToSnakeCase } from "./utils/camelToSnakeCase.js";
 import { snakeToCamelCase } from "./utils/snakeToCamelCase.js";
 import { Component, INJECT } from "./Component.js";
 import { DB } from "./DB.js";
-import type { AdminUserId, Context, UserId } from "./Context.js";
+import type { Context } from "./Context.js";
 import { sql, Statement } from "./utils/sql.js";
 
 export class EntityNotFoundError extends Error {}
@@ -151,64 +151,6 @@ export abstract class Repository<
 
   protected onBeforeInsert(ctx: Context, entity: Partial<T>) {}
   protected onBeforeUpdate(ctx: Context, entity: Partial<T>) {}
-}
-
-export interface AuditedEntity {
-  createdBy?: UserId;
-  createdAt?: Date;
-  updatedBy?: UserId;
-  updatedAt?: Date;
-}
-
-export abstract class AuditedRepository<
-  ID,
-  T extends AuditedEntity,
-> extends Repository<ID, T> {
-  protected override dateFields = ["createdAt", "updatedAt"];
-
-  protected override onBeforeInsert(ctx: Context, entity: Partial<T>) {
-    entity.createdAt = ctx.startedAt;
-    entity.updatedAt = ctx.startedAt;
-    if (ctx.user) {
-      entity.createdBy = ctx.user.id;
-      entity.updatedBy = ctx.user.id;
-    }
-  }
-
-  protected override onBeforeUpdate(ctx: Context, entity: Partial<T>) {
-    entity.updatedAt = ctx.startedAt;
-    if (ctx.user) {
-      entity.updatedBy = ctx.user.id;
-    }
-  }
-}
-
-export interface AdminAuditedEntity {
-  createdBy?: AdminUserId;
-  createdAt?: Date;
-  updatedBy?: AdminUserId;
-  updatedAt?: Date;
-}
-
-export abstract class AdminAuditedRepository<
-  ID,
-  T extends AdminAuditedEntity,
-> extends Repository<ID, T> {
-  protected override dateFields = ["createdAt", "updatedAt"];
-
-  protected override onBeforeInsert(ctx: Context, entity: Partial<T>) {
-    entity.createdAt = ctx.startedAt;
-    if (ctx.admin) {
-      entity.createdBy = ctx.admin.id;
-    }
-  }
-
-  protected override onBeforeUpdate(ctx: Context, entity: Partial<T>) {
-    entity.updatedAt = ctx.startedAt;
-    if (ctx.admin) {
-      entity.updatedBy = ctx.admin.id;
-    }
-  }
 }
 
 export interface Page<T> {

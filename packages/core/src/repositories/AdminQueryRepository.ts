@@ -1,16 +1,17 @@
 import {
-  type AdminAuditedEntity,
-  AdminAuditedRepository,
   type AdminUserId,
   camelToSnakeCase,
   type Context,
   escapeValue,
   type Page,
+  Repository,
   sql,
 } from "@tymber/common";
 
-interface AdminQuery extends AdminAuditedEntity {
+interface AdminQuery {
   id: number;
+  createdBy: AdminUserId;
+  createdAt: Date;
   query: string;
   comment: string;
   affectedRows: number;
@@ -34,10 +35,7 @@ export interface Query {
   sort: "id:asc" | "id:desc" | "created_at:asc" | "created_at:desc";
 }
 
-export class AdminQueryRepository extends AdminAuditedRepository<
-  number,
-  AdminQuery
-> {
+export class AdminQueryRepository extends Repository<number, AdminQuery> {
   tableName = "t_admin_queries";
 
   async dryRunQuery(ctx: Context, query: string) {
@@ -67,7 +65,13 @@ export class AdminQueryRepository extends AdminAuditedRepository<
       const result = await this.db.run(ctx, sql.rawStatement(query));
       affectedRows = result.affectedRows;
 
-      await this.save(ctx, { query, comment, affectedRows });
+      await this.save(ctx, {
+        createdAt: ctx.startedAt,
+        createdBy: ctx.admin!.id,
+        query,
+        comment,
+        affectedRows,
+      });
     });
 
     return affectedRows;

@@ -2,11 +2,6 @@ CREATE TABLE t_admin_users
 (
     id                    INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    created_at            INTEGER,
-    created_by            INTEGER REFERENCES t_admin_users (id),
-    updated_at            INTEGER,
-    updated_by            INTEGER REFERENCES t_admin_users (id),
-
     username              TEXT UNIQUE,
     password              TEXT, -- hashed with argon2
     is_temporary_password INTEGER
@@ -22,12 +17,6 @@ CREATE TABLE t_admin_sessions
 CREATE TABLE t_misc
 (
     key        TEXT PRIMARY KEY,
-
-    created_at INTEGER,
-    created_by INTEGER REFERENCES t_admin_users (id),
-    updated_at INTEGER,
-    updated_by INTEGER REFERENCES t_admin_users (id),
-
     value      TEXT
 ) STRICT;
 
@@ -37,8 +26,6 @@ CREATE TABLE t_admin_queries
 
     created_at    INTEGER,
     created_by    INTEGER REFERENCES t_admin_users (id),
-    updated_at    INTEGER,
-    updated_by    INTEGER REFERENCES t_admin_users (id),
 
     query         TEXT,
     comment       TEXT,

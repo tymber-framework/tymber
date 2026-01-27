@@ -1,12 +1,11 @@
 import {
-  type AdminAuditedEntity,
-  AdminAuditedRepository,
   type AdminUserId,
   type Brand,
   camelToSnakeCase,
   type Context,
   escapeValue,
   type Page,
+  Repository,
   sql,
 } from "@tymber/common";
 import { randomUUID } from "node:crypto";
@@ -19,7 +18,7 @@ export interface Query {
   sort: "id:asc" | "id:desc" | "username:asc" | "username:desc";
 }
 
-export interface AdminUser extends AdminAuditedEntity {
+export interface AdminUser {
   id: AdminUserId;
 
   username: string;
@@ -29,10 +28,7 @@ export interface AdminUser extends AdminAuditedEntity {
 
 export type AdminSessionId = Brand<string, "AdminSessionId">;
 
-export class AdminUserRepository extends AdminAuditedRepository<
-  AdminUserId,
-  AdminUser
-> {
+export class AdminUserRepository extends Repository<AdminUserId, AdminUser> {
   tableName = "t_admin_users";
 
   async findByUsername(

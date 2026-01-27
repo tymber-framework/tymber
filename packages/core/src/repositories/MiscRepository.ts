@@ -1,14 +1,11 @@
-import {
-  type AdminAuditedEntity,
-  AdminAuditedRepository,
-} from "@tymber/common";
+import { Repository } from "@tymber/common";
 
-interface Value extends AdminAuditedEntity {
+interface Value {
   key: string;
   value: any;
 }
 
-export class MiscRepository extends AdminAuditedRepository<string, Value> {
+export class MiscRepository extends Repository<string, Value> {
   tableName = "t_misc";
   idField = "key";
 }

@@ -31,10 +31,6 @@ export class ListAdminUsers extends AdminEndpoint {
     const { query } = ctx;
     const users = await this.adminUserRepository.find(ctx, query, [
       "id",
-      "createdAt",
-      "createdBy",
-      "updatedAt",
-      "updatedBy",
       "username",
     ]);
     return Response.json(users);

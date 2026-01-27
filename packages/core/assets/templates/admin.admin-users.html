@@ -35,14 +35,6 @@
             text: "<%= $t('tymber.common.username') %>",
             value: "username",
             isSortable: true,
-          },
-          {
-            text: "<%= $t('tymber.common.createdAt') %>",
-            value: "createdAt",
-          },
-          {
-            text: "<%= $t('tymber.common.updatedAt') %>",
-            value: "updatedAt",
           }
         ],
         showCreationModal: false,
@@ -234,13 +226,6 @@
           :options="options"
           @update:options="onOptionsUpdate"
       >
-        <template #["item.createdAt"]="{ value }">
-          {{ value ? new Date(value).toLocaleString() : "" }}
-        </template>
-
-        <template #["item.updatedAt"]="{ value }">
-          {{ value ? new Date(value).toLocaleString() : "" }}
-        </template>
       </DataTable>
     `
   }).mount("#app");

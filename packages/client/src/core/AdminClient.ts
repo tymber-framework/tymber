@@ -2,10 +2,6 @@ import { Client } from "../Client.js";
 
 interface AdminUser {
   id: number;
-  createdBy: number;
-  createdAt: string;
-  updatedBy: number;
-  updatedAt: string;
   username: string;
 }
 
@@ -20,8 +16,6 @@ interface AdminQuery {
   id: number;
   createdBy: number;
   createdAt: string;
-  updatedBy: number;
-  updatedAt: string;
   query: string;
   comment: string;
 }

@@ -25,10 +25,6 @@ describe("ListAdminUsers", () => {
           {
             id: 2,
             username: "alice",
-            created_at: new Date("2000-01-01T00:00:00Z"),
-            created_by: ctx.adminUserId,
-            updated_at: new Date("2000-01-01T00:00:00Z"),
-            updated_by: ctx.adminUserId,
           },
           {
             id: 3,
@@ -52,10 +48,6 @@ describe("ListAdminUsers", () => {
 
     assert.deepStrictEqual(res.body.items[1], {
       id: 2,
-      createdAt: "2000-01-01T00:00:00.000Z",
-      createdBy: 1,
-      updatedAt: "2000-01-01T00:00:00.000Z",
-      updatedBy: 1,
       username: `alice`,
     });
     assert.strictEqual(res.body.items[2].id, 3);
