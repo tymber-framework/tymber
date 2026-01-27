@@ -16,7 +16,7 @@
     "test:sqlite": "USE_SQLITE=1 npm test"
   },
   "dependencies": {
-    "@tymber/common": "~0.0.1"
+    "@tymber/common": "~0.1.0"
   },
   "devDependencies": {
     "@tymber/client": "^0.0.1",
