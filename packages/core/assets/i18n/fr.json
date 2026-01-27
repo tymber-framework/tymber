@@ -15,7 +15,8 @@
       "logOut": "Déconnexion",
       "modules": "Modules",
       "version": "Version",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "confirm": "Confirmer"
     },
     "init": {
       "title": "Initialiser votre application",

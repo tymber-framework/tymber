@@ -15,7 +15,8 @@
       "logOut": "Log out",
       "modules": "Modules",
       "version": "Version",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "confirm": "Confirm"
     },
     "init": {
       "title": "Initialize your application",
