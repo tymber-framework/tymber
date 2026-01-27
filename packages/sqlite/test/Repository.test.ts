@@ -1,16 +1,7 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
 import { createTestDB } from "../src";
-import { emptyContext, Repository, sql, UserId } from "@tymber/common";
-
-function contextForUser(userId: string) {
-  const ctx = emptyContext();
-  ctx.user = {
-    id: userId as UserId,
-    orgs: [],
-  };
-  return ctx;
-}
+import { emptyContext, Repository, sql } from "@tymber/common";
 
 describe("SQLite - Repository", () => {
   it("should work", async () => {
