@@ -23,6 +23,13 @@ export class ViewRenderer extends Component {
     super();
   }
 
+  public computeLocale(req: Request) {
+    return pick(
+      this.i18nService.availableLocales(),
+      req.headers.get("accept-language") || "",
+    );
+  }
+
   public async render(
     ctx: HttpContext,
     view: string | string[],
@@ -36,15 +43,8 @@ export class ViewRenderer extends Component {
     data.CTX.app.isProduction = isProduction;
     data.CTX.app.modules = this.modules.modules;
 
-    const locale = pick(
-      this.i18nService.availableLocales(),
-      ctx.headers.get("accept-language") || "",
-    );
-
-    data.CTX.locale = locale;
-
     data.$t = (key: string, ...args: any[]) => {
-      return this.i18nService.translate(ctx, locale, key, ...args);
+      return this.i18nService.translate(ctx, ctx.locale, key, ...args);
     };
 
     for (const template of templates) {

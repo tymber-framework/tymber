@@ -140,6 +140,8 @@ export class App {
   public async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url, "http://localhost");
 
+    const locale = this.viewRenderer.computeLocale(req);
+
     const ctx = {
       startedAt: new Date(),
       method: req.method as HttpMethod,
@@ -148,6 +150,7 @@ export class App {
       headers: req.headers,
       cookies: parseCookieHeader(req.headers.get("cookie") || ""),
       abortSignal: req.signal,
+      locale,
       responseHeaders: new Headers(),
 
       render: async (view, data = {}) => {

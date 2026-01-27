@@ -1,5 +1,6 @@
 import { type Context } from "./Context.js";
 import { type HttpMethod } from "./Router.js";
+import { type Locale } from "./contrib/accept-language-parser.js";
 
 export interface HttpContext<Payload = any, PathParams = any, QueryParams = any>
   extends Context {
@@ -12,6 +13,7 @@ export interface HttpContext<Payload = any, PathParams = any, QueryParams = any>
   cookies: Record<string, string>;
   abortSignal: AbortSignal;
 
+  locale: Locale;
   responseHeaders: Headers;
   sessionId?: string;
   adminSessionId?: string;
