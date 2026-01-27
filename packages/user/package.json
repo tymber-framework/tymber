@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "@tymber/user",
+  "version": "0.0.1",
+  "description": "User module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/ assets/",
+    "format:fix": "prettier -w src/ test/ assets/",
+    "test": "tsx --test",
+    "test:sqlite": "USE_SQLITE=1 npm test"
+  },
+  "dependencies": {
+    "@tymber/common": "~0.0.1"
+  },
+  "devDependencies": {
+    "@tymber/client": "^0.0.1",
+    "@tymber/core": "^0.0.1",
+    "@tymber/postgres": "^0.0.1",
+    "@tymber/sqlite": "^0.0.1"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "assets/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  }
+}

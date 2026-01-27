@@ -1,0 +1,32 @@
+{
+  "tymber": {
+    "user": {
+      "users": "Utilisateurs",
+      "user": "Utilisateur",
+      "groups": "Groupes",
+      "group": "Groupe",
+      "role": "Rôle",
+      "roles": {
+        "0": "Gérant"
+      },
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Adresse e-mail",
+      "label": "Libellé",
+      "stopUserImpersonation": "Arrêt de l'emprunt d'identité",
+      "details": "Détails",
+      "addToGroup": "Ajout à un groupe",
+      "addUser": "Ajout d'un utilisateur",
+      "removeUser": "Suppression d'un utilisateur",
+      "removeUserConfirmation": "Êtes-vous sûr de vouloir supprimer l'utilisateur de ce groupe ?",
+      "toast": {
+        "impersonationStarted": "L'emprunt d'identité est en cours.",
+        "impersonationStopped": "L'emprunt d'identité est terminé.",
+        "userNotFound": "L'utilisateur n'a pas été trouvé.",
+        "userAdded": "L'utilisateur a bien été ajouté au groupe.",
+        "userRemoved": "L'utilisateur a bien été retiré du groupe.",
+        "groupNotFound": "Le groupe n'a pas été trouvé."
+      }
+    }
+  }
+}

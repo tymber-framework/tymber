@@ -1,0 +1,32 @@
+{
+  "tymber": {
+    "user": {
+      "users": "Users",
+      "user": "User",
+      "groups": "Groups",
+      "group": "Group",
+      "role": "Role",
+      "roles": {
+        "0": "Manager"
+      },
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "label": "Label",
+      "stopUserImpersonation": "Stop impersonation",
+      "details": "Details",
+      "addToGroup": "Add to group",
+      "addUser": "Add user",
+      "removeUser": "Remove user",
+      "removeUserConfirmation": "Are you sure you want to remove this user from the group?",
+      "toast": {
+        "impersonationStarted": "The impersonation has started.",
+        "impersonationStopped": "The impersonation has stopped.",
+        "userNotFound": "The user was not found.",
+        "userAdded": "The user has successfully been added to the group.",
+        "userRemoved": "The user has successfully been removed from the group.",
+        "groupNotFound": "The group was not found."
+      }
+    }
+  }
+}

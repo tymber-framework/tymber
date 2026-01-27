@@ -18,6 +18,7 @@ export interface ConnectedUser {
   groups: Array<{
     internalId: InternalGroupId;
     id: GroupId;
+    label: string;
     role: Role;
   }>;
 }

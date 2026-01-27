@@ -1,0 +1,320 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.user.users")}`; %>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+  <defs>
+    <!-- source: https://pictogrammers.com/library/mdi/icon/account-arrow-left-outline/ -->
+    <symbol id="account-arrow-left-outline" viewBox="0 0 24 24">
+      <path
+        d="M17 18H21V16H17V14L14 17L17 20V18M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 6C12.1 6 13 6.9 13 8S12.1 10 11 10 9 9.1 9 8 9.9 6 11 6M11 13C8.3 13 3 14.3 3 17V20H12.5C12.2 19.4 12.1 18.8 12 18.1H4.9V17C4.9 16.4 8 14.9 11 14.9C11.5 14.9 12 15 12.5 15C12.8 14.4 13.1 13.8 13.6 13.3C12.6 13.1 11.7 13 11 13"
+        fill="currentColor"
+      />
+    </symbol>
+
+    <!-- source: https://pictogrammers.com/library/mdi/icon/account-arrow-right-outline/ -->
+    <symbol id="account-arrow-right-outline" viewBox="0 0 24 24">
+      <path
+        d="M18 16H14V18H18V20L21 17L18 14V16M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 6C12.1 6 13 6.9 13 8S12.1 10 11 10 9 9.1 9 8 9.9 6 11 6M11 13C8.3 13 3 14.3 3 17V20H12.5C12.2 19.4 12.1 18.8 12 18.1H4.9V17C4.9 16.4 8 14.9 11 14.9C11.5 14.9 12 15 12.5 15C12.8 14.4 13.1 13.8 13.6 13.3C12.6 13.1 11.7 13 11 13"
+        fill="currentColor"
+      />
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"><%= $t("tymber.user.users") %></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-spaced"><%= $t("tymber.user.users") %></h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import {
+    doFetch,
+    DataTable,
+    LazyInput,
+    snakeToCamelCase,
+    camelToSnakeCase,
+    Toast,
+  } from "./utils";
+
+  const UserTable = {
+    components: {
+      DataTable,
+      LazyInput,
+      Toast,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "<%= $t('tymber.user.firstName') %>",
+            value: "firstName",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.user.lastName') %>",
+            value: "lastName",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.user.email') %>",
+            value: "email",
+            isSortable: true,
+          },
+          {
+            text: "",
+            value: "actions",
+          },
+        ],
+        isLoading: false,
+        shouldRerun: false,
+        searchText: "",
+        items: [],
+        options: {
+          sortBy: "lastName",
+          sortDesc: false,
+        },
+        impersonatedUserId: null,
+        showImpersonationStartedToast: false,
+        showImpersonationStoppedToast: false,
+        showUnknownErrorToast: false,
+      };
+    },
+
+    methods: {
+      readQueryParams() {
+        const query = new URLSearchParams(window.location.search);
+        this.searchText = query.get("q") || "";
+        const sort = query.get("s");
+
+        if (sort) {
+          const parts = sort.split("|");
+          const column = snakeToCamelCase(parts[0]);
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
+            this.options.sortBy = column;
+            this.options.sortDesc = parts[1] === "desc";
+          }
+        }
+      },
+
+      updateQueryParams() {
+        const query = new URLSearchParams();
+
+        query.set("q", this.searchText);
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
+
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: "/api/admin/users",
+          query: {
+            q: this.searchText,
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
+
+        this.items = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onSearchUpdate() {
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      async startUserImpersonation(userId) {
+        this.isLoading = true;
+        const res = await doFetch({
+          method: "POST",
+          path: `/api/admin/users/${userId}/_impersonate`,
+        });
+
+        if (res.ok) {
+          this.showImpersonationStartedToast = true;
+          this.impersonatedUserId = userId;
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+
+      async stopUserImpersonation() {
+        this.isLoading = true;
+        const res = await doFetch({
+          method: "POST",
+          path: `/api/logout`,
+        });
+
+        if (res.ok) {
+          this.showImpersonationStoppedToast = true;
+          this.impersonatedUserId = null;
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+
+      toUserDetails(userId) {
+        return `/admin/users/${userId}`;
+      },
+    },
+
+    async created() {
+      this.readQueryParams();
+      this.loadItems();
+
+      const res = await doFetch({
+        path: "/api/self",
+      });
+
+      if (res.ok) {
+        this.impersonatedUserId = res.body.id;
+      }
+    },
+
+    template: `
+      <Toast v-model="showImpersonationStartedToast" class="is-success"><%= $t("tymber.user.toast.impersonationStarted") %></Toast>
+      <Toast v-model="showImpersonationStoppedToast" class="is-success"><%= $t("tymber.user.toast.impersonationStopped") %></Toast>
+      <Toast v-model="showUnknownErrorToast" class="is-danger"><%= $t("tymber.common.unknownError") %></Toast>
+
+      <div class="field is-grouped">
+        <p class="control">
+          <button class="button is-primary is-outlined mb-3" v-if="impersonatedUserId" @click="stopUserImpersonation()" :disabled="isLoading">
+            <span class="icon is-small">
+              <svg width="50" height="50">
+                <use xlink:href="#account-arrow-right-outline"></use>
+              </svg>
+            </span>
+            <span><%= $t("tymber.user.stopUserImpersonation") %></span>
+          </button>
+        </p>
+
+        <p class="control has-icons-left is-right ml-auto">
+          <LazyInput class="input" v-model.trim="searchText" @update:model-value="onSearchUpdate" autofocus></LazyInput>
+
+          <span class="icon is-left">
+            <svg width="24" height="24">
+              <use xlink:href="#magnify"></use>
+            </svg>
+          </span>
+        </p>
+      </div>
+
+      <DataTable
+        :headers="headers"
+        :value="items"
+        :is-loading="isLoading"
+        :options="options"
+        @update:options="onOptionsUpdate"
+      >
+        <template #["item.createdAt"]="{ value }">
+          {{ new Date(value).toLocaleString() }}
+        </template>
+
+        <template #["item.actions"]="{ item }">
+          <div class="buttons is-right">
+            <button v-if="!impersonatedUserId" class="button is-small" @click="startUserImpersonation(item.id)" :disabled="isLoading">
+              <span class="icon">
+                <svg width="24" height="24">
+                  <use xlink:href="#account-arrow-left-outline"></use>
+                </svg>
+              </span>
+            </button>
+
+            <button v-if="impersonatedUserId === item.id" class="button is-small" @click="stopUserImpersonation()" :disabled="isLoading">
+              <span class="icon">
+                <svg width="24" height="24">
+                  <use xlink:href="#account-arrow-right-outline"></use>
+                </svg>
+              </span>
+            </button>
+
+            <a :href="toUserDetails(item.id)" class="button is-small">
+              <span class="icon">
+                <svg width="24" height="24">
+                  <use xlink:href="#magnify"></use>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </template>
+      </DataTable>
+    `,
+  };
+
+  createApp({
+    components: {
+      Toast,
+      UserTable,
+    },
+
+    data() {
+      return {
+        showUserNotFoundToast: false,
+      };
+    },
+
+    mounted() {
+      const url = new URL(window.location.href);
+
+      if (url.searchParams.has("user_not_found")) {
+        this.showUserNotFoundToast = true;
+        url.searchParams.delete("user_not_found");
+        window.history.replaceState(null, "", url);
+      }
+    },
+
+    template: `
+      <Toast v-model="showUserNotFoundToast" class="is-danger"><%= $t("tymber.user.toast.userNotFound") %></Toast>
+
+      <UserTable />
+    `,
+  }).mount("#app");
+</script>

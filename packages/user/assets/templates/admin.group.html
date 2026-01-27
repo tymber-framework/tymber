@@ -1,0 +1,530 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.user.group")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li>
+      <a href="/admin/groups" aria-current="page"
+        ><%= $t("tymber.user.groups") %></a
+      >
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"><%= $t("tymber.user.group") %></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-spaced"><%= $t("tymber.user.group") %></h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import {
+    doFetch,
+    DataTable,
+    LazyInput,
+    Autocomplete,
+    Modal,
+    camelToSnakeCase,
+    Toast,
+  } from "./utils";
+
+  const UserSelector = {
+    components: {
+      Autocomplete,
+    },
+
+    props: {
+      modelValue: Object,
+    },
+
+    data() {
+      return {
+        search: "",
+        items: [],
+        isLoading: false,
+        shouldRerun: false,
+      };
+    },
+
+    emits: ["update:modelValue"],
+
+    watch: {
+      modelValue(newValue) {
+        this.search = newValue
+          ? `${newValue.firstName} ${newValue.lastName}`
+          : "";
+      },
+    },
+
+    methods: {
+      onSearchUpdate(value) {
+        this.search = value;
+        this.loadItems();
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: "/api/admin/users",
+          query: {
+            q: this.search,
+            size: 10,
+            sort: "last_name:asc",
+          },
+        });
+
+        this.items = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onItemSelection(item) {
+        this.$emit("update:modelValue", item);
+      },
+    },
+
+    template: `
+      <Autocomplete
+        :items="items"
+        :is-loading="isLoading"
+        :value="modelValue"
+        :search="search"
+        @update:value="onItemSelection"
+        @update:search="onSearchUpdate"
+        >
+        <template #item="{ item }">
+          {{ item.firstName }} {{ item.lastName }}
+        </template>
+      </Autocomplete>
+    `,
+  };
+
+  const AddUserToGroupModal = {
+    components: {
+      Modal,
+      UserSelector,
+    },
+
+    props: {
+      modelValue: Boolean,
+      roles: Array,
+      isLoading: Boolean,
+    },
+
+    emits: ["update:modelValue", "submit"],
+
+    data() {
+      return {
+        form: {
+          user: null,
+          role: 0,
+        },
+      };
+    },
+
+    computed: {
+      isFormValid() {
+        return this.form.user;
+      },
+    },
+
+    watch: {
+      modelValue(newValue) {
+        if (newValue) {
+          this.resetForm();
+        }
+      },
+    },
+
+    methods: {
+      resetForm() {
+        this.form.user = null;
+        this.form.role = 0;
+      },
+
+      async onSubmit() {
+        this.$emit("submit", this.form);
+      },
+
+      closeModal() {
+        this.$emit("update:modelValue", false);
+      },
+    },
+
+    template: `
+      <Modal :model-value="modelValue" @update:model-value="closeModal()">
+        <template #header>
+          <p class="modal-card-title"><%= $t("tymber.user.addUser") %></p>
+        </template>
+
+        <template #content>
+          <form @submit.prevent="onSubmit">
+            <div class="field">
+              <label class="label" for="user"><%= $t("tymber.user.user") %></label>
+              <div class="control">
+                <UserSelector id="user" v-model="form.user" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="role"><%= $t("tymber.user.role") %></label>
+              <div class="control">
+                <div class="select">
+                  <select id="role" v-model="form.role">
+                    <option v-for="(role) in roles" :key="role.id" :value="role.id">{{ role.text }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-grouped is-grouped-right">
+              <div class="control">
+                <button class="button" type="reset" @click="closeModal()"><%= $t("tymber.common.cancel") %></button>
+              </div>
+              <div class="control">
+                <button class="button is-primary" type="submit" :disabled="!isFormValid" :class="{ 'is-loading': isLoading }">
+                  <%= $t("tymber.common.confirm") %>
+                </button>
+              </div>
+            </div>
+          </form>
+        </template>
+      </Modal>
+    `,
+  };
+
+  const RemoveUserFromGroupModal = {
+    components: {
+      Modal,
+    },
+
+    props: {
+      modelValue: Boolean,
+      isLoading: Boolean,
+    },
+
+    emits: ["update:modelValue", "submit"],
+
+    data() {
+      return {};
+    },
+
+    methods: {
+      async onSubmit() {
+        this.$emit("submit");
+      },
+
+      closeModal() {
+        this.$emit("update:modelValue", false);
+      },
+    },
+
+    template: `
+      <Modal :model-value="modelValue" @update:model-value="closeModal()">
+        <template #header>
+          <p class="modal-card-title"><%= $t("tymber.user.removeUser") %></p>
+        </template>
+
+        <template #content>
+          <p><%= $t("tymber.user.removeUserConfirmation") %></p>
+
+          <form @submit.prevent="onSubmit">
+            <div class="field is-grouped is-grouped-right mt-3">
+              <div class="control">
+                <button class="button" type="reset" @click="closeModal()"><%= $t("tymber.common.cancel") %></button>
+              </div>
+              <div class="control">
+                <button class="button is-primary" type="submit" :class="{ 'is-loading': isLoading }">
+                  <%= $t("tymber.common.confirm") %>
+                </button>
+              </div>
+            </div>
+          </form>
+        </template>
+      </Modal>
+    `,
+  };
+
+  const UserTable = {
+    components: {
+      AddUserToGroupModal,
+      RemoveUserFromGroupModal,
+      DataTable,
+      LazyInput,
+      Toast,
+    },
+
+    props: {
+      groupId: String,
+      roles: Array,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "<%= $t('tymber.user.firstName') %>",
+            value: "firstName",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.user.lastName') %>",
+            value: "lastName",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.user.email') %>",
+            value: "email",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.user.role') %>",
+            value: "role",
+          },
+          {
+            text: "",
+            value: "actions",
+          },
+        ],
+        isLoading: false,
+        shouldRerun: false,
+        searchText: "",
+        items: [],
+        options: {
+          sortBy: "lastName",
+          sortDesc: false,
+        },
+        showUserAddedToast: false,
+        showUserRemovedToast: false,
+        showUnknownErrorToast: false,
+        showAddUserToGroupModal: false,
+        showRemoveUserFromGroupModal: false,
+        userToRemove: null,
+      };
+    },
+
+    methods: {
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: `/api/admin/groups/${this.groupId}/users`,
+          query: {
+            q: this.searchText,
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
+
+        this.items = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.loadItems();
+      },
+
+      onSearchUpdate(value) {
+        this.searchText = value;
+        this.loadItems();
+      },
+
+      async addUserToGroup({ user, role }) {
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "POST",
+          path: `/api/admin/users/${user.id}/groups/${this.groupId}`,
+          payload: {
+            role,
+          },
+        });
+
+        if (res.ok) {
+          this.showAddUserToGroupModal = false;
+          this.showUserAddedToast = true;
+          this.isLoading = false;
+          this.loadItems();
+          return;
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+
+      displayRemoveUserFromGroupModal(item) {
+        this.userToRemove = item;
+        this.showRemoveUserFromGroupModal = true;
+      },
+
+      async removeUserFromGroup() {
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "DELETE",
+          path: `/api/admin/users/${this.userToRemove.id}/groups/${this.groupId}`,
+        });
+
+        if (res.ok) {
+          this.showRemoveUserFromGroupModal = false;
+          this.showUserRemovedToast = true;
+          this.isLoading = false;
+          this.loadItems();
+          return;
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+
+      computeRoleLabel(roleId) {
+        const role = this.roles.find((role) => role.id === roleId);
+        return role ? role.text : "-";
+      },
+
+      toUserDetails(userId) {
+        return `/admin/users/${userId}`;
+      },
+    },
+
+    created() {
+      this.loadItems();
+    },
+
+    template: `
+      <Toast v-model="showUserAddedToast" class="is-success"><%= $t("tymber.user.toast.userAdded") %></Toast>
+      <Toast v-model="showUserRemovedToast" class="is-success"><%= $t("tymber.user.toast.userRemoved") %></Toast>
+      <Toast v-model="showUnknownErrorToast" class="is-danger"><%= $t("tymber.common.unknownError") %></Toast>
+
+      <AddUserToGroupModal
+        v-model="showAddUserToGroupModal"
+        :roles="roles"
+        :is-loading="isLoading"
+        @submit="addUserToGroup" />
+
+      <RemoveUserFromGroupModal
+        v-model="showRemoveUserFromGroupModal"
+        :is-loading="isLoading"
+        @submit="removeUserFromGroup" />
+
+      <div class="field is-grouped">
+        <p class="control">
+          <button class="button is-primary is-outlined" @click="showAddUserToGroupModal = true">
+            <span class="icon is-small">
+              <svg width="50" height="50">
+                <use xlink:href="#plus"></use>
+              </svg>
+            </span>
+            <span><%= $t("tymber.user.addUser") %></span>
+          </button>
+        </p>
+
+        <div class="control has-icons-left ml-auto">
+          <LazyInput class="input" :model-value="searchText" @update:model-value="onSearchUpdate" autofocus></LazyInput>
+
+          <span class="icon is-left">
+            <svg width="24" height="24">
+              <use xlink:href="#magnify"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <DataTable
+        :headers="headers"
+        :value="items"
+        :is-loading="isLoading"
+        :options="options"
+        @update:options="onOptionsUpdate"
+      >
+        <template #["item.role"]="{ value }">
+          {{ computeRoleLabel(value) }}
+        </template>
+
+        <template #["item.actions"]="{ item }">
+          <div class="buttons is-right">
+            <button class="button is-small" @click="displayRemoveUserFromGroupModal(item)" :disabled="isLoading">
+              <span class="icon">
+                <svg width="24" height="24">
+                  <use xlink:href="#delete-outline"></use>
+                </svg>
+              </span>
+            </button>
+
+            <a :href="toUserDetails(item.id)" class="button is-small">
+              <span class="icon">
+                <svg width="24" height="24">
+                  <use xlink:href="#magnify"></use>
+                </svg>
+              </span>
+            </a>
+          </div>
+        </template>
+      </DataTable>
+    `,
+  };
+
+  createApp({
+    components: {
+      UserTable,
+    },
+
+    data() {
+      return {
+        group: JSON.parse(`<%= JSON.stringify(group) %>`),
+        roles: JSON.parse(`<%= JSON.stringify(roles) %>`),
+      };
+    },
+
+    template: `
+      <h2 class="subtitle"><%= $t("tymber.user.details") %></h2>
+
+      <fieldset disabled>
+        <div class="columns">
+          <div class="column is-one-third">
+            <div class="field">
+              <label class="label" for="label"><%= $t("tymber.user.label") %></label>
+              <div class="control">
+                <input class="input" id="label" type="text" v-model="group.label">
+              </div>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <h2 class="subtitle mt-6"><%= $t("tymber.user.users") %></h2>
+
+      <UserTable :group-id="group.id" :roles="roles" />
+    `,
+  }).mount("#app");
+</script>
