@@ -55,6 +55,7 @@
     "adminUsers": {
       "adminUsers": "Admin users",
       "new": "New admin user",
+      "temporaryPassword": "Temporary password",
       "success": "The admin user has successfully been created."
     },
     "config": {

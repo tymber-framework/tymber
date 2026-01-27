@@ -55,6 +55,7 @@
     "adminUsers": {
       "adminUsers": "Administrateurs",
       "new": "Nouvel administrateur",
+      "temporaryPassword": "Mot de passe temporaire",
       "success": "L'administrateur a été créé avec succès."
     },
     "config": {
