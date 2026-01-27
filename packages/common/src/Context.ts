@@ -1,14 +1,24 @@
 import { type Brand } from "./utils/types.js";
 
+export type InternalUserId = Brand<bigint, "InternalUserId">;
 export type UserId = Brand<string, "UserId">;
-export type OrgId = Brand<string, "OrgId">;
+export type InternalGroupId = Brand<bigint, "InternalGroupId">;
+export type GroupId = Brand<string, "GroupId">;
+export type Role = Brand<number, "Role">;
 export type AdminUserId = Brand<number, "AdminUserId">;
 
-export interface User {
+export interface ConnectedUser {
+  internalId: InternalUserId;
   id: UserId;
-  orgs: Array<{
-    id: OrgId;
-    role: string;
+
+  firstName: string;
+  lastName: string;
+  email: string;
+
+  groups: Array<{
+    internalId: InternalGroupId;
+    id: GroupId;
+    role: Role;
   }>;
 }
 
@@ -29,7 +39,7 @@ export interface Context {
 
   tx?: any;
 
-  user?: User;
+  user?: ConnectedUser;
   admin?: Admin;
 
   tracing: {
