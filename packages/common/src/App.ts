@@ -15,9 +15,9 @@ import { BaseI18nService } from "./I18nService.js";
 import { BaseTemplateService } from "./TemplateService.js";
 import { runMigrations } from "./utils/runMigrations.js";
 import { createDebug } from "./utils/createDebug.js";
-import type { DB } from "./DB.js";
+import { DB } from "./DB.js";
 import { isProduction } from "./utils/isProduction.js";
-import { ComponentFactory } from "./Component.js";
+import { Component, ComponentFactory } from "./Component.js";
 import { PubSubService } from "./PubSubService.js";
 import { FS } from "./utils/fs.js";
 import { EnvironmentBasedConfigService } from "./ConfigService.js";
@@ -75,7 +75,21 @@ export class App {
     this.fetch = this.fetch.bind(this);
   }
 
-  static async create(db: DB, modules: Module[]) {
+  static async create({
+    components,
+    modules,
+  }: {
+    components: Component[];
+    modules: Module[];
+  }) {
+    const db = components.find((c) => {
+      return c instanceof DB;
+    });
+
+    if (!db) {
+      throw new Error("no DB component found");
+    }
+
     debug(
       "starting app in %s mode",
       isProduction ? "production" : "development",
@@ -95,16 +109,16 @@ export class App {
 
     debug("loading modules");
     const moduleDefinitions = await loadModules(componentFactory, modules);
-    const components = componentFactory.build(
-      db,
+    const allComponents = componentFactory.build(
       new ModuleDefinitions(moduleDefinitions),
+      ...components,
     );
 
     debug("running migrations");
     await runMigrations(db, moduleDefinitions);
 
     debug("initializing all components");
-    await Promise.all(components.map((component) => component.init()));
+    await Promise.all(allComponents.map((component) => component.init()));
 
     const assets = new Map<string, string>();
 

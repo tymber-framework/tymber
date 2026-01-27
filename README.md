@@ -101,9 +101,10 @@ const pgPool = new pg.Pool({
 
 const db = new PostgresDB(pgPool);
 
-const app = await App.create(db, [
-  CoreModule
-]);
+const app = await App.create({
+  components: [db],
+  modules: [CoreModule]
+});
 
 const httpServer = createServer(toNodeHandler(app.fetch));
 

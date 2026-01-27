@@ -43,7 +43,10 @@ export async function createTestApp(
   }
 
   const { httpServer, baseUrl, db } = sharedTestContext;
-  const app = await App.create(db, modules);
+  const app = await App.create({
+    components: [db],
+    modules,
+  });
 
   httpServer.removeAllListeners("request");
   httpServer.on("request", toNodeHandler(app.fetch.bind(app)));
