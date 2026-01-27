@@ -214,3 +214,82 @@ export const LazyInput = {
     <input :value="modelValue" @input="onInput($event)" />
   `
 }
+
+export const Autocomplete = {
+  components: {
+    LazyInput,
+  },
+
+  props: {
+    value: Object,
+    search: String,
+    items: Array,
+    isLoading: Boolean,
+  },
+
+  emits: ["update:value", "update:search"],
+
+  methods: {
+    select(item) {
+      this.items.splice(0);
+      this.$emit("update:value", item);
+    },
+
+    clear() {
+      this.items.splice(0);
+      this.$emit("update:value", null);
+    }
+  },
+
+  computed: {
+    isDropdownOpen() {
+      return !this.value && !this.isLoading && this.items.length > 0;
+    },
+
+    isItemSelected() {
+      return !!this.value;
+    }
+  },
+
+  template: `
+    <div class="dropdown" :class="{ 'is-active': isDropdownOpen }">
+      <div class="dropdown-trigger">
+        <div class="field" :class="{ 'has-addons': isItemSelected }">
+          <div class="control" :class="{ 'is-loading': isLoading }">
+            <LazyInput
+              class="input"
+              :model-value="search"
+              @update:model-value="$emit('update:search', $event)"
+              :disabled="isItemSelected">
+            </LazyInput>
+          </div>
+
+          <div class="control" v-show="isItemSelected">
+            <button class="button" type="button" @click="clear">
+              <span class="icon is-small">
+                <svg width="50" height="50">
+                  <use xlink:href="#close"></use>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dropdown-menu">
+        <div class="dropdown-content">
+          <a
+            v-for="item in items"
+            :key="item.id"
+            class="dropdown-item"
+            @click="select(item)"
+          >
+            <slot name="item" :item="item">
+              {{ item.text }}
+            </slot>
+          </a>
+        </div>
+      </div>
+    </div>
+  `
+};
