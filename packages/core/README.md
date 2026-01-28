@@ -21,9 +21,10 @@ npm i @tymber/core
 ```ts
 import { CoreModule } from "@tymber/core";
 
-const app = await App.create(db, [
-  CoreModule
-]);
+const app = await App.create({
+  components: [db],
+  modules: [CoreModule],
+});
 ```
 
 ## License

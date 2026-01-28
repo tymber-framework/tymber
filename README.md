@@ -67,9 +67,10 @@ const pgPool = new pg.Pool({
 
 const db = new PostgresDB(pgPool);
 
-const app = await App.create(db, [
-  CoreModule
-]);
+const app = await App.create({
+  components: [db],
+  modules: [CoreModule],
+});
 
 export default {
   port: 8080,
