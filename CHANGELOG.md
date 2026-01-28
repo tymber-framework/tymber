@@ -9,3 +9,4 @@ Here are the detailed changelogs for each package in this monorepo:
 | `@tymber/core`     | [link](packages/core/CHANGELOG.md)     |
 | `@tymber/postgres` | [link](packages/postgres/CHANGELOG.md) |
 | `@tymber/sqlite`   | [link](packages/sqlite/CHANGELOG.md)   |
+| `@tymber/user`     | [link](packages/user/CHANGELOG.md)     |
