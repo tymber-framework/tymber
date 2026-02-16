@@ -11,7 +11,7 @@ describe("ListMigrations", () => {
 
     await ctx.db.query(
       emptyContext(),
-      sql.deleteFrom("t_migrations").where(sql.notEq("module", "@tymber/core")),
+      sql.deleteFrom("t_migrations").where(sql.notEq("module", "@tymber/admin")),
     );
 
     await ctx.db.query(
@@ -51,7 +51,7 @@ describe("ListMigrations", () => {
     assert.equal(res.body.items.length, 4);
 
     assert.partialDeepStrictEqual(res.body.items[0], {
-      module: "@tymber/core",
+      module: "@tymber/admin",
       id: 1,
       name: "init",
       // runAt

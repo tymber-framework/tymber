@@ -1,6 +1,6 @@
 export { Client } from "./Client.js";
 
-// @tymber/core
+// @tymber/admin
 export { AdminClient } from "./core/AdminClient.js";
 
 // @tymber/user

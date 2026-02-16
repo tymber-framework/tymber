@@ -2,7 +2,7 @@ import { createTestDB as createPGDB } from "@tymber/postgres";
 import { createTestDB as createSQLiteDB } from "@tymber/sqlite";
 import { AdminClient } from "@tymber/client";
 import { AdminUserId, BaseTestContext, createTestApp } from "@tymber/common";
-import { CoreModule, initTestDB } from "../src";
+import { AdminModule, initTestDB } from "../src";
 
 export function createTestDB() {
   if (process.env.USE_SQLITE) {
@@ -20,7 +20,7 @@ export interface TestContext extends BaseTestContext {
 
 export async function setup() {
   try {
-    const ctx = await createTestApp(() => createTestDB(), [CoreModule]);
+    const ctx = await createTestApp(() => createTestDB(), [AdminModule]);
 
     const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
 

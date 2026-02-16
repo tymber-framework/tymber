@@ -1,7 +1,7 @@
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App, emptyContext, sql, toNodeHandler } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 import { USER_ROLES, UserModule } from "@tymber/user";
 import { randomUUID } from "node:crypto";
@@ -15,7 +15,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule, UserModule],
+  modules: [AdminModule, UserModule],
 });
 
 await db.run(emptyContext(), sql.deleteFrom("t_user_sessions"));

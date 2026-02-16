@@ -14,7 +14,7 @@ An `App` is a collection of [Modules](./module.md). It is the entry point of you
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App, toNodeHandler } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { MyModule } from "./my-module";
 import { createServer } from "node:http";
 
@@ -28,7 +28,7 @@ const db = new PostgresDB(pgPool);
 const app = await App.create({
   components: [db],
   modules: [
-      CoreModule,
+      AdminModule,
       MyModule,
   ]
 });
@@ -53,7 +53,7 @@ import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App } from "@tymber/common";
 import { MyModule } from "./my-module";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 
 const pgPool = new pg.Pool({
   user: "postgres",
@@ -65,7 +65,7 @@ const db = new PostgresDB(pgPool);
 const app = await App.create({
   components: [db],
   modules: [
-      CoreModule,
+      AdminModule,
       MyModule,
   ],
 });

@@ -10,7 +10,7 @@
     "packages/common",
     "packages/postgres",
     "packages/sqlite",
-    "packages/core",
+    "packages/admin",
     "packages/user"
   ],
   "devDependencies": {

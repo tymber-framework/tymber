@@ -5,7 +5,7 @@ name: Publish
 on:
   push:
     tags:
-      # expected format: <package>@<version> (example: @tymber/core@1.2.3)
+      # expected format: <package>@<version> (example: @tymber/admin@1.2.3)
       - '**@*'
 
 jobs:

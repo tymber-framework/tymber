@@ -6,7 +6,7 @@
 | [0.0.1](#001-2025-12-09) | December 2025 |
 
 
-## [0.1.0](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.0.1...@tymber/core@0.1.0) (2026-01-27)
+## [0.1.0](https://github.com/tymber-framework/tymber/compare/@tymber/admin@0.0.1...@tymber/admin@0.1.0) (2026-01-27)
 
 
 ### Features

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm" default>
 
 ```bash
-npm install @tymber/common @tymber/core @tymber/postgres pg
+npm install @tymber/common @tymber/admin @tymber/postgres pg
 ```
 
   </TabItem>
@@ -15,7 +15,7 @@ npm install @tymber/common @tymber/core @tymber/postgres pg
   <TabItem value="bun" label="Bun">
 
 ```bash
-bun add @tymber/common @tymber/core @tymber/postgres pg
+bun add @tymber/common @tymber/admin @tymber/postgres pg
 ```
 
   </TabItem>
@@ -30,7 +30,7 @@ bun add @tymber/common @tymber/core @tymber/postgres pg
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App, toNodeHandler } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 
 const pgPool = new pg.Pool({
@@ -42,7 +42,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule]
+  modules: [AdminModule]
 });
 
 const httpServer = createServer(toNodeHandler(app.fetch));
@@ -64,7 +64,7 @@ npx tsx index.ts
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 
 const pgPool = new pg.Pool({
   user: "postgres",
@@ -75,7 +75,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule],
+  modules: [AdminModule],
 });
 
 export default {
@@ -113,7 +113,7 @@ sample-app@
 │   ├── fast-uri@3.1.0
 │   ├── json-schema-traverse@1.0.0
 │   └── require-from-string@2.0.2
-├─┬ @tymber/core@0.1.0
+├─┬ @tymber/admin@0.1.0
 │ ├── @tymber/common@0.1.0 deduped
 │ └─┬ argon2@0.44.0
 │   ├── @phc/format@1.0.0

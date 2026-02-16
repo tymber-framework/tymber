@@ -29,8 +29,8 @@ import { ListAdminQueriesView } from "./admin-views/ListAdminQueriesView.js";
 import { InitPassword } from "./admin-endpoints/InitPassword.js";
 import { InitPasswordView } from "./admin-views/InitPasswordView.js";
 
-export const CoreModule: Module = {
-  name: "@tymber/core",
+export const AdminModule: Module = {
+  name: "@tymber/admin",
   version: "0.0.1",
 
   assetsDir: FS.join(import.meta.dirname, "..", "assets"),

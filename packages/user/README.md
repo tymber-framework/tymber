@@ -19,12 +19,12 @@ npm i @tymber/user
 ## Usage
 
 ```ts
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { UserModule } from "@tymber/user";
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule, UserModule]
+  modules: [AdminModule, UserModule]
 });
 ```
 

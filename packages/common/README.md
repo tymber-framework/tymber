@@ -22,7 +22,7 @@ npm i @tymber/common
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App, toNodeHandler } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 
 const pgPool = new pg.Pool({
@@ -34,7 +34,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule],
+  modules: [AdminModule],
 });
 
 const httpServer = createServer(toNodeHandler(app.fetch));

@@ -28,7 +28,7 @@ https://tymber-framework.github.io/tymber/
 #### Installation
 
 ```
-bun add @tymber/common @tymber/core @tymber/postgres
+bun add @tymber/common @tymber/admin @tymber/postgres
 ```
 
 #### Usage
@@ -37,7 +37,7 @@ bun add @tymber/common @tymber/core @tymber/postgres
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 
 const pgPool = new pg.Pool({
   user: "postgres",
@@ -48,7 +48,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule],
+  modules: [AdminModule],
 });
 
 export default {
@@ -62,7 +62,7 @@ export default {
 #### Installation
 
 ```
-npm i @tymber/common @tymber/core @tymber/postgres
+npm i @tymber/common @tymber/admin @tymber/postgres
 ```
 
 #### Usage
@@ -71,7 +71,7 @@ npm i @tymber/common @tymber/core @tymber/postgres
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
 import { App, toNodeHandler } from "@tymber/common";
-import { CoreModule } from "@tymber/core";
+import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 
 const pgPool = new pg.Pool({
@@ -83,7 +83,7 @@ const db = new PostgresDB(pgPool);
 
 const app = await App.create({
   components: [db],
-  modules: [CoreModule]
+  modules: [AdminModule]
 });
 
 const httpServer = createServer(toNodeHandler(app.fetch));
@@ -99,7 +99,7 @@ This repository contains the following packages:
 |--------------------|----------------------------------------------------------------------------|-------------------------------------------|
 | `@tymber/client`   | Dependency-less client that can be used in a frontend project or for tests | [`0.1.0`](packages/client/CHANGELOG.md)   |
 | `@tymber/common`   | The internals of the framework                                             | [`0.1.0`](packages/common/CHANGELOG.md)   |
-| `@tymber/core`     | The core module                                                            | [`0.1.0`](packages/core/CHANGELOG.md)     |
+| `@tymber/admin`    | The admin module                                                           | [`0.1.0`](packages/admin/CHANGELOG.md)    |
 | `@tymber/user`     | The user module                                                            | [`0.0.1`](packages/user/CHANGELOG.md)     |
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | [`0.0.1`](packages/postgres/CHANGELOG.md) |
 | `@tymber/sqlite`   | The SQLite module                                                          | [`0.0.1`](packages/sqlite/CHANGELOG.md)   |

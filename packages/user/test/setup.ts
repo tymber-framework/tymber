@@ -9,7 +9,7 @@ import { randomUUID } from "node:crypto";
 import { UserAdminClient, UserClient } from "@tymber/client";
 import { createTestDB as createSQLiteDB } from "@tymber/sqlite";
 import { createTestDB as createPGDB } from "@tymber/postgres";
-import { CoreModule, initTestDB } from "@tymber/core";
+import { AdminModule, initTestDB } from "@tymber/admin";
 
 export interface TestContext extends BaseTestContext {
   adminSessionId: string;
@@ -35,7 +35,7 @@ export async function setup(): Promise<TestContext> {
   try {
     const ctx = await createTestApp(
       () => createTestDB(),
-      [CoreModule, UserModule],
+      [AdminModule, UserModule],
     );
 
     const { adminSessionId } = await initTestDB(ctx.db);
