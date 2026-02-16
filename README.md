@@ -5,7 +5,7 @@ Tymber is a batteries-included framework for building TypeScript applications.
 **Table of contents**
 
 <!-- TOC -->
-  * [Features](#features)
+  * [Documentation](#documentation)
   * [Getting started](#getting-started)
     * [Bun](#bun)
       * [Installation](#installation)
@@ -13,34 +13,13 @@ Tymber is a batteries-included framework for building TypeScript applications.
     * [Node.js](#nodejs)
       * [Installation](#installation-1)
       * [Usage](#usage-1)
-  * [File structure](#file-structure)
   * [Packages](#packages)
   * [License](#license)
 <!-- TOC -->
 
-## Features
+## Documentation
 
-- modular structure
-- dependency injection
-- security (CSRF, CORS)
-- database migrations
-- internationalization (i18n)
-- admin dashboard
-- user management
-
-With built-in:
-
-- SQL query builder
-- template engine
-
-And minimal dependencies:
-
-| Dependencies                                                                                            | Description                   |
-|---------------------------------------------------------------------------------------------------------|-------------------------------|
-| [`ajv`](https://www.npmjs.com/package/ajv) & [`ajv-formats`](https://www.npmjs.com/package/ajv-formats) | For validation                |
-| [`argon2`](https://www.npmjs.com/package/argon2)                                                        | For password hashing          |
-| [`pg`](https://www.npmjs.com/package/pg) & [`@types/pg`](https://www.npmjs.com/package/@types/pg)       | Only with PostgreSQL database |
-| [`sqlite`](https://www.npmjs.com/package/sqlite) & [`sqlite3`](https://www.npmjs.com/package/sqlite3)   | Only with SQLite database     |
+https://tymber-framework.github.io/tymber/
 
 ## Getting started
 
@@ -49,7 +28,7 @@ And minimal dependencies:
 #### Installation
 
 ```
-bun add @tymber/common @tymber/core @tymber/postgres pg
+bun add @tymber/common @tymber/core @tymber/postgres
 ```
 
 #### Usage
@@ -110,27 +89,6 @@ const app = await App.create({
 const httpServer = createServer(toNodeHandler(app.fetch));
 
 httpServer.listen(8080);
-```
-
-## File structure
-
-Each module has the following structure:
-
-```
-├── assets
-│   ├── i18n
-│   ├── migrations
-│   ├── static
-│   └── templates
-├── src
-│   ├── admin-endpoints
-│   ├── admin-view
-│   ├── repositories
-│   ├── services
-│   ├── user-endpoints
-│   ├── user-views
-│   └── utils
-└── test
 ```
 
 ## Packages
