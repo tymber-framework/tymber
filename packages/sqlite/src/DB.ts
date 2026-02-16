@@ -5,7 +5,7 @@ import {
   DuplicateKeyError,
   sql,
   Statement,
-} from "@tymber/common";
+} from "@tymber/core";
 import { type Database } from "sqlite";
 
 const debug = createDebug("sqlite");

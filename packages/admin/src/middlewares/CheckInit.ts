@@ -1,4 +1,4 @@
-import { type HttpContext, INJECT, Middleware } from "@tymber/common";
+import { type HttpContext, INJECT, Middleware } from "@tymber/core";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 
 function computeTextColor(backgroundColor: string) {

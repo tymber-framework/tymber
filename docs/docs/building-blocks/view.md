@@ -10,7 +10,7 @@ They come in two flavors:
 ## Definition
 
 ```ts
-import { View, type HttpContext } from "@tymber/common";
+import { View, type HttpContext } from "@tymber/core";
 
 export class MyView extends View {
     async handle(ctx: HttpContext) {
@@ -24,7 +24,7 @@ export class MyView extends View {
 ## Registration
 
 ```ts
-import { type Module, type AppInit } from "@tymber/common";
+import { type Module, type AppInit } from "@tymber/core";
 import { MyView } from "./views/MyView";
 
 export const MyModule: Module = {

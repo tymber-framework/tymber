@@ -1,4 +1,4 @@
-import { Endpoint, type HttpContext, type ConnectedUser } from "@tymber/common";
+import { Endpoint, type HttpContext, type ConnectedUser } from "@tymber/core";
 
 export class GetSelf extends Endpoint {
   handle({ user }: HttpContext) {

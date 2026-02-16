@@ -1,7 +1,7 @@
 import { type JSONSchemaType } from "ajv";
 import { verify } from "argon2";
 import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/common";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
 import { AdminCookieService } from "../services/AdminCookieService.js";
 
 interface Payload {

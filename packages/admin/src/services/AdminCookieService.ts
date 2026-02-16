@@ -1,4 +1,4 @@
-import { Component, ConfigService, INJECT, createCookie } from "@tymber/common";
+import { Component, ConfigService, INJECT, createCookie } from "@tymber/core";
 import { type AdminSessionId } from "../repositories/AdminUserRepository.js";
 
 interface Config {

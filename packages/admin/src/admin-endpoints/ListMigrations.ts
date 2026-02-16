@@ -3,7 +3,7 @@ import {
   MigrationRepository,
   type Query,
 } from "../repositories/MigrationRepository.js";
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/common";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
 
 export class ListMigrations extends AdminEndpoint {
   static [INJECT] = [MigrationRepository];

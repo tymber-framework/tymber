@@ -3,7 +3,7 @@ import {
   BaseTestContext,
   sql,
   emptyContext,
-} from "@tymber/common";
+} from "@tymber/core";
 import { UserModule } from "../src";
 import { randomUUID } from "node:crypto";
 import { UserAdminClient, UserClient } from "@tymber/client";

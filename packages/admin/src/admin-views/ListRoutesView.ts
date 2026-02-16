@@ -5,7 +5,7 @@ import {
   ModuleDefinitions,
   type Route,
   sortBy,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export class ListRoutesView extends AdminView {
   static [INJECT] = [ModuleDefinitions];

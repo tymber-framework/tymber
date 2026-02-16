@@ -6,7 +6,7 @@ import {
   type Page,
   Repository,
   sql,
-} from "@tymber/common";
+} from "@tymber/core";
 
 interface AdminQuery {
   id: number;

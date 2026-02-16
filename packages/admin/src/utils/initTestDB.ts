@@ -5,7 +5,7 @@ import {
   emptyContext,
   randomUUID,
   sql,
-} from "@tymber/common";
+} from "@tymber/core";
 
 async function createAdminUser(ctx: Context, db: DB) {
   const rows = await db.query(

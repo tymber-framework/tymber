@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import type { Module } from "@tymber/common";
+import type { Module } from "@tymber/core";
 import { UserRepository } from "./repositories/UserRepository.js";
 import { GroupRepository } from "./repositories/GroupRepository.js";
 import { ParseSession } from "./middlewares/ParseSession.js";

@@ -1,4 +1,4 @@
-import { Repository } from "@tymber/common";
+import { Repository } from "@tymber/core";
 
 interface Value {
   key: string;

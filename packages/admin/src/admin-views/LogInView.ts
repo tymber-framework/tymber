@@ -1,4 +1,4 @@
-import { AdminView, type HttpContext } from "@tymber/common";
+import { AdminView, type HttpContext } from "@tymber/core";
 
 export class LogInView extends AdminView {
   allowAnonymous = true;

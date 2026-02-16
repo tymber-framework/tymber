@@ -11,7 +11,7 @@ import {
   type InternalUserId,
   EntityNotFoundError,
   type InternalGroupId,
-} from "@tymber/common";
+} from "@tymber/core";
 import { randomUUID } from "node:crypto";
 
 type AuthType = "magic link" | "password";

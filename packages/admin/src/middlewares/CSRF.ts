@@ -1,4 +1,4 @@
-import { type HttpContext, Middleware } from "@tymber/common";
+import { type HttpContext, Middleware } from "@tymber/core";
 
 /**
  * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi

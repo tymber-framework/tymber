@@ -13,7 +13,7 @@ The internals of the framework.
 ## Installation
 
 ```
-npm i @tymber/common
+npm i @tymber/core
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ npm i @tymber/common
 ```ts
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App, toNodeHandler } from "@tymber/common";
+import { App, toNodeHandler } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 

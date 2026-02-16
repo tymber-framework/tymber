@@ -12,7 +12,7 @@ In your application, everything is a `Component`:
 ## Definition
 
 ```ts
-import { Component, type Context } from "@tymber/common";
+import { Component, type Context } from "@tymber/core";
 
 export class MyComponent extends Component {
     doSomething(ctx: Context) {
@@ -24,7 +24,7 @@ export class MyComponent extends Component {
 A component can also have dependencies:
 
 ```ts
-import { Component, INJECT, type Context } from "@tymber/common";
+import { Component, INJECT, type Context } from "@tymber/core";
 import { MyOtherComponent } from "./MyOtherComponent";
 
 export class MyComponent extends Component {
@@ -45,7 +45,7 @@ See also: [Dependency Injection](../getting-started/dependency-injection.md)
 ## Registration
 
 ```ts
-import { type Module, type AppInit } from "@tymber/common";
+import { type Module, type AppInit } from "@tymber/core";
 import { MyComponent } from "./MyComponent";
 
 export const MyModule: Module = {
@@ -89,7 +89,7 @@ There are two lifecycle methods you can override:
 - `close()`: executed on application shutdown
 
 ```ts
-import { Component, type Context } from "@tymber/common";
+import { Component, type Context } from "@tymber/core";
 
 export class MyComponent extends Component {
     async init() {

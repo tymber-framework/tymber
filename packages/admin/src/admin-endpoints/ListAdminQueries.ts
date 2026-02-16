@@ -1,5 +1,5 @@
 import { type JSONSchemaType } from "ajv";
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/common";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
 import {
   AdminQueryRepository,
   type Query,

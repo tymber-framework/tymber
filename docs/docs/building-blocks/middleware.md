@@ -7,7 +7,7 @@ A `Middleware` is a special [`Component`](./component.md) that can interrupt the
 - modifying response headers: 
 
 ```ts
-import { HttpContext, Middleware } from "@tymber/common";
+import { HttpContext, Middleware } from "@tymber/core";
 
 export class MyMiddleware extends Middleware {
     async handle(ctx: HttpContext) {
@@ -19,7 +19,7 @@ export class MyMiddleware extends Middleware {
 - redirecting:
 
 ```ts
-import { HttpContext, Middleware } from "@tymber/common";
+import { HttpContext, Middleware } from "@tymber/core";
 
 export class MyMiddleware extends Middleware {
     async handle(ctx: HttpContext) {
@@ -31,7 +31,7 @@ export class MyMiddleware extends Middleware {
 - aborting the request:
 
 ```ts
-import { HttpContext, Middleware } from "@tymber/common";
+import { HttpContext, Middleware } from "@tymber/core";
 
 export class MyMiddleware extends Middleware {
     async handle(ctx: HttpContext) {
@@ -43,7 +43,7 @@ export class MyMiddleware extends Middleware {
 ## Registration
 
 ```ts
-import { type Module, type AppInit } from "@tymber/common";
+import { type Module, type AppInit } from "@tymber/core";
 import { MyMiddleware } from "./middlewares/MyMiddleware";
 
 export const MyModule: Module = {

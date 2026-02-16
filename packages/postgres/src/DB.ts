@@ -5,7 +5,7 @@ import {
   DuplicateKeyError,
   sql,
   Statement,
-} from "@tymber/common";
+} from "@tymber/core";
 import * as pg from "pg";
 
 const debug = createDebug("postgres");

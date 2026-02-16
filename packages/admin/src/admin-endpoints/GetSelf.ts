@@ -1,4 +1,4 @@
-import { AdminEndpoint, type HttpContext } from "@tymber/common";
+import { AdminEndpoint, type HttpContext } from "@tymber/core";
 
 export class GetSelf extends AdminEndpoint {
   override handle({ admin }: HttpContext) {

@@ -3,7 +3,7 @@ import * as assert from "node:assert";
 import { setup, type TestContext } from "../setup.js";
 import { randomUUID } from "node:crypto";
 import { hash } from "argon2";
-import { emptyContext, parseCookieHeader, sql } from "@tymber/common";
+import { emptyContext, parseCookieHeader, sql } from "@tymber/core";
 import { AdminClient } from "@tymber/client";
 
 describe("LogIn", () => {

@@ -1,4 +1,4 @@
-import { randomId } from "@tymber/common";
+import { randomId } from "@tymber/core";
 import * as pg from "pg";
 import { PostgresDB } from "./DB.js";
 

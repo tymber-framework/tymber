@@ -2,7 +2,7 @@ import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert";
 import { setup, type TestContext } from "../setup.js";
 import { AdminClient } from "@tymber/client";
-import { emptyContext, sql } from "@tymber/common";
+import { emptyContext, sql } from "@tymber/core";
 
 describe("Init", () => {
   let ctx: TestContext;

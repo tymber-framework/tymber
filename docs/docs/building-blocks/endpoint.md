@@ -10,7 +10,7 @@ They come in two flavors:
 ## Definition
 
 ```ts
-import { Endpoint, type HttpContext } from "@tymber/common";
+import { Endpoint, type HttpContext } from "@tymber/core";
 
 export class MyEndpoint extends Endpoint {
     async handle(ctx: HttpContext) {
@@ -24,7 +24,7 @@ export class MyEndpoint extends Endpoint {
 ## Registration
 
 ```ts
-import { type Module, type AppInit } from "@tymber/common";
+import { type Module, type AppInit } from "@tymber/core";
 import { MyEndpoint } from "./endpoints/MyEndpoint";
 
 export const MyModule: Module = {
@@ -84,7 +84,7 @@ If validation fails, it returns a `HTTP 400 Bad Request` response with error det
 To validate the request body, define a `payloadSchema` property using [JSON Schema](https://json-schema.org/):
 
 ```ts
-import { Endpoint, type HttpContext } from "@tymber/common";
+import { Endpoint, type HttpContext } from "@tymber/core";
 import type { JSONSchemaType } from "ajv";
 
 interface Payload {
@@ -121,7 +121,7 @@ export class CreateTodo extends Endpoint {
 To validate the path parameters (e.g., `/todos/:todoId`), define a `pathParamsSchema` property:
 
 ```ts
-import { Endpoint, type HttpContext } from "@tymber/common";
+import { Endpoint, type HttpContext } from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 
 interface PathParams {
@@ -155,7 +155,7 @@ export class ReadTodo extends Endpoint {
 To validate the path parameters (e.g., `/todos?completed=true`), define a `querySchema` property:
 
 ```ts
-import { Endpoint, type HttpContext } from "@tymber/common";
+import { Endpoint, type HttpContext } from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 
 interface Query {
@@ -190,7 +190,7 @@ By default, an anonymous request will return a `HTTP 401 Unauthorized` response.
 You can allow anonymous access by setting `allowAnonymous = true` in your endpoint:
 
 ```ts
-import { Endpoint, type HttpContext } from "@tymber/common";
+import { Endpoint, type HttpContext } from "@tymber/core";
 
 export class MyEndpoint extends Endpoint {
     allowAnonymous = true;
@@ -211,7 +211,7 @@ Authorization checks happen in the `hasPermission(ctx)` method.
 An unauthorized request will return a `HTTP 403 Forbidden` response.
 
 ```ts
-import { Endpoint, GroupId, type HttpContext } from "@tymber/common";
+import { Endpoint, GroupId, type HttpContext } from "@tymber/core";
 
 enum Role {
     MANAGER = 0,

@@ -1,4 +1,4 @@
-import { AdminView, type HttpContext } from "@tymber/common";
+import { AdminView, type HttpContext } from "@tymber/core";
 
 export class ListGroupsView extends AdminView {
   async handle(ctx: HttpContext) {

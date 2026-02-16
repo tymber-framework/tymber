@@ -3,7 +3,7 @@ import {
   type HttpContext,
   INJECT,
   Middleware,
-} from "@tymber/common";
+} from "@tymber/core";
 
 interface CorsOptions {
   CORS_ALLOW_ORIGINS: string[];

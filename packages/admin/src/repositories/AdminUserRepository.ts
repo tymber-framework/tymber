@@ -7,7 +7,7 @@ import {
   type Page,
   Repository,
   sql,
-} from "@tymber/common";
+} from "@tymber/core";
 import { randomUUID } from "node:crypto";
 
 const { insert, select, deleteFrom } = sql;

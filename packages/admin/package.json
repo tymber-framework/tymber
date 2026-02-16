@@ -1,7 +1,7 @@
 {
   "name": "@tymber/admin",
   "version": "0.1.0",
-  "description": "Core module for the Tymber framework",
+  "description": "Admin module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
   "repository": {
@@ -19,8 +19,10 @@
     "test:sqlite": "USE_SQLITE=1 npm test"
   },
   "dependencies": {
-    "@tymber/common": "~0.1.0",
     "argon2": "~0.44.0"
+  },
+  "peerDependencies": {
+    "@tymber/core": "*"
   },
   "devDependencies": {
     "@tymber/client": "^0.1.0",

@@ -59,7 +59,7 @@ Example:
 To render a template from a [`View`](../building-blocks/view.md) component:
 
 ```ts
-import { View, HttpContext } from "@tymber/common";
+import { View, HttpContext } from "@tymber/core";
 
 export class HomeView extends View {
     async handle(ctx: HttpContext) {
@@ -117,7 +117,7 @@ import {
     Component,
     INJECT,
     TemplateService,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export class MyMailService extends Component {
     static [INJECT] = [TemplateService];

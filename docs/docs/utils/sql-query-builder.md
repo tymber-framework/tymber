@@ -7,7 +7,7 @@ toc_max_heading_level: 4
 Tymber provides a basic SQL query builder.
 
 ```ts
-import { sql } from "@tymber/common";
+import { sql } from "@tymber/core";
 ```
 
 ## API

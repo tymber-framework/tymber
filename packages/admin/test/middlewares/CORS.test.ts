@@ -8,7 +8,7 @@ import {
   ConfigService,
   createTestApp,
   Endpoint,
-} from "@tymber/common";
+} from "@tymber/core";
 
 describe("CORS", () => {
   let ctx: BaseTestContext;

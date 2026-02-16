@@ -4,7 +4,7 @@ import {
   type AdminUser,
   AdminUserRepository,
 } from "../repositories/AdminUserRepository.js";
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/common";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
 
 interface Payload {
   password: string;

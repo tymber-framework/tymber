@@ -5,7 +5,7 @@ import {
   type HttpContext,
   INJECT,
   type UserId,
-} from "@tymber/common";
+} from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { SESSION_COOKIE } from "../middlewares/ParseSession.js";

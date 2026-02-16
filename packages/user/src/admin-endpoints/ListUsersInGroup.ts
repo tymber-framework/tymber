@@ -3,7 +3,7 @@ import {
   INJECT,
   AdminEndpoint,
   type GroupId,
-} from "@tymber/common";
+} from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 import {
   type UserQuery,

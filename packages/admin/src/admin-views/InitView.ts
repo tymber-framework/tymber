@@ -1,4 +1,4 @@
-import { AdminView, type HttpContext, INJECT } from "@tymber/common";
+import { AdminView, type HttpContext, INJECT } from "@tymber/core";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 
 export class InitView extends AdminView {

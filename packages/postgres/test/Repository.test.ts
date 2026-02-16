@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
 import { createTestDB } from "../src";
-import { emptyContext, Repository, sql } from "@tymber/common";
+import { emptyContext, Repository, sql } from "@tymber/core";
 
 describe("PostgreSQL - Repository", () => {
   it("should work", async () => {

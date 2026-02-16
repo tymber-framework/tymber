@@ -18,8 +18,8 @@
     "test": "tsx --test",
     "test:sqlite": "USE_SQLITE=1 npm test"
   },
-  "dependencies": {
-    "@tymber/common": "~0.1.0"
+  "peerDependencies": {
+    "@tymber/core": "*"
   },
   "devDependencies": {
     "@tymber/client": "^0.1.0",

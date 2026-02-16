@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
-import { AppInit, createTestApp, emptyContext, sql } from "@tymber/common";
+import { AppInit, createTestApp, emptyContext, sql } from "@tymber/core";
 import { createTestDB } from "../src";
 import { join } from "node:path";
 

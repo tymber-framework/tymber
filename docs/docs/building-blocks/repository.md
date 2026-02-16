@@ -11,7 +11,7 @@ It can be used in conjunction with the built-in [`SQL query builder`](../utils/s
 ## Definition
 
 ```ts
-import { Repository } from "@tymber/common";
+import { Repository } from "@tymber/core";
 
 interface TodoItem {
     id: number;
@@ -29,7 +29,7 @@ export class TodoRepository extends Repository<number, TodoItem> {
 ## Registration
 
 ```ts
-import { type Module, type AppInit } from "@tymber/common";
+import { type Module, type AppInit } from "@tymber/core";
 import { TodoRepository } from "./repositories/TodoRepository";
 
 export const MyModule: Module = {

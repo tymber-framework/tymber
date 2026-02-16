@@ -1,4 +1,4 @@
-import { type AppInit, FS, type Module } from "@tymber/common";
+import { type AppInit, FS, type Module } from "@tymber/core";
 import { MiscRepository } from "./repositories/MiscRepository.js";
 import { AdminUserRepository } from "./repositories/AdminUserRepository.js";
 import { MigrationRepository } from "./repositories/MigrationRepository.js";

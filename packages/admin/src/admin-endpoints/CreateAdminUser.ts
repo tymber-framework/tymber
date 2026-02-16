@@ -3,7 +3,7 @@ import {
   DuplicateKeyError,
   type HttpContext,
   INJECT,
-} from "@tymber/common";
+} from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 import { hash } from "argon2";
 import { AdminUserRepository } from "../repositories/AdminUserRepository.js";

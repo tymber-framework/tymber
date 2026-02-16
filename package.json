@@ -7,7 +7,7 @@
   "author": "Damien ARRACHEQUESNE",
   "workspaces": [
     "packages/client",
-    "packages/common",
+    "packages/core",
     "packages/postgres",
     "packages/sqlite",
     "packages/admin",

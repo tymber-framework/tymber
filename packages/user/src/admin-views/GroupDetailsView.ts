@@ -4,7 +4,7 @@ import {
   INJECT,
   type GroupId,
   I18nService,
-} from "@tymber/common";
+} from "@tymber/core";
 import { GroupRepository } from "../repositories/GroupRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { USER_ROLES } from "../repositories/UserRepository.js";

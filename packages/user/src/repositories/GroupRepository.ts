@@ -8,7 +8,7 @@ import {
   camelToSnakeCase,
   type InternalGroupId,
   escapeValue,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export interface Group {
   internalId: InternalGroupId;

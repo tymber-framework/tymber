@@ -3,7 +3,7 @@ import {
   type HttpContext,
   INJECT,
   Middleware,
-} from "@tymber/common";
+} from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 
 export const SESSION_COOKIE = "sid";

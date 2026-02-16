@@ -3,7 +3,7 @@ import {
   createDebug,
   PubSubService,
   randomId,
-} from "@tymber/common";
+} from "@tymber/core";
 import * as pg from "pg";
 import cluster from "node:cluster";
 

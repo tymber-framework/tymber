@@ -18,7 +18,7 @@ Reference: https://en.wikipedia.org/wiki/Dependency_injection
 Dependencies are declared using the `INJECT` static property:
 
 ```ts
-import { Component, Context, INJECT } from "@tymber/common";
+import { Component, Context, INJECT } from "@tymber/core";
 import { MyComponent } from "./MyComponent";
 
 export class MyService extends Component {
@@ -49,7 +49,7 @@ You can also declare abstract dependencies.
 Example:
 
 ```ts
-import { Component, Context, INJECT } from "@tymber/common";
+import { Component, Context, INJECT } from "@tymber/core";
 
 export abstract class MailProvider extends Component {
     abstract send(ctx: Context, mail: any): Promise<void>;
@@ -95,7 +95,7 @@ Example with the abstract `MailProvider` above:
 ```ts
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
-import { Context, emptyContext } from "@tymber/common";
+import { Context, emptyContext } from "@tymber/core";
 
 describe("MyMailService", () => {
     it("should send a mail", async () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@tymber/common",
+  "name": "@tymber/core",
   "version": "0.1.0",
   "description": "The base of the Tymber framework",
   "license": "MIT",

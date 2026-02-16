@@ -1,7 +1,7 @@
 import { createTestDB as createPGDB } from "@tymber/postgres";
 import { createTestDB as createSQLiteDB } from "@tymber/sqlite";
 import { AdminClient } from "@tymber/client";
-import { AdminUserId, BaseTestContext, createTestApp } from "@tymber/common";
+import { AdminUserId, BaseTestContext, createTestApp } from "@tymber/core";
 import { AdminModule, initTestDB } from "../src";
 
 export function createTestDB() {

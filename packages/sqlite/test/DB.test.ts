@@ -7,7 +7,7 @@ import {
   DuplicateKeyError,
   emptyContext,
   sql,
-} from "@tymber/common";
+} from "@tymber/core";
 
 describe("SQLite", () => {
   let db: DB;

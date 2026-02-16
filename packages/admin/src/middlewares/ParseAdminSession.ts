@@ -3,7 +3,7 @@ import {
   INJECT,
   Middleware,
   createCookie,
-} from "@tymber/common";
+} from "@tymber/core";
 import {
   type AdminSessionId,
   AdminUserRepository,

@@ -1,4 +1,4 @@
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/common";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
 import { AdminQueryRepository } from "../repositories/AdminQueryRepository.js";
 import type { JSONSchemaType } from "ajv";
 

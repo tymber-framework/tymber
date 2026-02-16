@@ -3,7 +3,7 @@ import {
   Endpoint,
   type HttpContext,
   INJECT,
-} from "@tymber/common";
+} from "@tymber/core";
 import {
   type SessionId,
   UserRepository,

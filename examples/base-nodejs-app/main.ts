@@ -1,6 +1,6 @@
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App, emptyContext, sql, toNodeHandler } from "@tymber/common";
+import { App, emptyContext, sql, toNodeHandler } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 import { USER_ROLES, UserModule } from "@tymber/user";

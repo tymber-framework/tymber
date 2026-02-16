@@ -1,7 +1,7 @@
 import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert/strict";
 import { setup, TestContext } from "../setup";
-import { parseCookieHeader } from "@tymber/common";
+import { parseCookieHeader } from "@tymber/core";
 import { UserAdminClient } from "@tymber/client";
 import { randomUUID } from "node:crypto";
 

@@ -22,7 +22,7 @@
     "pg": "^8.15.6"
   },
   "peerDependencies": {
-    "@tymber/common": "*"
+    "@tymber/core": "*"
   },
   "files": [
     "src/",

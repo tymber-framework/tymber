@@ -3,7 +3,7 @@ import {
   type HttpContext,
   INJECT,
   ModuleDefinitions,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export class HomeView extends AdminView {
   static [INJECT] = [ModuleDefinitions];

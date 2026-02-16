@@ -13,7 +13,7 @@ An `App` is a collection of [Modules](./module.md). It is the entry point of you
 ```ts title="index.ts"
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App, toNodeHandler } from "@tymber/common";
+import { App, toNodeHandler } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 import { MyModule } from "./my-module";
 import { createServer } from "node:http";
@@ -51,7 +51,7 @@ npx tsx index.ts
 ```ts title="index.ts"
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App } from "@tymber/common";
+import { App } from "@tymber/core";
 import { MyModule } from "./my-module";
 import { AdminModule } from "@tymber/admin";
 

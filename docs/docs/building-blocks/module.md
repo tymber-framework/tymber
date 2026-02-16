@@ -5,7 +5,7 @@ A `Module` is a collection of components and assets.
 ## Declaration
 
 ```ts
-import { type AppInit, type Module } from "@tymber/common";
+import { type AppInit, type Module } from "@tymber/core";
 import { join } from "node:path";
 
 export const MyModule: Module = {

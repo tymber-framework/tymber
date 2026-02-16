@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm" default>
 
 ```bash
-npm install @tymber/common @tymber/admin @tymber/postgres pg
+npm install @tymber/core @tymber/admin @tymber/postgres pg
 ```
 
   </TabItem>
@@ -15,7 +15,7 @@ npm install @tymber/common @tymber/admin @tymber/postgres pg
   <TabItem value="bun" label="Bun">
 
 ```bash
-bun add @tymber/common @tymber/admin @tymber/postgres pg
+bun add @tymber/core @tymber/admin @tymber/postgres pg
 ```
 
   </TabItem>
@@ -29,7 +29,7 @@ bun add @tymber/common @tymber/admin @tymber/postgres pg
 ```ts title="index.ts"
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App, toNodeHandler } from "@tymber/common";
+import { App, toNodeHandler } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
 
@@ -63,7 +63,7 @@ npx tsx index.ts
 ```ts title="index.ts"
 import * as pg from "pg";
 import { PostgresDB } from "@tymber/postgres";
-import { App } from "@tymber/common";
+import { App } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 
 const pgPool = new pg.Pool({
@@ -105,7 +105,7 @@ Running the installation command above currently brings 38 packages:
 
 ```bash
 sample-app@
-├─┬ @tymber/common@0.1.0
+├─┬ @tymber/core@0.1.0
 │ ├─┬ ajv-formats@3.0.1
 │ │ └── ajv@8.17.1 deduped
 │ └─┬ ajv@8.17.1
@@ -114,7 +114,7 @@ sample-app@
 │   ├── json-schema-traverse@1.0.0
 │   └── require-from-string@2.0.2
 ├─┬ @tymber/admin@0.1.0
-│ ├── @tymber/common@0.1.0 deduped
+│ ├── @tymber/core@0.1.0 deduped
 │ └─┬ argon2@0.44.0
 │   ├── @phc/format@1.0.0
 │   ├─┬ cross-env@10.1.0
@@ -128,7 +128,7 @@ sample-app@
 │   ├── node-addon-api@8.5.0
 │   └── node-gyp-build@4.8.4
 ├─┬ @tymber/postgres@0.0.1
-│ ├── @tymber/common@0.1.0 deduped
+│ ├── @tymber/core@0.1.0 deduped
 │ ├─┬ @types/pg@8.16.0
 │ │ ├─┬ @types/node@25.2.3
 │ │ │ └── undici-types@7.16.0

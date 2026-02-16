@@ -3,7 +3,7 @@ import {
   ConfigService,
   type HttpContext,
   INJECT,
-} from "@tymber/common";
+} from "@tymber/core";
 
 function obfuscate(str: string) {
   if (str.length < 10) {

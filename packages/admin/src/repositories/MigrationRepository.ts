@@ -4,7 +4,7 @@ import {
   type Page,
   Repository,
   sql,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export interface Query {
   size: number;

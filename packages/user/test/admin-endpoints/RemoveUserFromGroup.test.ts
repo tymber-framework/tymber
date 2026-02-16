@@ -1,7 +1,7 @@
 import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert/strict";
 import { insertTestUser, setup, TestContext } from "../setup";
-import { emptyContext, randomUUID, sql } from "@tymber/common";
+import { emptyContext, randomUUID, sql } from "@tymber/core";
 
 describe("RemoveUserFromGroup", () => {
   let ctx: TestContext;

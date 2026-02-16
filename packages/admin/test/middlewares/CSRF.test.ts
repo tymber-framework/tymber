@@ -3,7 +3,7 @@ import * as assert from "node:assert";
 import { Client } from "@tymber/client";
 import { createTestDB } from "../setup";
 import { CSRF } from "../../src/middlewares/CSRF";
-import { BaseTestContext, createTestApp, Endpoint } from "@tymber/common";
+import { BaseTestContext, createTestApp, Endpoint } from "@tymber/core";
 
 describe("CSRF", () => {
   let ctx: BaseTestContext;

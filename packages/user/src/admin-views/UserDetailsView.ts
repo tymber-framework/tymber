@@ -4,7 +4,7 @@ import {
   I18nService,
   INJECT,
   type UserId,
-} from "@tymber/common";
+} from "@tymber/core";
 import { USER_ROLES, UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 

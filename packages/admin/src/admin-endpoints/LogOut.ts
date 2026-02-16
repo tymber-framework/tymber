@@ -7,7 +7,7 @@ import {
   createCookie,
   type HttpContext,
   INJECT,
-} from "@tymber/common";
+} from "@tymber/core";
 
 export class LogOut extends AdminEndpoint {
   static [INJECT] = [AdminUserRepository];

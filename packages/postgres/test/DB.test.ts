@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
 import { createTestDB } from "../src";
-import { DuplicateKeyError, emptyContext, sql } from "@tymber/common";
+import { DuplicateKeyError, emptyContext, sql } from "@tymber/core";
 
 describe("PostgreSQL", () => {
   it("should work", async () => {
