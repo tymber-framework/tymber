@@ -12,7 +12,7 @@ import { ViewRenderer } from "./ViewRenderer.js";
 import { computeContentType } from "./utils/computeContentType.js";
 import { loadModules } from "./utils/loadModules.js";
 import { BaseI18nService } from "./I18nService.js";
-import { BaseTemplateService } from "./TemplateService.js";
+import { BaseTemplateEngine } from "./TemplateEngine.js";
 import { runMigrations } from "./utils/runMigrations.js";
 import { createDebug } from "./utils/createDebug.js";
 import { DB } from "./DB.js";
@@ -102,7 +102,7 @@ export class App {
     componentFactory.register(PubSubService);
     componentFactory.register(EnvironmentBasedConfigService);
     componentFactory.register(BaseI18nService);
-    componentFactory.register(BaseTemplateService);
+    componentFactory.register(BaseTemplateEngine);
     componentFactory.register(ViewRenderer, (instance) => {
       viewRenderer = instance;
     });

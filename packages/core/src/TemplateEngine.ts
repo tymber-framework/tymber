@@ -5,9 +5,9 @@ import { Component, INJECT } from "./Component.js";
 import { FS } from "./utils/fs.js";
 import { isProduction } from "./utils/isProduction.js";
 
-const debug = createDebug("TemplateService");
+const debug = createDebug("TemplateEngine");
 
-export abstract class TemplateService extends Component {
+export abstract class TemplateEngine extends Component {
   public abstract canRender(templateName: string): boolean;
 
   public abstract render(
@@ -16,7 +16,7 @@ export abstract class TemplateService extends Component {
   ): Promise<string>;
 }
 
-export abstract class FileBasedTemplateService extends TemplateService {
+export abstract class FileBasedTemplateEngine extends TemplateEngine {
   static [INJECT] = [ModuleDefinitions];
 
   abstract readonly fileExtension: string;
@@ -66,7 +66,7 @@ export abstract class FileBasedTemplateService extends TemplateService {
   }
 }
 
-export class BaseTemplateService extends FileBasedTemplateService {
+export class BaseTemplateEngine extends FileBasedTemplateEngine {
   override fileExtension = ".html";
 
   // TODO use a LRU cache

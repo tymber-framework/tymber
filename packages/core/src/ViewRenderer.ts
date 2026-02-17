@@ -1,5 +1,5 @@
 import { Component, INJECT } from "./Component.js";
-import { BaseTemplateService, TemplateService } from "./TemplateService.js";
+import { BaseTemplateEngine, TemplateEngine } from "./TemplateEngine.js";
 import { I18nService } from "./I18nService.js";
 import { pick } from "./contrib/accept-language-parser.js";
 import { ModuleDefinitions } from "./Module.js";
@@ -9,15 +9,15 @@ import { isProduction } from "./utils/isProduction.js";
 export class ViewRenderer extends Component {
   static [INJECT] = [
     I18nService,
-    BaseTemplateService,
-    TemplateService,
+    BaseTemplateEngine,
+    TemplateEngine,
     ModuleDefinitions,
   ];
 
   constructor(
     private readonly i18nService: I18nService,
-    private readonly templateService: BaseTemplateService,
-    private readonly customTemplateService: TemplateService,
+    private readonly templateEngine: BaseTemplateEngine,
+    private readonly customTemplateEngine: TemplateEngine,
     private readonly modules: ModuleDefinitions,
   ) {
     super();
@@ -60,10 +60,10 @@ export class ViewRenderer extends Component {
   }
 
   private renderTemplate(templateName: string, data: Record<string, any>) {
-    if (this.customTemplateService.canRender(templateName)) {
-      return this.customTemplateService.render(templateName, data);
-    } else if (this.templateService.canRender(templateName)) {
-      return this.templateService.render(templateName, data);
+    if (this.customTemplateEngine.canRender(templateName)) {
+      return this.customTemplateEngine.render(templateName, data);
+    } else if (this.templateEngine.canRender(templateName)) {
+      return this.templateEngine.render(templateName, data);
     } else {
       throw new Error(`template ${templateName} not found`);
     }

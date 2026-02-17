@@ -11,9 +11,9 @@ import { join } from "node:path";
 import handlebars from "handlebars";
 import { readFile } from "node:fs/promises";
 import { createTestDB } from "../setup";
-import { FileBasedTemplateService } from "../../src/TemplateService";
+import { FileBasedTemplateEngine } from "../../src/TemplateEngine";
 
-class HandlebarsTemplateService extends FileBasedTemplateService {
+class HandlebarsTemplateEngine extends FileBasedTemplateEngine {
   override fileExtension = ".hbs";
 
   async render(templateName: string, data: Record<string, any>) {
@@ -37,7 +37,7 @@ describe("View", () => {
           assetsDir: join(import.meta.dirname, "test-module", "assets"),
 
           init(app) {
-            app.component(HandlebarsTemplateService);
+            app.component(HandlebarsTemplateEngine);
 
             app.view(
               "/",
@@ -141,7 +141,7 @@ describe("View", () => {
     assert.equal(res.body, "Bonjour monde !\n");
   });
 
-  it("should use the custom TemplateService", async () => {
+  it("should use the custom TemplateEngine", async () => {
     const client = new Client(ctx.baseUrl);
     const res = await client.fetch({
       method: "GET",

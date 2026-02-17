@@ -107,7 +107,7 @@ The following variables are automatically available in all templates:
 
 ## Manual rendering
 
-You can also inject the `TemplateService` into your components and manually render templates. This can be useful, for example, to send e-mails or create PDF documents.
+You can also inject the `TemplateEngine` into your components and manually render templates. This can be useful, for example, to send e-mails or create PDF documents.
 
 Example:
 
@@ -116,18 +116,18 @@ import {
     Context,
     Component,
     INJECT,
-    TemplateService,
+    TemplateEngine,
 } from "@tymber/core";
 
 export class MyMailService extends Component {
-    static [INJECT] = [TemplateService];
+    static [INJECT] = [TemplateEngine];
 
-    constructor(private readonly templateService: TemplateService) {
+    constructor(private readonly TemplateEngine: TemplateEngine) {
         super();
     }
 
     async sendWelcomeMail(ctx: Context) {
-        const output = await this.templateService.render("mail-welcome", {
+        const output = await this.TemplateEngine.render("mail-welcome", {
             name: "John",
         });
 
