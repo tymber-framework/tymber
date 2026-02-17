@@ -11,7 +11,9 @@ describe("ListMigrations", () => {
 
     await ctx.db.query(
       emptyContext(),
-      sql.deleteFrom("t_migrations").where(sql.notEq("module", "@tymber/admin")),
+      sql
+        .deleteFrom("t_migrations")
+        .where(sql.notEq("module", "@tymber/admin")),
     );
 
     await ctx.db.query(

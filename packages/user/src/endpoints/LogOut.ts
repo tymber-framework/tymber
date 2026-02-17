@@ -1,9 +1,4 @@
-import {
-  createCookie,
-  Endpoint,
-  type HttpContext,
-  INJECT,
-} from "@tymber/core";
+import { createCookie, Endpoint, type HttpContext, INJECT } from "@tymber/core";
 import {
   type SessionId,
   UserRepository,

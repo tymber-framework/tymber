@@ -47,6 +47,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check format
+        run: npm run format:check --workspaces
+
       - name: Compile each package
         run: npm run compile --workspaces
 
