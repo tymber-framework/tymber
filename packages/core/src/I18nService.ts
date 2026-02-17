@@ -4,6 +4,9 @@ import { compileTemplate } from "./contrib/template.js";
 import { Component, INJECT } from "./Component.js";
 import type { Context } from "./Context.js";
 import { FS } from "./utils/fs.js";
+import { createDebug } from "./utils/createDebug.js";
+
+const debug = createDebug("I18nService");
 
 function flatten(obj: any) {
   const output: Record<string, string> = {};
@@ -28,7 +31,7 @@ export abstract class I18nService extends Component {
     ctx: Context,
     locale: Locale,
     key: string,
-    ...args: any[]
+    arg?: Record<string, any>,
   ): string;
 }
 
@@ -84,11 +87,16 @@ export class BaseI18nService extends I18nService {
     _ctx: Context,
     locale: Locale,
     key: string,
-    ...args: any[]
+    arg: Record<string, any> = {},
   ) {
     const value = this.translations.get(locale)?.get(key);
     if (value && value.includes("<%")) {
-      return compileTemplate(value)(args);
+      try {
+        return compileTemplate(value)(arg);
+      } catch (e) {
+        debug("error while translating key %s: %s", key, (e as Error).message);
+        return "";
+      }
     } else {
       return value || "";
     }

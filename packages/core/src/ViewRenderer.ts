@@ -43,8 +43,8 @@ export class ViewRenderer extends Component {
     data.CTX.app.isProduction = isProduction;
     data.CTX.app.modules = this.modules.modules;
 
-    data.$t = (key: string, ...args: any[]) => {
-      return this.i18nService.translate(ctx, ctx.locale, key, ...args);
+    data.$t = (key: string, arg: Record<string, any> = {}) => {
+      return this.i18nService.translate(ctx, ctx.locale, key, arg);
     };
 
     for (const template of templates) {
