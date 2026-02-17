@@ -4,6 +4,7 @@ import { createDebug } from "./utils/createDebug.js";
 import { Component, INJECT } from "./Component.js";
 import { FS } from "./utils/fs.js";
 import { isProduction } from "./utils/isProduction.js";
+import { type Context } from "./Context.js";
 
 const debug = createDebug("TemplateEngine");
 
@@ -11,6 +12,7 @@ export abstract class TemplateEngine extends Component {
   public abstract canRender(templateName: string): boolean;
 
   public abstract render(
+    ctx: Context,
     templateName: string,
     data: Record<string, any>,
   ): Promise<string>;
@@ -75,7 +77,11 @@ export class BaseTemplateEngine extends FileBasedTemplateEngine {
     (data: Record<string, any>) => string
   >();
 
-  override render(templateName: string, data: Record<string, any>) {
+  override render(
+    _ctx: Context,
+    templateName: string,
+    data: Record<string, any>,
+  ) {
     return this.getTemplate(templateName).then((template) => template(data));
   }
 

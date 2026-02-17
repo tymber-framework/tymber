@@ -48,7 +48,7 @@ export class ViewRenderer extends Component {
     };
 
     for (const template of templates) {
-      data.VIEW = await this.renderTemplate(template, data);
+      data.VIEW = await this.renderTemplate(ctx, template, data);
     }
 
     return new Response(data.VIEW, {
@@ -59,11 +59,15 @@ export class ViewRenderer extends Component {
     });
   }
 
-  private renderTemplate(templateName: string, data: Record<string, any>) {
+  private renderTemplate(
+    ctx: HttpContext,
+    templateName: string,
+    data: Record<string, any>,
+  ) {
     if (this.customTemplateEngine.canRender(templateName)) {
-      return this.customTemplateEngine.render(templateName, data);
+      return this.customTemplateEngine.render(ctx, templateName, data);
     } else if (this.templateEngine.canRender(templateName)) {
-      return this.templateEngine.render(templateName, data);
+      return this.templateEngine.render(ctx, templateName, data);
     } else {
       throw new Error(`template ${templateName} not found`);
     }

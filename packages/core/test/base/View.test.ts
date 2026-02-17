@@ -16,7 +16,11 @@ import { FileBasedTemplateEngine } from "../../src/TemplateEngine";
 class HandlebarsTemplateEngine extends FileBasedTemplateEngine {
   override fileExtension = ".hbs";
 
-  async render(templateName: string, data: Record<string, any>) {
+  async render(
+    _ctx: HttpContext,
+    templateName: string,
+    data: Record<string, any>,
+  ) {
     const absolutePath = this.templates.get(templateName)!;
     const content = await readFile(absolutePath, "utf8");
 
