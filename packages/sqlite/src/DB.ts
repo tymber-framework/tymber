@@ -68,15 +68,17 @@ export class SQLiteDB extends DB {
     }
   }
 
-  override async startTransaction(_ctx: Context, fn: () => Promise<void>) {
+  override async startTransaction<T>(_ctx: Context, fn: () => Promise<T>) {
     try {
       debug("starting transaction");
       await this.db.run("BEGIN");
 
-      await fn();
+      const output = await fn();
 
       debug("committing transaction");
       await this.db.run("COMMIT");
+
+      return output;
     } catch (e) {
       debug("rolling back transaction due to %s", e as Error);
       await this.db.run("ROLLBACK");

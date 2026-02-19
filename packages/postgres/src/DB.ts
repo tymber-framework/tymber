@@ -64,7 +64,7 @@ export class PostgresDB extends DB {
     }
   }
 
-  override async startTransaction(ctx: Context, fn: () => Promise<void>) {
+  override async startTransaction<T>(ctx: Context, fn: () => Promise<T>) {
     if (ctx.tx) {
       throw new Error("nested transactions are not supported");
     }
@@ -75,10 +75,12 @@ export class PostgresDB extends DB {
       debug("starting transaction");
       await client.query("BEGIN");
 
-      await fn();
+      const output = await fn();
 
       debug("committing transaction");
       await client.query("COMMIT");
+
+      return output;
     } catch (e) {
       debug("rolling back transaction due to %s", e as Error);
       await client.query("ROLLBACK");

@@ -17,10 +17,7 @@ export abstract class DB extends Component {
 
   abstract exec(ctx: Context, query: Statement): Promise<void>;
 
-  abstract startTransaction(
-    ctx: Context,
-    fn: () => Promise<void>,
-  ): void | Promise<void>;
+  abstract startTransaction<T>(ctx: Context, fn: () => Promise<T>): Promise<T>;
 
   abstract createMigrationsTable(ctx: Context): Promise<void>;
 }

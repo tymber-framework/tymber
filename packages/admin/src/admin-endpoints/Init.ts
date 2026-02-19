@@ -55,29 +55,32 @@ export class Init extends AdminEndpoint {
       return this.badRequest("already initialized");
     }
 
-    let sessionId: AdminSessionId;
+    const sessionId = await this.adminUserRepository.startTransaction(
+      ctx,
+      async () => {
+        const { id } = await this.adminUserRepository.save(ctx, {
+          username: payload.username,
+          password: await hash(payload.password),
+        });
 
-    await this.adminUserRepository.startTransaction(ctx, async () => {
-      const { id } = await this.adminUserRepository.save(ctx, {
-        username: payload.username,
-        password: await hash(payload.password),
-      });
+        ctx.admin = { id };
 
-      ctx.admin = { id };
+        const sessionId = await this.adminUserRepository.createSession(ctx, id);
 
-      sessionId = await this.adminUserRepository.createSession(ctx, id);
-
-      await this.miscRepository.save(ctx, {
-        key: "app",
-        value: {
-          name: payload.applicationName,
-          environment: {
-            name: payload.environmentName,
-            color: payload.environmentColorHex,
+        await this.miscRepository.save(ctx, {
+          key: "app",
+          value: {
+            name: payload.applicationName,
+            environment: {
+              name: payload.environmentName,
+              color: payload.environmentColorHex,
+            },
           },
-        },
-      });
-    });
+        });
+
+        return sessionId as AdminSessionId;
+      },
+    );
 
     return new Response(null, {
       status: 204,

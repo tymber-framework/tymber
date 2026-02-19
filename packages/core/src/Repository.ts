@@ -99,7 +99,7 @@ export abstract class Repository<
     return entity as T;
   }
 
-  public startTransaction(ctx: Context, fn: () => Promise<void>) {
+  public startTransaction<R>(ctx: Context, fn: () => Promise<R>) {
     return this.db.startTransaction(ctx, fn);
   }
 
