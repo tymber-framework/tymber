@@ -19,7 +19,7 @@ import { ListGroupsForUser } from "./admin-endpoints/ListGroupsForUser.js";
 
 export const UserModule: Module = {
   name: "@tymber/user",
-  version: "0.0.1",
+  version: "0.1.0",
 
   assetsDir: join(import.meta.dirname, "..", "assets"),
 

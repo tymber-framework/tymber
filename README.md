@@ -100,7 +100,7 @@ This repository contains the following packages:
 | `@tymber/client`   | Dependency-less client that can be used in a frontend project or for tests | [`0.1.0`](packages/client/CHANGELOG.md)   |
 | `@tymber/core`     | The internals of the framework                                             | [`0.2.0`](packages/core/CHANGELOG.md)     |
 | `@tymber/admin`    | The admin module                                                           | [`0.1.0`](packages/admin/CHANGELOG.md)    |
-| `@tymber/user`     | The user module                                                            | [`0.0.1`](packages/user/CHANGELOG.md)     |
+| `@tymber/user`     | The user module                                                            | [`0.1.0`](packages/user/CHANGELOG.md)     |
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | [`0.1.0`](packages/postgres/CHANGELOG.md) |
 | `@tymber/sqlite`   | The SQLite module                                                          | [`0.1.0`](packages/sqlite/CHANGELOG.md)   |
 
