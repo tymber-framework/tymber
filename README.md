@@ -102,7 +102,7 @@ This repository contains the following packages:
 | `@tymber/admin`    | The admin module                                                           | [`0.1.0`](packages/admin/CHANGELOG.md)    |
 | `@tymber/user`     | The user module                                                            | [`0.0.1`](packages/user/CHANGELOG.md)     |
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | [`0.1.0`](packages/postgres/CHANGELOG.md) |
-| `@tymber/sqlite`   | The SQLite module                                                          | [`0.0.1`](packages/sqlite/CHANGELOG.md)   |
+| `@tymber/sqlite`   | The SQLite module                                                          | [`0.1.0`](packages/sqlite/CHANGELOG.md)   |
 
 ## License
 

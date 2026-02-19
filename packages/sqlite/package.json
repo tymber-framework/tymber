@@ -1,6 +1,6 @@
 {
   "name": "@tymber/sqlite",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "SQLite module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",

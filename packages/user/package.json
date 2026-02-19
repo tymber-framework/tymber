@@ -25,7 +25,7 @@
     "@tymber/client": "^0.1.0",
     "@tymber/admin": "^0.1.0",
     "@tymber/postgres": "^0.1.0",
-    "@tymber/sqlite": "^0.0.1"
+    "@tymber/sqlite": "^0.1.0"
   },
   "files": [
     "src/",
