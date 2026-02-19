@@ -38,6 +38,7 @@ export { createCookie, parseCookieHeader } from "./contrib/cookie.js";
 
 export { AJV_INSTANCE } from "./utils/ajv.js";
 export { camelToSnakeCase } from "./utils/camelToSnakeCase.js";
+export { computeBaseUrl } from "./utils/computeBaseUrl.js";
 export { createDebug } from "./utils/createDebug.js";
 export { createTestApp, type BaseTestContext } from "./utils/createTestApp.js";
 export { escapeValue } from "./utils/escapeValue.js";
