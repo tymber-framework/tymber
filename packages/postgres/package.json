@@ -1,6 +1,6 @@
 {
   "name": "@tymber/postgres",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "PostgreSQL module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
