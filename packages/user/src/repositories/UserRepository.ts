@@ -114,22 +114,20 @@ export class UserRepository extends Repository<UserId, User> {
   async createSession(ctx: Context, userId: UserId): Promise<SessionId> {
     const sessionId = randomUUID();
 
-    await this.startTransaction(ctx, async () => {
-      const internalUserId = await this.getInternalUserId(ctx, userId);
+    const internalUserId = await this.getInternalUserId(ctx, userId);
 
-      await this.db.query(
-        ctx,
-        sql
-          .insert()
-          .into("t_user_sessions")
-          .values([
-            {
-              id: sessionId,
-              user_id: internalUserId,
-            },
-          ]),
-      );
-    });
+    await this.db.query(
+      ctx,
+      sql
+        .insert()
+        .into("t_user_sessions")
+        .values([
+          {
+            id: sessionId,
+            user_id: internalUserId,
+          },
+        ]),
+    );
 
     return sessionId;
   }
@@ -221,47 +219,48 @@ export class UserRepository extends Repository<UserId, User> {
     );
   }
 
-  addUserToGroup(ctx: Context, userId: UserId, groupId: GroupId, role: number) {
-    return this.startTransaction(ctx, async () => {
-      const [internalUserId, internalGroupId] = await Promise.all([
-        this.getInternalUserId(ctx, userId),
-        this.getInternalGroupId(ctx, groupId),
-      ]);
+  async addUserToGroup(
+    ctx: Context,
+    userId: UserId,
+    groupId: GroupId,
+    role: number,
+  ) {
+    const [internalUserId, internalGroupId] = await Promise.all([
+      this.getInternalUserId(ctx, userId),
+      this.getInternalGroupId(ctx, groupId),
+    ]);
 
-      await this.db.run(
-        ctx,
-        sql
-          .insert()
-          .into("t_user_roles")
-          .values([
-            {
-              user_id: internalUserId,
-              group_id: internalGroupId,
-              role,
-            },
-          ]),
-      );
-    });
+    await this.db.run(
+      ctx,
+      sql
+        .insert()
+        .into("t_user_roles")
+        .values([
+          {
+            user_id: internalUserId,
+            group_id: internalGroupId,
+            role,
+          },
+        ]),
+    );
   }
 
   async removeUserFromGroup(ctx: Context, userId: UserId, groupId: GroupId) {
-    return this.startTransaction(ctx, async () => {
-      const [internalUserId, internalGroupId] = await Promise.all([
-        this.getInternalUserId(ctx, userId),
-        this.getInternalGroupId(ctx, groupId),
-      ]);
+    const [internalUserId, internalGroupId] = await Promise.all([
+      this.getInternalUserId(ctx, userId),
+      this.getInternalGroupId(ctx, groupId),
+    ]);
 
-      const res = await this.db.run(
-        ctx,
-        sql.deleteFrom("t_user_roles").where({
-          user_id: internalUserId,
-          group_id: internalGroupId,
-        }),
-      );
+    const res = await this.db.run(
+      ctx,
+      sql.deleteFrom("t_user_roles").where({
+        user_id: internalUserId,
+        group_id: internalGroupId,
+      }),
+    );
 
-      if (res.affectedRows === 0) {
-        throw new Error(`User ${userId} is not in group ${groupId}`);
-      }
-    });
+    if (res.affectedRows === 0) {
+      throw new Error(`User ${userId} is not in group ${groupId}`);
+    }
   }
 }

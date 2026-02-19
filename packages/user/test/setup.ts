@@ -3,6 +3,7 @@ import {
   BaseTestContext,
   sql,
   emptyContext,
+  AdminUserId,
 } from "@tymber/core";
 import { UserModule } from "../src";
 import { randomUUID } from "node:crypto";
@@ -13,6 +14,7 @@ import { AdminModule, initTestDB } from "@tymber/admin";
 
 export interface TestContext extends BaseTestContext {
   adminSessionId: string;
+  adminUserId: AdminUserId;
   internalUserIds: string[];
   userIds: string[];
   internalGroupIds: string[];
@@ -38,7 +40,7 @@ export async function setup(): Promise<TestContext> {
       [AdminModule, UserModule],
     );
 
-    const { adminSessionId } = await initTestDB(ctx.db);
+    const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
 
     const userIds = [randomUUID(), randomUUID(), randomUUID()];
 
@@ -149,6 +151,7 @@ export async function setup(): Promise<TestContext> {
     return {
       ...ctx,
       adminSessionId,
+      adminUserId,
       userIds,
       internalUserIds,
       groupIds,

@@ -33,6 +33,7 @@ export { View, AdminView } from "./View.js";
 export { Middleware } from "./Middleware.js";
 export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateEngine } from "./TemplateEngine.js";
+export { AdminAuditService } from "./AdminAuditService.js";
 
 export { createCookie, parseCookieHeader } from "./contrib/cookie.js";
 

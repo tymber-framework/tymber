@@ -1,10 +1,12 @@
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
+import {
+  AdminAuditService,
+  AdminEndpoint,
+  type HttpContext,
+  INJECT,
+} from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 import { hash } from "argon2";
-import {
-  type AdminSessionId,
-  AdminUserRepository,
-} from "../repositories/AdminUserRepository.js";
+import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 import { AdminCookieService } from "../services/AdminCookieService.js";
 
@@ -17,12 +19,18 @@ interface Payload {
 }
 
 export class Init extends AdminEndpoint {
-  static [INJECT] = [MiscRepository, AdminUserRepository, AdminCookieService];
+  static [INJECT] = [
+    MiscRepository,
+    AdminUserRepository,
+    AdminCookieService,
+    AdminAuditService,
+  ];
 
   constructor(
     private readonly miscRepository: MiscRepository,
     private readonly adminUserRepository: AdminUserRepository,
     private readonly adminCookieService: AdminCookieService,
+    private readonly adminAuditService: AdminAuditService,
   ) {
     super();
   }
@@ -51,42 +59,55 @@ export class Init extends AdminEndpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload, headers } = ctx;
 
-    if (await this.miscRepository.findById(ctx, "app")) {
-      return this.badRequest("already initialized");
+    try {
+      const sessionId = await this.adminUserRepository.startTransaction(
+        ctx,
+        async () => {
+          if (await this.miscRepository.findById(ctx, "app")) {
+            throw "already initialized";
+          }
+
+          const { id } = await this.adminUserRepository.save(ctx, {
+            username: payload.username,
+            password: await hash(payload.password),
+          });
+
+          ctx.admin = { id };
+
+          const [sessionId] = await Promise.all([
+            this.adminUserRepository.createSession(ctx, id),
+            this.miscRepository.save(ctx, {
+              key: "app",
+              value: {
+                name: payload.applicationName,
+                environment: {
+                  name: payload.environmentName,
+                  color: payload.environmentColorHex,
+                },
+              },
+            }),
+            this.adminAuditService.log(ctx, "INIT"),
+          ]);
+
+          return sessionId;
+        },
+      );
+
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "set-cookie": this.adminCookieService.createCookie(
+            sessionId,
+            headers,
+          ),
+        },
+      });
+    } catch (e) {
+      if (e === "already initialized") {
+        return this.badRequest("already initialized");
+      } else {
+        throw e;
+      }
     }
-
-    const sessionId = await this.adminUserRepository.startTransaction(
-      ctx,
-      async () => {
-        const { id } = await this.adminUserRepository.save(ctx, {
-          username: payload.username,
-          password: await hash(payload.password),
-        });
-
-        ctx.admin = { id };
-
-        const sessionId = await this.adminUserRepository.createSession(ctx, id);
-
-        await this.miscRepository.save(ctx, {
-          key: "app",
-          value: {
-            name: payload.applicationName,
-            environment: {
-              name: payload.environmentName,
-              color: payload.environmentColorHex,
-            },
-          },
-        });
-
-        return sessionId as AdminSessionId;
-      },
-    );
-
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "set-cookie": this.adminCookieService.createCookie(sessionId!, headers),
-      },
-    });
   }
 }

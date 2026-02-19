@@ -15,6 +15,10 @@ interface HttpRequest {
   headers?: Record<string, string>;
 }
 
+function camelToSnakeCase(str: string) {
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
+
 /**
  * Represents a client for sending HTTP requests.
  */
@@ -57,7 +61,11 @@ export class Client {
     let url = this.baseUrl + path;
 
     if (query) {
-      url += "?" + new URLSearchParams(query);
+      const searchParams = new URLSearchParams();
+      Object.keys(query).forEach((key) => {
+        searchParams.set(camelToSnakeCase(key), query[key]);
+      });
+      url += "?" + searchParams;
     }
 
     const res = await fetch(url, options);

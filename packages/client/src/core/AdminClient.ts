@@ -20,6 +20,17 @@ interface AdminQuery {
   comment: string;
 }
 
+interface AdminAuditLog {
+  id: number;
+  createdAt: string;
+  createdBy: {
+    id: number;
+    username: string;
+  };
+  action: string;
+  description: string;
+}
+
 export class AdminClient extends Client {
   public getSelf() {
     return this.fetch<{ id: number }>({
@@ -118,6 +129,18 @@ export class AdminClient extends Client {
       method: "POST",
       path: "/api/admin/admin_queries",
       payload,
+    });
+  }
+
+  public listAdminAuditLogs(query?: {
+    action?: string;
+    createdBy?: number;
+    size?: number;
+    sort?: "created_at:asc" | "created_at:desc";
+  }) {
+    return this.fetch<{ items: AdminAuditLog[] }>({
+      path: "/api/admin/admin_audit_logs",
+      query,
     });
   }
 }

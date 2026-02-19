@@ -1,0 +1,194 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.adminAuditLogs.adminAuditLogs")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"
+        ><%= $t("tymber.adminAuditLogs.adminAuditLogs") %></a
+      >
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title"><%= $t("tymber.adminAuditLogs.adminAuditLogs") %></h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import {
+    doFetch,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+  } from "./utils";
+
+  createApp({
+    components: {
+      DataTable,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "#",
+            value: "id",
+          },
+          {
+            text: "<%= $t('tymber.common.date') %>",
+            value: "createdAt",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.common.user') %>",
+            value: "createdBy.username",
+          },
+          {
+            text: "<%= $t('tymber.common.description') %>",
+            value: "description",
+          },
+        ],
+        isLoading: false,
+        shouldRerun: false,
+        action: "",
+        actions: JSON.parse(`<%= JSON.stringify(actions) %>`),
+        adminUser: "",
+        adminUsers: JSON.parse(`<%= JSON.stringify(adminUsers) %>`),
+        value: [],
+        options: {
+          sortBy: "createdAt",
+          sortDesc: true,
+        },
+      };
+    },
+
+    methods: {
+      readQueryParams() {
+        const query = new URLSearchParams(window.location.search);
+        this.action = query.get("a") || "";
+        this.adminUser = query.get("u") || "";
+
+        const sort = query.get("s");
+
+        if (sort) {
+          const parts = sort.split("|");
+          const column = snakeToCamelCase(parts[0]);
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
+            this.options.sortBy = column;
+            this.options.sortDesc = parts[1] === "desc";
+          }
+        }
+      },
+
+      updateQueryParams() {
+        const query = new URLSearchParams();
+
+        query.set("a", this.action);
+        query.set("u", this.adminUser);
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
+
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: "/api/admin/admin_audit_logs",
+          query: {
+            action: this.action,
+            created_by: this.adminUser,
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
+
+        this.value = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onActionSelection(event) {
+        this.action = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onAdminUserSelection(event) {
+        this.adminUser = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+    },
+
+    created() {
+      this.readQueryParams();
+      this.loadItems();
+    },
+
+    template: `
+      <div class="is-flex">
+        <div class="control has-icons-left ml-auto mb-4">
+          <div class="select mr-2">
+            <select :value="action" @change="onActionSelection">
+              <option value=""><%= $t("tymber.adminAuditLogs.allActions") %></option>
+              <option v-for="{ id, label } in actions" :key="id" :value="id">{{ label }}</option>
+            </select>
+          </div>
+
+          <div class="select mr-2">
+            <select :value="adminUser" @change="onAdminUserSelection">
+              <option value=""><%= $t("tymber.adminAuditLogs.allUsers") %></option>
+              <option v-for="{ id, username } in adminUsers" :key="id" :value="id">{{ username }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <DataTable
+          :headers="headers"
+          :value="value"
+          :is-loading="isLoading"
+          :options="options"
+          @update:options="onOptionsUpdate"
+      >
+        <template #["item.createdAt"]="{ value }">
+          {{ value ? new Date(value).toLocaleString() : "" }}
+        </template>
+
+        <template #["item.description"]="{ value }">
+          <span v-html="value" />
+        </template>
+      </DataTable>
+    `,
+  }).mount("#app");
+</script>

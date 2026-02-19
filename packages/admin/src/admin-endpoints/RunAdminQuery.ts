@@ -1,4 +1,10 @@
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
+import {
+  AdminAuditService,
+  AdminEndpoint,
+  type HttpContext,
+  I18nService,
+  INJECT,
+} from "@tymber/core";
 import { AdminQueryRepository } from "../repositories/AdminQueryRepository.js";
 import type { JSONSchemaType } from "ajv";
 
@@ -8,10 +14,23 @@ interface Payload {
 }
 
 export class RunAdminQuery extends AdminEndpoint {
-  static [INJECT] = [AdminQueryRepository];
+  static [INJECT] = [AdminQueryRepository, AdminAuditService, I18nService];
 
-  constructor(private readonly adminQueryRepository: AdminQueryRepository) {
+  constructor(
+    private readonly adminQueryRepository: AdminQueryRepository,
+    private readonly adminAuditService: AdminAuditService,
+    i18n: I18nService,
+  ) {
     super();
+    adminAuditService.defineCustomDescription("RUN_ADMIN_QUERY", (ctx, log) => {
+      const description = i18n.translate(
+        ctx,
+        ctx.locale,
+        `tymber.adminAuditLogs.RUN_ADMIN_QUERY.description`,
+        log.details,
+      );
+      return Promise.resolve(description);
+    });
   }
 
   payloadSchema: JSONSchemaType<Payload> = {
@@ -28,10 +47,22 @@ export class RunAdminQuery extends AdminEndpoint {
     const { payload } = ctx;
 
     try {
-      const affectedRows = await this.adminQueryRepository.runQuery(
+      const affectedRows = await this.adminQueryRepository.startTransaction(
         ctx,
-        payload.query,
-        payload.comment,
+        async () => {
+          const { id, affectedRows } = await this.adminQueryRepository.runQuery(
+            ctx,
+            payload.query,
+            payload.comment,
+          );
+
+          await this.adminAuditService.log(ctx, "RUN_ADMIN_QUERY", {
+            id,
+            affectedRows,
+          });
+
+          return affectedRows;
+        },
       );
 
       return Response.json({ affectedRows });

@@ -16,7 +16,10 @@
       "modules": "Modules",
       "version": "Version",
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "date": "Date",
+      "user": "User",
+      "description": "Description"
     },
     "init": {
       "title": "Initialize your application",
@@ -74,6 +77,31 @@
       "success": "The query was successfully executed.",
       "invalidQuery": "The query is invalid!",
       "history": "History"
+    },
+    "adminAuditLogs": {
+      "adminAuditLogs": "Audit logs",
+      "allActions": "All actions",
+      "allUsers": "All users",
+      "INIT": {
+        "label": "Init",
+        "description": "Init"
+      },
+      "LOG_IN": {
+        "label": "Log in",
+        "description": "Log in"
+      },
+      "INIT_PASSWORD": {
+        "label": "Init password",
+        "description": "Init password"
+      },
+      "CREATE_ADMIN_USER": {
+        "label": "Create admin user",
+        "description": "Create admin user <b><%= username %></b>"
+      },
+      "RUN_ADMIN_QUERY": {
+        "label": "Run admin query",
+        "description": "Run admin query <b>#<%= id %></b>: <b><%= affectedRows %></b> affected row(s)"
+      }
     }
   }
 }

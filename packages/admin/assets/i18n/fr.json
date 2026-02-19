@@ -16,7 +16,10 @@
       "modules": "Modules",
       "version": "Version",
       "cancel": "Annuler",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "date": "Date",
+      "user": "Utilisateur",
+      "description": "Description"
     },
     "init": {
       "title": "Initialiser votre application",
@@ -74,6 +77,31 @@
       "success": "La requête a été exécutée avec succès.",
       "invalidQuery": "La requête est invalide !",
       "history": "Historique"
+    },
+    "adminAuditLogs": {
+      "adminAuditLogs": "Journal d'audit",
+      "allActions": "Toutes les actions",
+      "allUsers": "Tous les utilisateurs",
+      "INIT": {
+        "label": "Initialisation",
+        "description": "Initialisation"
+      },
+      "LOG_IN": {
+        "label": "Connexion",
+        "description": "Connexion"
+      },
+      "INIT_PASSWORD": {
+        "label": "Initialisation du mot de passe",
+        "description": "Initialisation du mot de passe"
+      },
+      "CREATE_ADMIN_USER": {
+        "label": "Création d'un administrateur",
+        "description": "Création de l'administrateur <b><%= username %></b>"
+      },
+      "RUN_ADMIN_QUERY": {
+        "label": "Exécution d'une requête",
+        "description": "Exécution de la requête <b>#<%= id %></b> : <b><%= affectedRows %></b> ligne(s) affectée(s)"
+      }
     }
   }
 }

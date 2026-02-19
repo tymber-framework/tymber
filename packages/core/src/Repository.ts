@@ -16,6 +16,7 @@ export abstract class Repository<
   protected abstract tableName: string;
   protected idField: string | string[] = "id";
   protected dateFields: string[] = [];
+  protected jsonFields: string[] = [];
 
   constructor(protected readonly db: DB) {
     super();
@@ -124,7 +125,13 @@ export abstract class Repository<
     const row: Record<string, any> = {};
 
     Object.keys(entity).forEach((key) => {
-      row[camelToSnakeCase(key)] = entity[key];
+      const column = camelToSnakeCase(key);
+
+      if (this.db.name === "sqlite" && this.jsonFields.includes(key)) {
+        row[column] = JSON.stringify(entity[key]);
+      } else {
+        row[column] = entity[key];
+      }
     });
 
     return row;
@@ -137,12 +144,20 @@ export abstract class Repository<
       const fieldName = snakeToCamelCase(key);
       let fieldValue = row[key];
 
-      if (
-        this.dateFields.includes(fieldName) &&
-        typeof fieldValue === "number"
-      ) {
-        fieldValue = new Date(fieldValue);
+      if (this.db.name === "sqlite") {
+        if (
+          this.dateFields.includes(fieldName) &&
+          typeof fieldValue === "number"
+        ) {
+          fieldValue = new Date(fieldValue);
+        } else if (
+          this.jsonFields.includes(fieldName) &&
+          typeof fieldValue === "string"
+        ) {
+          fieldValue = JSON.parse(fieldValue);
+        }
       }
+
       entity[fieldName] = fieldValue;
     });
 

@@ -1,7 +1,12 @@
 import { type JSONSchemaType } from "ajv";
 import { verify } from "argon2";
 import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
-import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
+import {
+  AdminAuditService,
+  AdminEndpoint,
+  type HttpContext,
+  INJECT,
+} from "@tymber/core";
 import { AdminCookieService } from "../services/AdminCookieService.js";
 
 interface Payload {
@@ -10,11 +15,16 @@ interface Payload {
 }
 
 export class LogIn extends AdminEndpoint {
-  static [INJECT] = [AdminUserRepository, AdminCookieService];
+  static [INJECT] = [
+    AdminUserRepository,
+    AdminCookieService,
+    AdminAuditService,
+  ];
 
   constructor(
     private readonly adminUserRepository: AdminUserRepository,
     private readonly adminCookieService: AdminCookieService,
+    private readonly adminAuditService: AdminAuditService,
   ) {
     super();
   }
@@ -34,31 +44,54 @@ export class LogIn extends AdminEndpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload, headers } = ctx;
 
-    const adminUser = await this.adminUserRepository.findByUsername(
-      ctx,
-      payload.username,
-    );
+    try {
+      const sessionId = await this.adminUserRepository.startTransaction(
+        ctx,
+        async () => {
+          const adminUser = await this.adminUserRepository.findByUsername(
+            ctx,
+            payload.username,
+          );
 
-    if (!adminUser) {
-      return this.badRequest("invalid credentials");
+          if (!adminUser) {
+            throw "invalid credentials";
+          }
+
+          const isPasswordValid = await verify(
+            adminUser.password!,
+            payload.password,
+          );
+
+          if (!isPasswordValid) {
+            throw "invalid credentials";
+          }
+
+          ctx.admin = { id: adminUser.id };
+
+          const [sessionId] = await Promise.all([
+            this.adminUserRepository.createSession(ctx, adminUser.id),
+            this.adminAuditService.log(ctx, "LOG_IN"),
+          ]);
+
+          return sessionId;
+        },
+      );
+
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "set-cookie": this.adminCookieService.createCookie(
+            sessionId,
+            headers,
+          ),
+        },
+      });
+    } catch (e) {
+      if (e === "invalid credentials") {
+        return this.badRequest("invalid credentials");
+      } else {
+        throw e;
+      }
     }
-
-    const isPasswordValid = await verify(adminUser.password!, payload.password);
-
-    if (!isPasswordValid) {
-      return this.badRequest("invalid credentials");
-    }
-
-    const sessionId = await this.adminUserRepository.createSession(
-      ctx,
-      adminUser.id,
-    );
-
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "set-cookie": this.adminCookieService.createCookie(sessionId, headers),
-      },
-    });
   }
 }

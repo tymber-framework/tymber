@@ -27,6 +27,20 @@
         "userRemoved": "The user has successfully been removed from the group.",
         "groupNotFound": "The group was not found."
       }
+    },
+    "adminAuditLogs": {
+      "ADD_USER_TO_GROUP": {
+        "label": "Add user to group",
+        "description": "User <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has been added to group <a href=\"<%= groupUrl %>\"><%= group.label %></a> with role <b><%= role %></b>"
+      },
+      "REMOVE_USER_FROM_GROUP": {
+        "label": "Revove user from group",
+        "description": "User <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has been removed from group <a href=\"<%= groupUrl %>\"><%= group.label %></a>"
+      },
+      "IMPERSONATE_USER": {
+        "label": "User impersonation",
+        "description": "The impersonation of user <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has started"
+      }
     }
   }
 }

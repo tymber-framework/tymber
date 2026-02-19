@@ -60,22 +60,20 @@ export class AdminQueryRepository extends Repository<number, AdminQuery> {
   }
 
   async runQuery(ctx: Context, query: string, comment: string) {
-    let affectedRows = 0;
+    const { affectedRows } = await this.db.run(ctx, sql.rawStatement(query));
 
-    await this.db.startTransaction(ctx, async () => {
-      const result = await this.db.run(ctx, sql.rawStatement(query));
-      affectedRows = result.affectedRows;
-
-      await this.save(ctx, {
-        createdAt: ctx.startedAt,
-        createdBy: ctx.admin!.id,
-        query,
-        comment,
-        affectedRows,
-      });
+    const { id } = await this.save(ctx, {
+      createdAt: ctx.startedAt,
+      createdBy: ctx.admin!.id,
+      query,
+      comment,
+      affectedRows,
     });
 
-    return affectedRows;
+    return {
+      id,
+      affectedRows,
+    };
   }
 
   async find(
