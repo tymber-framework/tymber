@@ -1,6 +1,6 @@
 {
   "name": "@tymber/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The base of the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
