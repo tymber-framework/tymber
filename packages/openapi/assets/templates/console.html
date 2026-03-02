@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= CTX.app.name %> - Console</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/swagger-ui.css?v=5.31.1"/>
+</head>
+
+<body>
+<div id="swagger-ui"></div>
+<script src="/static/js/swagger-ui-bundle.js?v=5.31.1" charset="UTF-8"></script>
+<script>
+    const spec = JSON.parse(`<%= JSON.stringify(spec) %>`);
+
+    window.onload = function () {
+        window.ui = SwaggerUIBundle({
+            dom_id: '#swagger-ui',
+            spec,
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+            ],
+            plugins: [],
+            layout: "BaseLayout",
+            requestInterceptor: (req) => {
+                req.headers['x-csrf-token'] = '1';
+                return req;
+            }
+        });
+    };
+</script>
+</body>
+</html>

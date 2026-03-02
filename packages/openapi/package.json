@@ -1,0 +1,39 @@
+{
+  "name": "@tymber/openapi",
+  "version": "0.0.1",
+  "description": "OpenAPI module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tymber-framework/tymber.git"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/",
+    "format:fix": "prettier -w src/ test/",
+    "test": "tsx --test"
+  },
+  "peerDependencies": {
+    "@tymber/core": "*"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "assets/"
+  ],
+  "exports": {
+    "node": "./src/index.ts",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  },
+  "keywords": [
+    "tymber",
+    "typescript",
+    "framework",
+    "openapi"
+  ]
+}

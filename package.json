@@ -11,7 +11,8 @@
     "packages/postgres",
     "packages/sqlite",
     "packages/admin",
-    "packages/user"
+    "packages/user",
+    "packages/openapi"
   ],
   "devDependencies": {
     "@tsconfig/node24": "^24.0.1",
