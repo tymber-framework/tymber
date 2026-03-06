@@ -158,9 +158,11 @@ export class ComponentFactory {
             }
 
             span.isSuccess = true;
-            return result;
-          } finally {
             completeSpan();
+            return result;
+          } catch (e) {
+            completeSpan();
+            throw e;
           }
         };
       },
