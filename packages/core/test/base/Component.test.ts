@@ -228,6 +228,31 @@ describe("ComponentFactory", () => {
     assert.ok(components[1].a === a);
   });
 
+  it("should use manually-created component in priority", async () => {
+    class A extends Component {}
+
+    class DummyA extends A {}
+
+    class B extends Component {
+      static [INJECT] = [A];
+
+      constructor(readonly a: A) {
+        super();
+      }
+    }
+
+    factory.register(B);
+    factory.register(DummyA);
+
+    const a = new A();
+    const [actualA, dummyA, b] = factory.build(a);
+
+    assert.ok(actualA === a);
+    assert.ok(dummyA instanceof DummyA);
+    assert.ok(b instanceof B);
+    assert.ok(b.a === a);
+  });
+
   it("should throw when a dependency cannot be resolved", async () => {
     class A extends Component {}
 

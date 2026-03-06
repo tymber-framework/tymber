@@ -173,6 +173,14 @@ export class ComponentFactory {
     // TODO do not instantiate components that are not used in the tree
     for (const node of this.componentTree) {
       const deps = node.dependencies.map((ctor) => {
+        const dependency = baseComponents.find(
+          (component) => component instanceof ctor,
+        );
+
+        if (dependency) {
+          return dependency;
+        }
+
         const availableDeps = components.filter(
           (component) => component instanceof ctor,
         );
