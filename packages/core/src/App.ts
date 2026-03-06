@@ -146,7 +146,7 @@ export class App {
     app.close = () => {
       debug("closing all components");
       return Promise.all(
-        components.map((component) => component.close()),
+        allComponents.map((component) => component.close()),
       ).then();
     };
 
