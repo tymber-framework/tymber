@@ -1,4 +1,5 @@
 import { type Context, type Span } from "./Context.js";
+import { sortBy } from "./utils/sortBy.js";
 
 export const INJECT = Symbol("dependencies");
 
@@ -18,7 +19,7 @@ export abstract class Component {
 
 interface Node {
   ctor: Ctor<Component>;
-  dependencies: Ctor<Component>[];
+  dependencies: Dependency[];
   level: number;
 }
 
@@ -49,37 +50,70 @@ export class ComponentFactory {
       ctor = customConstructor(ctor, onCreation);
     }
 
-    let level = 0;
-
-    // find place in the tree
-    for (const node of this.componentTree) {
-      for (const dependency of node.dependencies) {
-        if (ctor === dependency || isSubclass(ctor, dependency)) {
-          level = Math.max(level, node.level + 1);
-        }
-      }
-    }
-
-    // move dependencies at the bottom
     // @ts-expect-error
-    const dependencies = (ctor[INJECT] || []) as Ctor<Component>[];
-    for (const node of this.componentTree) {
-      for (const dependency of dependencies) {
-        if (node.ctor === dependency || isSubclass(node.ctor, dependency)) {
-          node.level = Math.max(node.level, level + 1);
-        }
-      }
-    }
+    const dependencies = (ctor[INJECT] || []) as Dependency[];
 
     this.componentTree.push({
       ctor,
       dependencies,
-      level,
+      level: 0,
     });
+  }
+
+  #computeLevels() {
+    const levelCache = new Map<Ctor<Component>, number>();
+    const visiting = new Set<Ctor<Component>>();
+
+    const getLevelRecursively = (
+      ctor: Ctor<Component>,
+      path: Ctor<Component>[] = [],
+    ): number => {
+      if (levelCache.has(ctor)) {
+        return levelCache.get(ctor)!;
+      }
+
+      if (visiting.has(ctor)) {
+        const cycle = [...path, ctor].map((c) => c.name).join(" -> ");
+        throw new Error(`Circular dependency detected: ${cycle}`);
+      }
+
+      const node = this.componentTree.find((n) => n.ctor === ctor);
+      if (!node) {
+        return -1;
+      }
+
+      visiting.add(ctor);
+      let maxDepLevel = -1;
+
+      for (const dependency of node.dependencies) {
+        for (const depNode of this.componentTree) {
+          if (
+            depNode.ctor === dependency ||
+            isSubclass(depNode.ctor, dependency)
+          ) {
+            maxDepLevel = Math.max(
+              maxDepLevel,
+              getLevelRecursively(depNode.ctor, [...path, ctor]),
+            );
+          }
+        }
+      }
+
+      visiting.delete(ctor);
+      const level = maxDepLevel + 1;
+      levelCache.set(ctor, level);
+      return level;
+    };
+
+    for (const node of this.componentTree) {
+      node.level = getLevelRecursively(node.ctor);
+    }
   }
 
   public build(...baseComponents: Component[]) {
     const components: Component[] = [...baseComponents];
+
+    this.#computeLevels();
 
     const proxyHandler: ProxyHandler<any> = {
       get(target, prop) {
@@ -132,7 +166,7 @@ export class ComponentFactory {
       },
     };
 
-    this.componentTree.sort((a, b) => b.level - a.level);
+    sortBy(this.componentTree, "level");
 
     // TODO do not instantiate components that are not used in the tree
     for (const node of this.componentTree) {
@@ -142,9 +176,12 @@ export class ComponentFactory {
         );
 
         if (availableDeps.length === 0) {
-          throw `unresolved dependency ${ctor.name} for ${node.ctor.name}`;
+          throw new Error(
+            `Unresolved dependency ${ctor.name} for ${node.ctor.name}`,
+          );
         }
 
+        // the last registered component is used
         return availableDeps[availableDeps.length - 1];
       });
 

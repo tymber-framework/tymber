@@ -58,6 +58,38 @@ describe("ComponentFactory", () => {
     assert.ok(components[3].b === components[1]);
   });
 
+  it("should handle out-of-order registration", async () => {
+    class A extends Component {}
+
+    class B extends Component {
+      static [INJECT] = [A];
+
+      constructor(readonly a: A) {
+        super();
+      }
+    }
+
+    class C extends Component {
+      static [INJECT] = [B];
+
+      constructor(readonly b: B) {
+        super();
+      }
+    }
+
+    factory.register(B);
+    factory.register(A);
+    factory.register(C);
+
+    const [a, b, c] = factory.build();
+
+    assert.ok(a instanceof A);
+    assert.ok(b instanceof B);
+    assert.ok(c instanceof C);
+    assert.ok(b.a === a);
+    assert.ok(c.b === b);
+  });
+
   it("should inject the implementation of an abstract dependency", async () => {
     abstract class A extends Component {
       abstract doSomething(): void;
@@ -209,7 +241,8 @@ describe("ComponentFactory", () => {
       factory.build();
       assert.fail();
     } catch (e) {
-      assert.equal(e, "unresolved dependency A for B");
+      assert.ok(e instanceof Error);
+      assert.equal(e.message, "Unresolved dependency A for B");
     }
   });
 
@@ -231,7 +264,8 @@ describe("ComponentFactory", () => {
       factory.build();
       assert.fail();
     } catch (e) {
-      assert.equal(e, "unresolved dependency A for B");
+      assert.ok(e instanceof Error);
+      assert.equal(e.message, "Circular dependency detected: B -> C -> B");
     }
   });
 });
