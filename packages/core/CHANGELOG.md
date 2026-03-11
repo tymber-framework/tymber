@@ -2,9 +2,20 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.2.1](#021-2026-03-11) | March 2026    |
 | [0.2.0](#020-2026-02-19) | February 2026 |
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
+
+## [0.2.1](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.0...@tymber/core@0.2.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* ensure all components are properly closed ([8a45dcc](https://github.com/tymber-framework/tymber/commit/8a45dccfdccc68dce6395f2160585f454dbd622d))
+* fix logic in tracing ([b22c5e3](https://github.com/tymber-framework/tymber/commit/b22c5e3efd99ec0731fcb685397d376d8918ba5b))
+* handle out-of-order component registration ([e0d4293](https://github.com/tymber-framework/tymber/commit/e0d42930600982e7905b481c9c8e4aa6c43b574d))
+* use manually provided components in priority ([e848eaf](https://github.com/tymber-framework/tymber/commit/e848eafe621adccf3d42f574c2c3962a0c18cf6b))
 
 
 ## [0.2.0](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.1.0...@tymber/core@0.2.0) (2026-02-19)
