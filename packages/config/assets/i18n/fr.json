@@ -1,0 +1,26 @@
+{
+  "tymber": {
+    "config": {
+      "currentRevision": "Version actuelle",
+      "previousRevisions": "Versions précédentes",
+      "comment": "Commentaire",
+      "modify": "Modifier",
+      "withUpdatesOnly": "Afficher uniquement les valeurs modifiées",
+      "saveUpdates": "Enregistrement des modifications",
+      "toast": {
+        "updatesSaved": "Les modifications ont bien été enregistrées.",
+        "invalidConfig": "La configuration n'est pas valide !"
+      }
+    },
+    "adminAuditLogs": {
+      "CREATE_CONFIG_REVISION": {
+        "label": "Création d'une version de configuration",
+        "description": "La version de configuration <b>#<%= id %></b> a été créée"
+      },
+      "REVERT_CONFIG_REVISION": {
+        "label": "Rétablissement d'une version de configuration",
+        "description": "La version <b>#<%= id %></b> a été rétablie"
+      }
+    }
+  }
+}

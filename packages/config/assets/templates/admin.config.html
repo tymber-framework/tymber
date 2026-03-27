@@ -1,0 +1,505 @@
+<% TITLE = `${CTX.app.name} - ${$t("tymber.config.config")}`; %>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+  <defs>
+    <!-- source: https://pictogrammers.com/library/mdi/icon/content-save-outline/ -->
+    <symbol id="content-save-outline" viewBox="0 0 24 24">
+      <path
+        d="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z"
+        fill="currentColor"
+      />
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"><%= $t("tymber.config.config") %></a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title"><%= $t("tymber.config.config") %></h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import {
+    doFetch,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+    Toast,
+    Modal,
+  } from "./utils";
+
+  function sortBy({ sortBy, sortDesc }) {
+    return (a, b) => {
+      return (sortDesc ? -1 : 1) * a[sortBy].localeCompare(b[sortBy]);
+    };
+  }
+
+  function isStrictEqual(a, b) {
+    if (Array.isArray(a)) {
+      return a.length === b.length && a.every((e, i) => isStrictEqual(e, b[i]));
+    } else {
+      return a === b;
+    }
+  }
+
+  const SaveUpdatesModal = {
+    components: {
+      Modal,
+    },
+
+    emits: ["submit", "update:modelValue"],
+
+    props: {
+      modelValue: Boolean,
+      isLoading: Boolean,
+    },
+
+    data() {
+      return {
+        form: {
+          comment: "",
+        },
+      };
+    },
+
+    methods: {
+      onSubmit() {
+        this.$emit("submit", {
+          comment: this.form.comment,
+        });
+      },
+
+      closeModal() {
+        this.$emit("update:modelValue", false);
+      },
+    },
+
+    computed: {
+      isFormValid() {
+        return this.form.comment.length > 2;
+      },
+    },
+
+    template: `
+<Modal :model-value="modelValue" @update:model-value="closeModal()">
+    <template #header>
+        <p class="modal-card-title"><%= $t("tymber.config.saveUpdates") %></p>
+    </template>
+
+    <template #content>
+        <form @submit.prevent="onSubmit">
+            <div class="field">
+                <label class="label"><%= $t("tymber.config.comment") %></label>
+                <textarea
+                      class="textarea"
+                      rows="5"
+                      v-model="form.comment"
+                ></textarea>
+            </div>
+
+            <div class="field is-grouped is-grouped-right">
+                <div class="control">
+                    <button class="button" type="reset" @click="closeModal()"><%= $t("tymber.common.cancel") %></button>
+                </div>
+                <div class="control">
+                    <button class="button is-primary" type="submit" :disabled="!isFormValid"
+                            :class="{ 'is-loading': isLoading }">
+                        <%= $t("tymber.common.confirm") %>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </template>
+</Modal>
+      `,
+  };
+
+  const CurrentRevisionTable = {
+    components: {
+      DataTable,
+      Toast,
+      SaveUpdatesModal,
+    },
+
+    emits: ["update"],
+
+    props: {
+      values: Array,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "<%= $t('tymber.common.key') %>",
+            value: "key",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.common.value') %>",
+            value: "value",
+          },
+        ],
+        options: {
+          sortBy: "key",
+          sortDesc: false,
+        },
+        isLoading: false,
+        searchText: "",
+        withUpdatesOnly: false,
+        internalValues: [],
+        isEditing: false,
+        showModal: false,
+        showUpdatesSavedToast: false,
+        showInvalidConfigToast: false,
+        showUnknownErrorToast: false,
+      };
+    },
+
+    methods: {
+      toggleEdit() {
+        this.isEditing = !this.isEditing;
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+      },
+
+      addElement(values) {
+        values.push("");
+      },
+
+      removeElement(value, i) {
+        value.splice(i, 1);
+      },
+
+      revertChanges() {
+        for (const item of this.internalValues) {
+          item.value = Array.isArray(item.initialValue)
+            ? item.initialValue.slice()
+            : item.initialValue;
+        }
+        this.withUpdatesOnly = false;
+        this.isEditing = false;
+      },
+
+      async saveUpdates({ comment }) {
+        this.isLoading = true;
+
+        const nonDefaultValues = this.internalValues
+          .filter((e) => {
+            return !isStrictEqual(e.value, e.defaultValue);
+          })
+          .reduce((acc, e) => {
+            acc[e.key] = e.value;
+            return acc;
+          }, {});
+
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "POST",
+          path: "/api/admin/config_revisions",
+          payload: {
+            values: nonDefaultValues,
+            comment,
+          },
+        });
+
+        if (res.ok) {
+          for (const item of this.internalValues) {
+            item.initialValue = Array.isArray(item.value)
+              ? item.value.slice()
+              : item.value;
+          }
+
+          this.showModal = false;
+          this.withUpdatesOnly = false;
+          this.isEditing = false;
+          this.showUpdatesSavedToast = true;
+          this.$emit("update");
+        } else {
+          if (res.status === 400) {
+            this.showInvalidConfigToast = true;
+          } else {
+            this.showUnknownErrorToast = true;
+          }
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+
+      itemHasUpdates(item) {
+        return !isStrictEqual(item.value, item.initialValue);
+      },
+    },
+
+    computed: {
+      filteredValues() {
+        const search = this.searchText.toLowerCase();
+
+        return this.internalValues
+          .filter((item) => {
+            return (
+              (this.searchText.length === 0 ||
+                item.key.toLowerCase().includes(search)) &&
+              (!this.withUpdatesOnly || this.itemHasUpdates(item))
+            );
+          })
+          .sort(sortBy(this.options));
+      },
+
+      hasUpdates() {
+        return this.internalValues.some(
+          (e) => !isStrictEqual(e.value, e.initialValue),
+        );
+      },
+    },
+
+    mounted() {
+      for (const item of this.values) {
+        this.internalValues.push({
+          ...item,
+          initialValue: Array.isArray(item.value)
+            ? item.value.slice()
+            : item.value,
+        });
+      }
+    },
+
+    template: `
+<Toast v-model="showUpdatesSavedToast" class="is-success"><%= $t("tymber.config.toast.updatesSaved") %></Toast>
+<Toast v-model="showInvalidConfigToast" class="is-warning"><%= $t("tymber.config.toast.invalidConfig") %></Toast>
+<Toast v-model="showUnknownErrorToast" class="is-danger"><%= $t("tymber.common.unknownError") %></Toast>
+
+<SaveUpdatesModal v-model="showModal" @submit="saveUpdates" :is-loading="isLoading"/>
+
+<div class="buttons">
+    <button v-if="!isEditing" class="button" @click="toggleEdit()">
+        <span class="icon is-small"><svg width="24" height="24"><use xlink:href="#pencil-outline"></use></svg>
+          </span>
+        <span><%= $t('tymber.config.modify') %></span>
+    </button>
+
+    <button v-if="isEditing" class="button" @click="revertChanges()">
+        <span class="icon is-small"><svg width="24" height="24"><use xlink:href="#restore"></use></svg></span>
+        <span><%= $t('tymber.common.cancel') %></span>
+    </button>
+
+    <button v-if="isEditing" class="button is-primary" @click="showModal = true" :disabled="!hasUpdates">
+        <span class="icon"><svg width="24" height="24"><use xlink:href="#content-save-outline"></use></svg></span>
+        <span><%= $t('tymber.common.confirm') %></span>
+    </button>
+
+    <label class="checkbox" v-if="isEditing">
+        <input type="checkbox" v-model="withUpdatesOnly"/>
+        <%= $t('tymber.config.withUpdatesOnly') %>
+    </label>
+
+    <div class="control has-icons-left ml-auto">
+        <input class="input" v-model="searchText" autofocus />
+        <span class="icon is-left"><svg width="24" height="24"><use xlink:href="#magnify"></use></svg>
+      </span>
+    </div>
+</div>
+
+<DataTable
+        :headers="headers"
+        :value="filteredValues"
+        :options="options"
+        @update:options="onOptionsUpdate">
+    <template #["item.key"]="{ item }">
+        <code>{{ item.key }}<span v-if="itemHasUpdates(item)">*</span></code>
+    </template>
+
+    <template #["item.value"]="{ item }">
+        <label class="checkbox" v-if="item.type === 'boolean'">
+            <input type="checkbox" v-model="item.value" :disabled="!isEditing"/>
+        </label>
+
+        <input v-if="item.type === 'string'" class="input" type="text" v-model="item.value" :disabled="!isEditing"/>
+        <input v-if="item.type === 'number'" class="input" type="number" v-model="item.value" :disabled="!isEditing"/>
+
+        <div v-if="item.type === 'string[]'">
+            <span class="is-italic" v-if="item.value.length === 0 && !isEditing"><%= $t("tymber.config.emptyList") %></span>
+
+            <div v-for="(value, i) of item.value" :key="i" class="field is-horizontal">
+                <input class="input" type="text" v-model="item.value[i]" :disabled="!isEditing"/>
+
+                <button v-if="isEditing" class="button ml-3" @click="removeElement(item.value, i)">
+                    <span class="icon"><svg width="24" height="24"><use xlink:href="#delete-outline"></use></svg></span>
+                </button>
+            </div>
+
+            <button v-if="isEditing" class="button" @click="addElement(item.value)">
+                <span class="icon"><svg width="24" height="24"><use xlink:href="#plus"></use></svg></span>
+            </button>
+        </div>
+    </template>
+</DataTable>
+        `,
+  };
+
+  const HistoryTable = {
+    components: {
+      DataTable,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "#",
+            value: "id",
+          },
+          {
+            text: "<%= $t('tymber.common.date') %>",
+            value: "createdAt",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.common.user') %>",
+            value: "createdBy.username",
+          },
+          {
+            text: "<%= $t('tymber.config.comment') %>",
+            value: "comment",
+          },
+        ],
+        isLoading: false,
+        shouldRerun: false,
+        value: [],
+        options: {
+          sortBy: "createdAt",
+          sortDesc: true,
+        },
+      };
+    },
+
+    methods: {
+      readQueryParams() {
+        const query = new URLSearchParams(window.location.search);
+        const sort = query.get("s");
+
+        if (sort) {
+          const parts = sort.split("|");
+          const column = snakeToCamelCase(parts[0]);
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
+            this.options.sortBy = column;
+            this.options.sortDesc = parts[1] === "desc";
+          }
+        }
+      },
+
+      updateQueryParams() {
+        const query = new URLSearchParams();
+
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
+
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const res = await doFetch({
+          path: "/api/admin/config_revisions",
+          query: {
+            sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+          },
+        });
+
+        this.value = res.body.items;
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.updateQueryParams();
+        this.loadItems();
+      },
+    },
+
+    created() {
+      this.readQueryParams();
+      this.loadItems();
+    },
+
+    template: `
+      <DataTable
+          :headers="headers"
+          :value="value"
+          :is-loading="isLoading"
+          :options="options"
+          @update:options="onOptionsUpdate"
+      >
+        <template #["item.createdAt"]="{ value }">
+          {{ value ? new Date(value).toLocaleString() : "" }}
+        </template>
+
+        <template #["item.comment"]="{ value }">
+          <span style="white-space: pre-wrap;">
+            {{ value }}
+          </span>
+        </template>
+      </DataTable>
+    `,
+  };
+
+  createApp({
+    components: {
+      CurrentRevisionTable,
+      HistoryTable,
+    },
+
+    data() {
+      return {
+        values: JSON.parse(`<%= JSON.stringify(config) %>`),
+      };
+    },
+
+    template: `
+<h2 class="subtitle"><%= $t("tymber.config.currentRevision") %></h2>
+
+<CurrentRevisionTable :values="values" @update="$refs.historyTable.loadItems()" />
+
+<h2 class="subtitle"><%= $t("tymber.config.previousRevisions") %></h2>
+
+<HistoryTable ref="historyTable" />
+    `,
+  }).mount("#app");
+</script>

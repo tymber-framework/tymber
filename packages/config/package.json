@@ -1,0 +1,46 @@
+{
+  "name": "@tymber/config",
+  "version": "0.0.1",
+  "description": "Config module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tymber-framework/tymber.git"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/ assets/",
+    "format:fix": "prettier -w src/ test/ assets/",
+    "test": "tsx --test",
+    "test:sqlite": "USE_SQLITE=1 npm test"
+  },
+  "peerDependencies": {
+    "@tymber/core": "*"
+  },
+  "devDependencies": {
+    "@tymber/client": "^0.1.0",
+    "@tymber/admin": "^0.1.0",
+    "@tymber/postgres": "^0.1.0",
+    "@tymber/sqlite": "^0.1.0"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "assets/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  },
+  "keywords": [
+    "tymber",
+    "typescript",
+    "framework",
+    "configuration"
+  ]
+}

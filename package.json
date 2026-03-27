@@ -12,7 +12,8 @@
     "packages/sqlite",
     "packages/admin",
     "packages/user",
-    "packages/openapi"
+    "packages/openapi",
+    "packages/config"
   ],
   "devDependencies": {
     "@tsconfig/node24": "^24.0.1",

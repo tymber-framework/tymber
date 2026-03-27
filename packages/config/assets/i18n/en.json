@@ -1,0 +1,26 @@
+{
+  "tymber": {
+    "config": {
+      "currentRevision": "Current revision",
+      "previousRevisions": "Previous revisions",
+      "comment": "Comment",
+      "modify": "Modify",
+      "withUpdatesOnly": "Only display modified values",
+      "saveUpdates": "Save updates",
+      "toast": {
+        "updatesSaved": "Configuration updates have been successfully saved.",
+        "invalidConfig": "The configuration is not valid!"
+      }
+    },
+    "adminAuditLogs": {
+      "CREATE_CONFIG_REVISION": {
+        "label": "Create config revision",
+        "description": "Config revision <b>#<%= id %></b> was created"
+      },
+      "REVERT_CONFIG_REVISION": {
+        "label": "Revert config revision",
+        "description": "Config revision <b>#<%= id %></b> was reverted"
+      }
+    }
+  }
+}
