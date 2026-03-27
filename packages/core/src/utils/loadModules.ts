@@ -28,6 +28,8 @@ export async function loadModules(
       middlewares: [],
     };
 
+    let middlewareCount = 0;
+
     const appInit = {
       component<T extends Component>(ctor: Ctor<T>) {
         debug("adding component %s", ctor.name);
@@ -89,8 +91,9 @@ export async function loadModules(
       middleware: (ctor: Ctor<Middleware>) => {
         debug("adding middleware %s", ctor.name);
 
+        const index = middlewareCount++;
         componentFactory.register(ctor, (instance) => {
-          moduleDefinition.middlewares.push(instance);
+          moduleDefinition.middlewares[index] = instance;
         });
       },
     };
