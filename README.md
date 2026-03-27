@@ -103,7 +103,8 @@ This repository contains the following packages:
 | `@tymber/user`     | The user module                                                            | [`0.1.0`](packages/user/CHANGELOG.md)     |
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      | [`0.1.0`](packages/postgres/CHANGELOG.md) |
 | `@tymber/sqlite`   | The SQLite module                                                          | [`0.1.0`](packages/sqlite/CHANGELOG.md)   |
-| `@tymber/openapi`  | The OpenAPI module                                                         | [`0.0.1`](packages/openapi/CHANGELOG.md)  |
+| `@tymber/openapi`  | The OpenAPI module                                                         | [`0.1.0`](packages/openapi/CHANGELOG.md)  |
+| `@tymber/config`   | The config module                                                          | [`0.1.0`](packages/config/CHANGELOG.md)   |
 
 ## License
 

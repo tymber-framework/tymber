@@ -7,7 +7,7 @@ import { RevertToRevision } from "./admin-endpoints/RevertToRevision.js";
 
 export const ConfigModule: Module = {
   name: "@tymber/config",
-  version: "0.0.1",
+  version: "0.1.0",
 
   adminSidebarItems: [],
   assetsDir: FS.join(import.meta.dirname, "..", "assets"),
