@@ -10,7 +10,7 @@ interface CorsOptions {
   CORS_ALLOW_CREDENTIALS: boolean;
   CORS_ALLOW_METHODS: string[];
   CORS_ALLOW_HEADERS: string[];
-  CORS_MAX_AGE: number;
+  CORS_MAX_AGE_IN_SECONDS: number;
 }
 
 function isOriginAllowed(origin: string, allowedOrigins: string[]) {
@@ -22,7 +22,8 @@ function isOriginAllowed(origin: string, allowedOrigins: string[]) {
  * Implementation reference: https://www.npmjs.com/package/cors
  */
 export class CORS extends Middleware {
-  private cors?: CorsOptions;
+  // @ts-expect-error will be initialized by the ConfigService
+  private cors: CorsOptions;
 
   static [INJECT] = [ConfigService];
 
@@ -58,6 +59,7 @@ export class CORS extends Middleware {
       ],
       (newValue) => {
         this.cors = newValue as CorsOptions;
+        this.cors.CORS_ALLOW_HEADERS.push("x-csrf-token");
       },
     );
   }
@@ -89,10 +91,7 @@ export class CORS extends Middleware {
   private _configureOrigin(requestHeaders: Headers, responseHeaders: Headers) {
     const origin = requestHeaders.get("origin") as string;
 
-    const isAllowed = isOriginAllowed(
-      origin,
-      this.cors?.["CORS_ALLOW_ORIGINS"] as string[],
-    );
+    const isAllowed = isOriginAllowed(origin, this.cors.CORS_ALLOW_ORIGINS);
 
     responseHeaders.set(
       "access-control-allow-origin",
@@ -105,7 +104,7 @@ export class CORS extends Middleware {
     _requestHeaders: Headers,
     responseHeaders: Headers,
   ) {
-    if (this.cors?.["CORS_ALLOW_CREDENTIALS"]) {
+    if (this.cors.CORS_ALLOW_CREDENTIALS) {
       responseHeaders.set("access-control-allow-credentials", "true");
     }
   }
@@ -116,7 +115,7 @@ export class CORS extends Middleware {
   ) {
     responseHeaders.set(
       "access-control-allow-methods",
-      this.cors!["CORS_ALLOW_METHODS"].join(","),
+      this.cors.CORS_ALLOW_METHODS.join(","),
     );
   }
 
@@ -124,10 +123,18 @@ export class CORS extends Middleware {
     requestHeaders: Headers,
     responseHeaders: Headers,
   ) {
-    // TODO
+    responseHeaders.set(
+      "access-control-allow-headers",
+      this.cors.CORS_ALLOW_HEADERS.join(","),
+    );
   }
 
-  private _configureMaxAge(requestHeaders: Headers, responseHeaders: Headers) {}
+  private _configureMaxAge(requestHeaders: Headers, responseHeaders: Headers) {
+    responseHeaders.set(
+      "access-control-max-age",
+      this.cors.CORS_MAX_AGE_IN_SECONDS.toString(),
+    );
+  }
 
   private _configureExposedHeaders(
     requestHeaders: Headers,

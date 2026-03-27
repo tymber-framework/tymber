@@ -29,6 +29,7 @@ describe("CORS", () => {
                   return Promise.resolve({
                     CORS_ALLOW_ORIGINS: ["https://good-domain.com"],
                     CORS_ALLOW_CREDENTIALS: true,
+                    CORS_ALLOW_HEADERS: ["custom-header"],
                   });
                 }
               },
@@ -72,6 +73,10 @@ describe("CORS", () => {
       res.headers.get("access-control-allow-methods"),
       "GET,HEAD,PUT,PATCH,POST,DELETE",
     );
+    assert.equal(
+      res.headers.get("access-control-allow-headers"),
+      "custom-header,x-csrf-token",
+    );
   });
 
   it("should not add the CORS headers to the preflight request (bad domain)", async () => {
@@ -104,5 +109,6 @@ describe("CORS", () => {
     );
     assert.equal(res.headers.get("access-control-allow-credentials"), "true");
     assert.equal(res.headers.has("access-control-allow-methods"), false);
+    assert.equal(res.headers.has("access-control-allow-headers"), false);
   });
 });

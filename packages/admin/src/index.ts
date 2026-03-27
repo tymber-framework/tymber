@@ -88,8 +88,8 @@ export const AdminModule: Module = {
     app.component(AdminCookieService);
     app.component(AdminAuditServiceImpl);
 
-    app.middleware(CSRF);
     app.middleware(CORS);
+    app.middleware(CSRF);
     app.middleware(CheckInit);
     app.middleware(ParseAdminSession);
 
