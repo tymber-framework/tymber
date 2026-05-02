@@ -169,6 +169,51 @@ describe("Endpoint", () => {
     return ctx.close();
   });
 
+  it("should handle charset in the content-type header", async () => {
+    const ctx = await createTestApp(
+      () => createTestDB(),
+      [
+        {
+          name: "test",
+          version: "0.0.1",
+          init(app) {
+            app.endpoint(
+              "POST",
+              "/test",
+              class extends Endpoint {
+                allowAnonymous = true;
+
+                payloadSchema = {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                  },
+                  required: ["id"],
+                };
+
+                handle() {
+                  return Response.json({ message: "ok" });
+                }
+              },
+            );
+          },
+        },
+      ],
+    );
+
+    const res = await fetch(ctx.baseUrl + "/test", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({ id: "test" }),
+    });
+
+    assert.equal(res.status, 200);
+
+    return ctx.close();
+  });
+
   it("should validate the query params", async () => {
     interface Query {
       a: string;

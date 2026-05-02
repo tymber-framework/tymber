@@ -238,7 +238,9 @@ export class App {
     const contentType = req.headers.get("content-type");
 
     if (contentType) {
-      if (contentType !== "application/json") {
+      const mediaType = contentType.split(";")[0]?.trim().toLowerCase();
+
+      if (mediaType !== "application/json") {
         // TODO support other content types
         return Response.json(
           {

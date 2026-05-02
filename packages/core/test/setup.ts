@@ -10,11 +10,15 @@ class DummyDB extends DB {
     throw "not implemented";
   }
 
+  exec(ctx: Context, query: Statement): Promise<void> {
+    throw "not implemented";
+  }
+
   run(ctx: Context, query: Statement): Promise<{ affectedRows: number }> {
     throw "not implemented";
   }
 
-  startTransaction(ctx: Context, fn: () => Promise<void>): Promise<void> {
+  startTransaction<T>(ctx: Context, fn: () => Promise<T>): Promise<T> {
     throw "not implemented";
   }
 
