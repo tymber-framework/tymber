@@ -418,7 +418,8 @@ function groupExpression(
 
 sql.and = (clauses: Expression[]) => groupExpression(clauses, " AND ");
 sql.or = (clauses: Expression[]) => groupExpression(clauses, " OR ");
-sql.not = (expr: Expression) => (ctx: BuildContext) => "NOT " + expr(ctx);
+sql.not = (expr: Expression) => (ctx: BuildContext) =>
+  "NOT (" + expr(ctx) + ")";
 
 function unaryExpression(column: string, op: string) {
   return () => `${handleColumn(column)} ${op}`;

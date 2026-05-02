@@ -284,7 +284,7 @@ describe("SQL query builder", () => {
     });
 
     describe("NOT", () => {
-      check(sql.not(sql.eq("id", 1)), "NOT id = $1", [1]);
+      check(sql.not(sql.eq("id", 1)), "NOT (id = $1)", [1]);
     });
 
     describe("raw()", () => {
