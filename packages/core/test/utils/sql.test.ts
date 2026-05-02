@@ -112,6 +112,14 @@ describe("SQL query builder", () => {
       );
     });
 
+    describe("LIMIT/OFFSET 0", () => {
+      check(
+        sql.select().from("users").limit(0).offset(0),
+        "SELECT * FROM users LIMIT $1 OFFSET $2",
+        [0, 0],
+      );
+    });
+
     describe("FOR UPDATE", () => {
       check(
         sql.select().from("users").forUpdate(),

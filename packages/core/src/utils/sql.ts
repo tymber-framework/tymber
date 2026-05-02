@@ -219,14 +219,14 @@ class SelectStatement extends Statement {
   }
 
   protected limitPart(ctx: BuildContext) {
-    if (this._limit) {
+    if (this._limit !== undefined) {
       // PostgreSQL/SQLite syntax
       return "LIMIT " + handleValue(this._limit, ctx);
     }
   }
 
   protected offsetPart(ctx: BuildContext) {
-    if (this._offset) {
+    if (this._offset !== undefined) {
       // PostgreSQL/SQLite syntax
       return "OFFSET " + handleValue(this._offset, ctx);
     }
