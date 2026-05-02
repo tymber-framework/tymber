@@ -263,6 +263,10 @@ describe("SQL query builder", () => {
       check(sql.in("id", [1, 2, 3]), "id IN ($1, $2, $3)", [1, 2, 3]);
     });
 
+    describe("IN + empty array", () => {
+      check(sql.in("id", []), "1 = 0", []);
+    });
+
     describe("AND", () => {
       check(
         sql.and([sql.eq("id", 1), sql.eq("name", "John")]),

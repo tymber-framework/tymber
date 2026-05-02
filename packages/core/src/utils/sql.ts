@@ -473,6 +473,10 @@ sql.ilike = (column: string, value: any, escapeChar?: string) =>
   likeExpression(column, "ILIKE", value, escapeChar);
 
 sql.in = (column: string, values: any[]) => {
+  if (values.length === 0) {
+    return () => "1 = 0";
+  }
+
   return (ctx: BuildContext) =>
     `${handleColumn(column)} IN (${values.map((value) => handleValue(value, ctx)).join(", ")})`;
 };
