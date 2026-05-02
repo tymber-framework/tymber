@@ -83,14 +83,6 @@ export class App {
     components: Component[];
     modules: Module[];
   }) {
-    const db = components.find((c) => {
-      return c instanceof DB;
-    });
-
-    if (!db) {
-      throw new Error("no DB component found");
-    }
-
     debug(
       "starting app in %s mode",
       isProduction ? "production" : "development",
@@ -116,8 +108,14 @@ export class App {
       ...components,
     );
 
-    debug("running migrations");
-    await runMigrations(db, moduleDefinitions);
+    const db = components.find((c) => {
+      return c instanceof DB;
+    });
+
+    if (db) {
+      debug("running migrations");
+      await runMigrations(db, moduleDefinitions);
+    }
 
     debug("initializing all components");
     await Promise.all(allComponents.map((component) => component.init()));

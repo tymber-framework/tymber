@@ -1,7 +1,6 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
 import { App, type AppInit, Component } from "../../src";
-import { createTestDB } from "../setup.js";
 
 describe("App", () => {
   it("should initialize and close components", async () => {
@@ -19,7 +18,7 @@ describe("App", () => {
     }
 
     const app = await App.create({
-      components: [createTestDB()],
+      components: [],
       modules: [
         {
           name: "test",
