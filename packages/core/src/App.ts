@@ -233,6 +233,7 @@ export class App {
       return this.renderHttp404Error(ctx);
     }
 
+    // @ts-expect-error
     ctx.pathParams = route.pathParams;
 
     const contentType = req.headers.get("content-type");
@@ -253,6 +254,7 @@ export class App {
       }
 
       try {
+        // @ts-expect-error
         ctx.payload = await req.json();
       } catch {
         return Response.json(

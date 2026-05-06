@@ -2,8 +2,11 @@ import { type Context } from "./Context.js";
 import { type HttpMethod } from "./Router.js";
 import { type Locale } from "./contrib/accept-language-parser.js";
 
-export interface HttpContext<Payload = any, PathParams = any, QueryParams = any>
-  extends Context {
+export interface HttpContext<
+  Payload = never,
+  PathParams = never,
+  QueryParams = never,
+> extends Context {
   method: HttpMethod;
   payload: Payload;
   path: string;
