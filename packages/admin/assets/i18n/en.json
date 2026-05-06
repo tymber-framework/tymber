@@ -49,6 +49,8 @@
       "routes": "Routes",
       "views": "Views",
       "endpoints": "Endpoints",
+      "userViews": "Views (user)",
+      "userEndpoints": "Endpoints (user)",
       "adminViews": "Views (admin)",
       "adminEndpoints": "Endpoints (admin)",
       "method": "Method",

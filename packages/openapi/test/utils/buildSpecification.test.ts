@@ -28,6 +28,8 @@ describe("buildSpecification", () => {
           },
         ],
         views: [],
+        userEndpoints: [],
+        userViews: [],
         adminEndpoints: [],
         adminViews: [],
         middlewares: [],
@@ -55,9 +57,6 @@ describe("buildSpecification", () => {
             "200": { description: "OK" },
             "400": {
               $ref: "#/components/responses/BadRequest",
-            },
-            "401": {
-              $ref: "#/components/responses/Unauthorized",
             },
             "500": {
               $ref: "#/components/responses/InternalServerError",
@@ -93,6 +92,8 @@ describe("buildSpecification", () => {
           },
         ],
         views: [],
+        userEndpoints: [],
+        userViews: [],
         adminEndpoints: [],
         adminViews: [],
         middlewares: [],
@@ -119,9 +120,6 @@ describe("buildSpecification", () => {
             "200": { description: "OK" },
             "400": {
               $ref: "#/components/responses/BadRequest",
-            },
-            "401": {
-              $ref: "#/components/responses/Unauthorized",
             },
             "500": {
               $ref: "#/components/responses/InternalServerError",
@@ -160,6 +158,8 @@ describe("buildSpecification", () => {
           },
         ],
         views: [],
+        userEndpoints: [],
+        userViews: [],
         adminEndpoints: [],
         adminViews: [],
         middlewares: [],
@@ -196,9 +196,6 @@ describe("buildSpecification", () => {
             "400": {
               $ref: "#/components/responses/BadRequest",
             },
-            "401": {
-              $ref: "#/components/responses/Unauthorized",
-            },
             "500": {
               $ref: "#/components/responses/InternalServerError",
             },
@@ -220,10 +217,6 @@ describe("buildSpecification", () => {
             path: "/todos",
             handlerName: "listTodos",
             handler: {
-              allowAnonymous: true,
-              hasPermission: () => {
-                return false;
-              },
               openapi: {
                 summary: "List todos",
                 deprecated: true,
@@ -233,6 +226,8 @@ describe("buildSpecification", () => {
           },
         ],
         views: [],
+        userEndpoints: [],
+        userViews: [],
         adminEndpoints: [],
         adminViews: [],
         middlewares: [],
@@ -252,9 +247,6 @@ describe("buildSpecification", () => {
             "200": { description: "OK" },
             "400": {
               $ref: "#/components/responses/BadRequest",
-            },
-            "403": {
-              $ref: "#/components/responses/Forbidden",
             },
             "500": {
               $ref: "#/components/responses/InternalServerError",

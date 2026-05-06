@@ -93,10 +93,14 @@ export const AdminModule: Module = {
     app.middleware(CheckInit);
     app.middleware(ParseAdminSession);
 
+    app.view("/admin/init", InitView);
+    app.view("/admin/login", LogInView);
+
+    app.endpoint("POST", "/api/admin/init", Init);
+    app.endpoint("POST", "/api/admin/login", LogIn);
+
     app.adminView("/admin", HomeView);
-    app.adminView("/admin/init", InitView);
     app.adminView("/admin/init_password", InitPasswordView);
-    app.adminView("/admin/login", LogInView);
     app.adminView("/admin/config", ConfigView);
     app.adminView("/admin/admin_users", ListAdminUsersView);
     app.adminView("/admin/migrations", ListMigrationsView);
@@ -104,10 +108,8 @@ export const AdminModule: Module = {
     app.adminView("/admin/admin_queries", ListAdminQueriesView);
     app.adminView("/admin/admin_audit_logs", ListAdminAuditLogsView);
 
-    app.adminEndpoint("POST", "/api/admin/init", Init);
     app.adminEndpoint("POST", "/api/admin/init_password", InitPassword);
     app.adminEndpoint("GET", "/api/admin/self", GetSelf);
-    app.adminEndpoint("POST", "/api/admin/login", LogIn);
     app.adminEndpoint("POST", "/api/admin/logout", LogOut);
     app.adminEndpoint("GET", "/api/admin/admin_users", ListAdminUsers);
     app.adminEndpoint("POST", "/api/admin/admin_users", CreateAdminUser);

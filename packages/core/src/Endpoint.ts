@@ -55,14 +55,7 @@ abstract class BaseEndpoint extends Handler {
     }
 
     if (!this.hasPermission(ctx)) {
-      return Response.json(
-        {
-          message: "forbidden",
-        },
-        {
-          status: 403,
-        },
-      );
+      return this.forbidden();
     }
 
     return this.handle(ctx);
@@ -79,21 +72,26 @@ abstract class BaseEndpoint extends Handler {
       },
     );
   }
+
+  protected unauthorized() {
+    return Response.json({ message: "unauthorized" }, { status: 401 });
+  }
+
+  protected forbidden() {
+    return Response.json({ message: "forbidden" }, { status: 403 });
+  }
 }
 
 export abstract class Endpoint extends BaseEndpoint {
   private _endpointBrand!: void; // nominal typing
+}
+
+export abstract class UserEndpoint extends BaseEndpoint {
+  private _userEndpointBrand!: void; // nominal typing
 
   override doHandle(ctx: HttpContext) {
-    if (!this.allowAnonymous && !ctx.user) {
-      return Response.json(
-        {
-          message: "unauthorized",
-        },
-        {
-          status: 401,
-        },
-      );
+    if (!ctx.user) {
+      return this.unauthorized();
     }
     return super.doHandle(ctx);
   }
@@ -103,15 +101,8 @@ export abstract class AdminEndpoint extends BaseEndpoint {
   private _adminEndpointBrand!: void; // nominal typing
 
   override doHandle(ctx: HttpContext) {
-    if (!this.allowAnonymous && !ctx.admin) {
-      return Response.json(
-        {
-          message: "unauthorized",
-        },
-        {
-          status: 401,
-        },
-      );
+    if (!ctx.admin) {
+      return this.unauthorized();
     }
     return super.doHandle(ctx);
   }

@@ -39,8 +39,6 @@ describe("CORS", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                allowAnonymous = true;
-
                 override handle() {
                   return Response.json({ status: "OK" });
                 }

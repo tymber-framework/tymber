@@ -1,10 +1,8 @@
-import { AdminView, type HttpContext, INJECT } from "@tymber/core";
+import { type HttpContext, INJECT, View } from "@tymber/core";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 
-export class InitView extends AdminView {
+export class InitView extends View {
   static [INJECT] = [MiscRepository];
-
-  allowAnonymous = true;
 
   constructor(private readonly miscRepository: MiscRepository) {
     super();

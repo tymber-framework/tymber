@@ -49,6 +49,8 @@
       "routes": "Routes",
       "views": "Vues",
       "endpoints": "Points d'accès",
+      "userViews": "Vues (utilisateur)",
+      "userEndpoints": "Points d'accès (utilisateur)",
       "adminViews": "Vues (admin)",
       "adminEndpoints": "Points d'accès (admin)",
       "method": "Méthode",

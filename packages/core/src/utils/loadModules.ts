@@ -1,8 +1,8 @@
 import { Component, ComponentFactory, type Ctor } from "../Component.js";
 import type { Module, ModuleDefinition } from "../Module.js";
 import { type HttpMethod } from "../Router.js";
-import { AdminEndpoint, Endpoint } from "../Endpoint.js";
-import { AdminView, View } from "../View.js";
+import { AdminEndpoint, Endpoint, UserEndpoint } from "../Endpoint.js";
+import { AdminView, UserView, View } from "../View.js";
 import { Middleware } from "../Middleware.js";
 import { createDebug } from "./createDebug.js";
 
@@ -23,6 +23,8 @@ export async function loadModules(
 
       endpoints: [],
       views: [],
+      userEndpoints: [],
+      userViews: [],
       adminEndpoints: [],
       adminViews: [],
       middlewares: [],
@@ -50,6 +52,34 @@ export async function loadModules(
 
       view: (path: string, ctor: Ctor<View>) => {
         debug("adding view %s", path);
+        componentFactory.register(ctor, (handler) => {
+          moduleDefinition.views.push({
+            method: "GET",
+            path,
+            handlerName: ctor.name,
+            handler,
+          });
+        });
+      },
+
+      userEndpoint: (
+        method: HttpMethod,
+        path: string,
+        ctor: Ctor<UserEndpoint>,
+      ) => {
+        debug("adding user endpoint %s %s", method, path);
+        componentFactory.register(ctor, (handler) => {
+          moduleDefinition.endpoints.push({
+            method,
+            path,
+            handlerName: ctor.name,
+            handler,
+          });
+        });
+      },
+
+      userView: (path: string, ctor: Ctor<UserView>) => {
+        debug("adding user view %s", path);
         componentFactory.register(ctor, (handler) => {
           moduleDefinition.views.push({
             method: "GET",

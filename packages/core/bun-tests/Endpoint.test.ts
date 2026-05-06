@@ -18,9 +18,7 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
-                override handle() {
+                handle() {
                   return Response.json({
                     hello: "world",
                   });

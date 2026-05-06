@@ -1,6 +1,10 @@
-import { Endpoint, type HttpContext, type ConnectedUser } from "@tymber/core";
+import {
+  UserEndpoint,
+  type HttpContext,
+  type ConnectedUser,
+} from "@tymber/core";
 
-export class GetSelf extends Endpoint {
+export class GetSelf extends UserEndpoint {
   handle({ user }: HttpContext) {
     const u = user as ConnectedUser;
     return Response.json({

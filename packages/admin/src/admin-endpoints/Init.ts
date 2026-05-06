@@ -1,6 +1,6 @@
 import {
   AdminAuditService,
-  AdminEndpoint,
+  Endpoint,
   type HttpContext,
   INJECT,
 } from "@tymber/core";
@@ -18,7 +18,7 @@ interface Payload {
   password: string;
 }
 
-export class Init extends AdminEndpoint {
+export class Init extends Endpoint {
   static [INJECT] = [
     MiscRepository,
     AdminUserRepository,
@@ -34,8 +34,6 @@ export class Init extends AdminEndpoint {
   ) {
     super();
   }
-
-  allowAnonymous = true;
 
   payloadSchema: JSONSchemaType<Payload> = {
     type: "object",

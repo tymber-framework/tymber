@@ -12,6 +12,8 @@ export class ListRoutesView extends AdminView {
 
   private endpoints: Route[] = [];
   private views: Route[] = [];
+  private userEndpoints: Route[] = [];
+  private userViews: Route[] = [];
   private adminEndpoints: Route[] = [];
   private adminViews: Route[] = [];
 
@@ -21,22 +23,18 @@ export class ListRoutesView extends AdminView {
 
   init() {
     for (const module of this.modules.modules) {
-      if (module.endpoints) {
-        this.endpoints.push(...module.endpoints);
-      }
-      if (module.views) {
-        this.views.push(...module.views);
-      }
-      if (module.adminEndpoints) {
-        this.adminEndpoints.push(...module.adminEndpoints);
-      }
-      if (module.adminViews) {
-        this.adminViews.push(...module.adminViews);
-      }
+      this.endpoints.push(...module.endpoints);
+      this.views.push(...module.views);
+      this.userEndpoints.push(...module.userEndpoints);
+      this.userViews.push(...module.userViews);
+      this.adminEndpoints.push(...module.adminEndpoints);
+      this.adminViews.push(...module.adminViews);
     }
 
     sortBy(this.endpoints, "path", "method");
     sortBy(this.views, "path", "method");
+    sortBy(this.userEndpoints, "path", "method");
+    sortBy(this.userViews, "path", "method");
     sortBy(this.adminEndpoints, "path", "method");
     sortBy(this.adminViews, "path", "method");
   }
@@ -45,6 +43,8 @@ export class ListRoutesView extends AdminView {
     return ctx.render(["admin.layout", "admin.app-layout", "admin.routes"], {
       endpoints: this.endpoints,
       views: this.views,
+      userEndpoints: this.userEndpoints,
+      userViews: this.userViews,
       adminEndpoints: this.adminEndpoints,
       adminViews: this.adminViews,
     });

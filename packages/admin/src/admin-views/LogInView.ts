@@ -1,8 +1,6 @@
-import { AdminView, type HttpContext } from "@tymber/core";
+import { View, type HttpContext } from "@tymber/core";
 
-export class LogInView extends AdminView {
-  allowAnonymous = true;
-
+export class LogInView extends View {
   handle(ctx: HttpContext) {
     if (ctx.admin) {
       return ctx.redirect("/admin");

@@ -113,6 +113,107 @@
 <% } %>
 
 <h2 class="subtitle">
+  <%= $t("tymber.routes.userViews") %> (<%= userViews.length %>)
+</h2>
+
+<% if (userViews.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of userViews) { %>
+    <tr>
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td><%= route.handlerName %></td>
+
+      <td>
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
+
+<h2 class="subtitle">
+  <%= $t("tymber.routes.userEndpoints") %> (<%= userEndpoints.length %>)
+</h2>
+
+<% if (userEndpoints.length > 0) { %>
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><%= $t("tymber.routes.method") %></th>
+      <th><%= $t("tymber.routes.path") %></th>
+      <th><%= $t("tymber.routes.handler") %></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% for (const route of userEndpoints) { %>
+    <tr>
+      <td>
+        <% if (route.method === "GET") { %>
+        <span class="tag is-success">GET</span>
+        <% } else if (route.method === "POST") { %>
+        <span class="tag is-info">POST</span>
+        <% } else if (route.method === "PUT") { %>
+        <span class="tag is-warning">PUT</span>
+        <% } else if (route.method === "DELETE") { %>
+        <span class="tag is-danger">DELETE</span>
+        <% } else { %>
+        <span class="tag is-link"><%= route.method %></span>
+        <% } %>
+      </td>
+
+      <td>
+        <code><%= route.path %></code>
+      </td>
+
+      <td><%= route.handlerName %></td>
+
+      <td>
+        <% if (route.method === "GET") { %>
+        <a
+          href="<%= route.path %>"
+          target="_blank"
+          class="button is-small is-primary is-outlined is-pulled-right"
+        >
+          <span class="icon">
+            <svg width="48" height="48">
+              <use xlink:href="#arrow-top-right"></use>
+            </svg>
+          </span>
+        </a>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
+
+<h2 class="subtitle">
   <%= $t("tymber.routes.adminViews") %> (<%= adminViews.length %>)
 </h2>
 

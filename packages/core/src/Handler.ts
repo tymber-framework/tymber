@@ -2,8 +2,6 @@ import { Component } from "./Component.js";
 import { type HttpContext } from "./HttpContext.js";
 
 export abstract class Handler extends Component {
-  protected allowAnonymous = false;
-
   protected hasPermission(ctx: HttpContext) {
     return true;
   }

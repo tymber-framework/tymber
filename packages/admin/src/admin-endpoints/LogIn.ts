@@ -3,7 +3,7 @@ import { verify } from "argon2";
 import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
 import {
   AdminAuditService,
-  AdminEndpoint,
+  Endpoint,
   type HttpContext,
   INJECT,
 } from "@tymber/core";
@@ -14,7 +14,7 @@ interface Payload {
   password: string;
 }
 
-export class LogIn extends AdminEndpoint {
+export class LogIn extends Endpoint {
   static [INJECT] = [
     AdminUserRepository,
     AdminCookieService,
@@ -28,8 +28,6 @@ export class LogIn extends AdminEndpoint {
   ) {
     super();
   }
-
-  allowAnonymous = true;
 
   payloadSchema: JSONSchemaType<Payload> = {
     type: "object",

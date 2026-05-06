@@ -46,8 +46,6 @@ describe("View", () => {
             app.view(
               "/",
               class extends View {
-                override allowAnonymous = true;
-
                 override handle(ctx: HttpContext) {
                   return ctx.render(["layout", "view"], {
                     value: "hello",
@@ -59,8 +57,6 @@ describe("View", () => {
             app.view(
               "/no-layout",
               class extends View {
-                override allowAnonymous = true;
-
                 override handle(ctx: HttpContext) {
                   return ctx.render("view", {
                     value: "hello",
@@ -72,8 +68,6 @@ describe("View", () => {
             app.view(
               "/localized",
               class extends View {
-                override allowAnonymous = true;
-
                 override handle(ctx: HttpContext) {
                   return ctx.render("localized-view");
                 }
@@ -83,8 +77,6 @@ describe("View", () => {
             app.view(
               "/hbs",
               class extends View {
-                override allowAnonymous = true;
-
                 override handle(ctx: HttpContext) {
                   return ctx.render(["custom-layout", "custom-view"], {
                     value: "hello",

@@ -16,8 +16,6 @@ export class Console extends View {
     super();
   }
 
-  allowAnonymous = true;
-
   handle(ctx: HttpContext): Response | Promise<Response> {
     if (!this.spec) {
       this.spec = buildSpecification(this.moduleDefinitions);

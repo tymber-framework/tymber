@@ -44,8 +44,8 @@ export const UserModule: Module = {
 
     app.middleware(ParseSession);
 
-    app.endpoint("GET", "/api/self", GetSelf);
-    app.endpoint("POST", "/api/logout", LogOut);
+    app.userEndpoint("GET", "/api/self", GetSelf);
+    app.userEndpoint("POST", "/api/logout", LogOut);
 
     app.adminView("/admin/users", ListUsersView);
     app.adminView("/admin/users/:userId", UserDetailsView);

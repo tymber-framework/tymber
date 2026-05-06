@@ -85,7 +85,7 @@ export function buildSpecification(moduleDefinitions: ModuleDefinitions) {
   };
 
   for (const module of moduleDefinitions.modules) {
-    for (const endpoint of module.endpoints) {
+    for (const endpoint of [...module.endpoints, ...module.userEndpoints]) {
       const method = endpoint.method.toLowerCase() as OpenAPIV3.HttpMethods;
       const path = endpoint.path.replace(/:(\w+)/g, "{$1}");
 
@@ -143,21 +143,6 @@ function createOperation(moduleName: string, endpoint: Route) {
           schema: payloadSchema,
         },
       },
-    };
-  }
-
-  // @ts-expect-error protected properties
-  const { allowAnonymous, hasPermission } = endpoint.handler;
-
-  if (!allowAnonymous) {
-    operation.responses["401"] = {
-      $ref: "#/components/responses/Unauthorized",
-    };
-  }
-
-  if (typeof hasPermission === "function") {
-    operation.responses["403"] = {
-      $ref: "#/components/responses/Forbidden",
     };
   }
 

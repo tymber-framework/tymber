@@ -1,11 +1,16 @@
-import { createCookie, Endpoint, type HttpContext, INJECT } from "@tymber/core";
+import {
+  createCookie,
+  UserEndpoint,
+  type HttpContext,
+  INJECT,
+} from "@tymber/core";
 import {
   type SessionId,
   UserRepository,
 } from "../repositories/UserRepository.js";
 import { SESSION_COOKIE } from "../middlewares/ParseSession.js";
 
-export class LogOut extends Endpoint {
+export class LogOut extends UserEndpoint {
   static [INJECT] = [UserRepository];
 
   constructor(private readonly userRepository: UserRepository) {

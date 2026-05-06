@@ -20,7 +20,7 @@ export {
   initPrimary,
 } from "./PubSubService.js";
 export { I18nService } from "./I18nService.js";
-export { Endpoint, AdminEndpoint } from "./Endpoint.js";
+export { Endpoint, UserEndpoint, AdminEndpoint } from "./Endpoint.js";
 export { type HttpContext } from "./HttpContext.js";
 export { App } from "./App.js";
 export {
@@ -29,7 +29,7 @@ export {
   ModuleDefinitions,
   type Route,
 } from "./Module.js";
-export { View, AdminView } from "./View.js";
+export { View, UserView, AdminView } from "./View.js";
 export { Middleware } from "./Middleware.js";
 export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateEngine } from "./TemplateEngine.js";

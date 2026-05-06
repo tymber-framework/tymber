@@ -1,7 +1,7 @@
 import { Component, type Ctor } from "./Component.js";
 import type { HttpMethod } from "./Router.js";
-import { AdminEndpoint, Endpoint } from "./Endpoint.js";
-import { AdminView, View } from "./View.js";
+import { AdminEndpoint, Endpoint, UserEndpoint } from "./Endpoint.js";
+import { AdminView, UserView, View } from "./View.js";
 import { Middleware } from "./Middleware.js";
 import { type Handler } from "./Handler.js";
 
@@ -24,6 +24,12 @@ export interface AppInit {
   component<T extends Component>(ctor: Ctor<T>): void;
   endpoint(method: HttpMethod, path: string, ctor: Ctor<Endpoint>): void;
   view(path: string, ctor: Ctor<View>): void;
+  userEndpoint(
+    method: HttpMethod,
+    path: string,
+    ctor: Ctor<UserEndpoint>,
+  ): void;
+  userView(path: string, ctor: Ctor<UserView>): void;
   adminEndpoint(
     method: HttpMethod,
     path: string,
@@ -48,6 +54,8 @@ export interface ModuleDefinition {
 
   endpoints: Route[];
   views: Route[];
+  userEndpoints: Route[];
+  userViews: Route[];
   adminEndpoints: Route[];
   adminViews: Route[];
   middlewares: Middleware[];

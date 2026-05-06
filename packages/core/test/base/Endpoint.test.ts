@@ -17,8 +17,6 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 override handle() {
                   return Response.json({
                     hello: "world",
@@ -56,8 +54,6 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 override handle() {
                   return new Response(null, {
                     status: 204,
@@ -92,8 +88,6 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 override handle(): Response {
                   throw "error";
                 }
@@ -129,8 +123,6 @@ describe("Endpoint", () => {
               "POST",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 payloadSchema = {
                   type: "object",
                   properties: {
@@ -181,8 +173,6 @@ describe("Endpoint", () => {
               "POST",
               "/test",
               class extends Endpoint {
-                allowAnonymous = true;
-
                 payloadSchema = {
                   type: "object",
                   properties: {
@@ -232,8 +222,6 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 querySchema = {
                   type: "object",
                   properties: {
@@ -290,8 +278,6 @@ describe("Endpoint", () => {
               "GET",
               "/test",
               class extends Endpoint {
-                override allowAnonymous = true;
-
                 override hasPermission() {
                   return false;
                 }

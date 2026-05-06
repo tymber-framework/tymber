@@ -35,9 +35,13 @@ export abstract class BaseView extends Handler {
 
 export abstract class View extends BaseView {
   private _viewBrand!: void; // nominal typing
+}
+
+export abstract class UserView extends BaseView {
+  private _userViewBrand!: void; // nominal typing
 
   override doHandle(ctx: HttpContext) {
-    if (!this.allowAnonymous && !ctx.user) {
+    if (!ctx.user) {
       return ctx.redirect("/login");
     }
     if (!this.hasPermission(ctx)) {
@@ -51,7 +55,7 @@ export abstract class AdminView extends BaseView {
   private _adminViewBrand!: void; // nominal typing
 
   override doHandle(ctx: HttpContext) {
-    if (!this.allowAnonymous && !ctx.admin) {
+    if (!ctx.admin) {
       return ctx.redirect("/admin/login");
     }
     // note: no hasPermission() check for admins
