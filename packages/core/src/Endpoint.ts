@@ -34,14 +34,25 @@ abstract class BaseEndpoint extends Handler {
       });
     }
 
-    if (this.querySchema && !this.validateQuery) {
-      this.validateQuery = AJV_INSTANCE.compile(this.querySchema);
-    }
+    if (this.querySchema) {
+      if (!this.validateQuery) {
+        this.validateQuery = AJV_INSTANCE.compile(this.querySchema);
+      }
 
-    if (this.validateQuery && !this.validateQuery(query)) {
-      return this.badRequest("invalid query params", {
-        errors: formatErrors(this.validateQuery.errors!),
-      });
+      // @ts-expect-error unknown
+      const properties = this.querySchema.properties;
+
+      for (const key in properties) {
+        if (query[key] !== undefined && properties[key].type !== "array") {
+          query[key] = query[key][0];
+        }
+      }
+
+      if (!this.validateQuery(query)) {
+        return this.badRequest("invalid query params", {
+          errors: formatErrors(this.validateQuery.errors!),
+        });
+      }
     }
 
     if (this.payloadSchema && !this.validatePayload) {

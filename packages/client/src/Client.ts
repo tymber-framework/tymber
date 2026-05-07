@@ -62,9 +62,18 @@ export class Client {
 
     if (query) {
       const searchParams = new URLSearchParams();
+
       Object.keys(query).forEach((key) => {
-        searchParams.set(camelToSnakeCase(key), query[key]);
+        const value = query[key];
+        const snakeKey = camelToSnakeCase(key);
+
+        if (Array.isArray(value)) {
+          value.forEach((v) => searchParams.append(snakeKey, v));
+        } else {
+          searchParams.set(snakeKey, value);
+        }
       });
+
       url += "?" + searchParams;
     }
 

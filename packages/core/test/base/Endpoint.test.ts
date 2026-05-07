@@ -208,6 +208,8 @@ describe("Endpoint", () => {
     interface Query {
       a: string;
       b: number;
+      d: string[];
+      e: number[];
       snakeCase: boolean;
     }
 
@@ -227,6 +229,8 @@ describe("Endpoint", () => {
                   properties: {
                     a: { type: "string" },
                     b: { type: "number" },
+                    d: { type: "array", items: { type: "string" } },
+                    e: { type: "array", items: { type: "number" } },
                     snakeCase: { type: "boolean" },
                   },
                   required: [],
@@ -253,6 +257,8 @@ describe("Endpoint", () => {
         a: "1",
         b: "2", // force conversion
         c: "3", // ignore
+        d: ["4", "5"],
+        e: "6",
         snake_case: true, // convert case
       },
     });
@@ -260,6 +266,8 @@ describe("Endpoint", () => {
     assert.deepEqual(res.body, {
       a: "1",
       b: 2,
+      d: ["4", "5"],
+      e: [6],
       snakeCase: true,
     });
 

@@ -53,9 +53,9 @@ function createRouter(modules: ModuleDefinition[]) {
 function parseQueryParams(url: URL) {
   const query = Object.create(null);
 
-  url.searchParams.forEach((value, key) => {
-    query[snakeToCamelCase(key)] = value;
-  });
+  for (const key of new Set(url.searchParams.keys())) {
+    query[snakeToCamelCase(key)] = url.searchParams.getAll(key);
+  }
 
   return query;
 }
