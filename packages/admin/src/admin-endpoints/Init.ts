@@ -51,7 +51,6 @@ export class Init extends Endpoint {
       "username",
       "password",
     ],
-    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

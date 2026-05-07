@@ -46,7 +46,6 @@ export class CreateAdminUser extends AdminEndpoint {
       password: { type: "string", minLength: 8, maxLength: 100 },
     },
     required: ["username", "password"],
-    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

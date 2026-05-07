@@ -114,7 +114,6 @@ export class DBConfigService extends ConfigService {
       type: "object",
       properties,
       required: [],
-      additionalProperties: false,
     });
   }
 

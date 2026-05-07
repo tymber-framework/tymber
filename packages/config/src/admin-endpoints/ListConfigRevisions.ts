@@ -24,7 +24,6 @@ export class ListConfigRevisions extends AdminEndpoint {
       },
     },
     required: [],
-    additionalProperties: false,
   };
 
   override async handle(ctx: HttpContext) {

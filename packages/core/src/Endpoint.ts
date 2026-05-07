@@ -1,7 +1,7 @@
 import { type HttpContext } from "./HttpContext.js";
 import { type ErrorObject, type ValidateFunction } from "ajv";
 import { Handler } from "./Handler.js";
-import { AJV_INSTANCE } from "./utils/ajv.js";
+import { AJV_INSTANCE, AJV_INSTANCE_STRICT } from "./utils/ajv.js";
 
 function formatErrors(
   errors: ErrorObject<string, Record<string, any>, unknown>[],
@@ -56,7 +56,7 @@ abstract class BaseEndpoint extends Handler {
     }
 
     if (this.payloadSchema && !this.validatePayload) {
-      this.validatePayload = AJV_INSTANCE.compile(this.payloadSchema);
+      this.validatePayload = AJV_INSTANCE_STRICT.compile(this.payloadSchema);
     }
 
     if (this.validatePayload && !this.validatePayload(payload)) {

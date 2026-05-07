@@ -234,7 +234,6 @@ describe("Endpoint", () => {
                     snakeCase: { type: "boolean" },
                   },
                   required: [],
-                  additionalProperties: false,
                 };
 
                 handle(ctx: HttpContext<never, never, Query>) {

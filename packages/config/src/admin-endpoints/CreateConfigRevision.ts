@@ -24,7 +24,6 @@ export class CreateConfigRevision extends AdminEndpoint {
       comment: { type: "string", maxLength: 1000 },
     },
     required: ["values"],
-    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

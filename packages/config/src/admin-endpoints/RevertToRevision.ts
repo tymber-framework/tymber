@@ -31,7 +31,6 @@ export class RevertToRevision extends AdminEndpoint {
       revisionId: { type: "number" },
     },
     required: ["revisionId"],
-    additionalProperties: false,
   };
 
   payloadSchema: JSONSchemaType<Payload> = {

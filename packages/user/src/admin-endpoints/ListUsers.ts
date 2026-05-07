@@ -32,7 +32,6 @@ export class ListUsers extends AdminEndpoint {
       },
     },
     required: [],
-    additionalProperties: false,
   };
 
   override async handle(ctx: HttpContext<never, never, UserQuery>) {

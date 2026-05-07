@@ -40,7 +40,6 @@ export class RunAdminQuery extends AdminEndpoint {
       comment: { type: "string", maxLength: 1000 },
     },
     required: ["query", "comment"],
-    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {
