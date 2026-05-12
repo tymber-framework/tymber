@@ -69,7 +69,7 @@ export async function loadModules(
       ) => {
         debug("adding user endpoint %s %s", method, path);
         componentFactory.register(ctor, (handler) => {
-          moduleDefinition.endpoints.push({
+          moduleDefinition.userEndpoints.push({
             method,
             path,
             handlerName: ctor.name,
@@ -81,7 +81,7 @@ export async function loadModules(
       userView: (path: string, ctor: Ctor<UserView>) => {
         debug("adding user view %s", path);
         componentFactory.register(ctor, (handler) => {
-          moduleDefinition.views.push({
+          moduleDefinition.userViews.push({
             method: "GET",
             path,
             handlerName: ctor.name,

@@ -30,19 +30,14 @@ function createRouter(modules: ModuleDefinition[]) {
   const router = new Router();
 
   for (const module of modules) {
-    for (const { method, path, handler } of module.endpoints) {
-      router.registerRoute(method, path, handler);
-    }
-
-    for (const { method, path, handler } of module.views) {
-      router.registerRoute(method, path, handler);
-    }
-
-    for (const { method, path, handler } of module.adminEndpoints) {
-      router.registerRoute(method, path, handler);
-    }
-
-    for (const { method, path, handler } of module.adminViews) {
+    for (const { method, path, handler } of [
+      ...module.endpoints,
+      ...module.views,
+      ...module.userEndpoints,
+      ...module.userViews,
+      ...module.adminEndpoints,
+      ...module.adminViews,
+    ]) {
       router.registerRoute(method, path, handler);
     }
   }
