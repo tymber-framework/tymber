@@ -2,10 +2,30 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.2.2](#022-2026-05-12) | May 2026      |
 | [0.2.1](#021-2026-03-11) | March 2026    |
 | [0.2.0](#020-2026-02-19) | February 2026 |
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
+
+## [0.2.2](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.1...@tymber/core@0.2.2) (2026-05-12)
+
+
+### Bug Fixes
+
+* allow multiple values for query params ([e6dce21](https://github.com/tymber-framework/tymber/commit/e6dce21f5ad80631efc5948cff428b37a97a4c49))
+* handle charset in content-type header ([743a146](https://github.com/tymber-framework/tymber/commit/743a146310e48a4e15bdcd1c16a78477cc5322df))
+* handle falsy config values ([5ab304f](https://github.com/tymber-framework/tymber/commit/5ab304f16e7e96badda5383293823e48d658ebdb))
+* keep the order of the middlewares ([f928087](https://github.com/tymber-framework/tymber/commit/f9280872324ebd666a2e0b55462d4b2fbaefe232))
+* **SQL**: handle LIMIT/OFFSET 0 in SQL query builder ([6a54673](https://github.com/tymber-framework/tymber/commit/6a546734120cbc7a7be17f7660fcbeab40372684))
+* **SQL**: handle SQL IN with empty array ([732dfc8](https://github.com/tymber-framework/tymber/commit/732dfc8c99881ed8097beecf85d5764ae8b9cea1))
+* **SQL**: parenthesize expressions in SQL NOT() ([d100067](https://github.com/tymber-framework/tymber/commit/d100067f2538f4534c441f51b4040d61cbc61668))
+
+### Dependencies
+
+- [`ajv@~8.18.0`](https://www.npmjs.com/package/ajv/v/8.18.0) (`~8.17.1` to `~8.18.0`)
+- [`ajv-formats@~3.0.1`](https://www.npmjs.com/package/ajv-formats/v/3.0.1) (no change)
+
 
 ## [0.2.1](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.0...@tymber/core@0.2.1) (2026-03-11)
 
