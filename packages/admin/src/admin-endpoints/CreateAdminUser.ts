@@ -53,7 +53,7 @@ export class CreateAdminUser extends AdminEndpoint {
 
     try {
       await this.adminUserRepository.startTransaction(ctx, async () => {
-        const { id } = await this.adminUserRepository.save(ctx, {
+        const { id } = await this.adminUserRepository.insert(ctx, {
           username: payload.username,
           password: await hash(payload.password),
           isTemporaryPassword: true,

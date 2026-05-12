@@ -45,7 +45,7 @@ export class AdminAuditRepository extends Repository<number, AdminAuditLog> {
     action: string,
     details: Record<string, any> = {},
   ): Promise<void> {
-    await this.save(ctx, {
+    await this.insert(ctx, {
       createdAt: ctx.startedAt,
       createdBy: ctx.admin!.id,
       action,

@@ -132,7 +132,7 @@ export class DBConfigService extends ConfigService {
     }
 
     return this.configRepository.startTransaction(ctx, async () => {
-      const { id } = await this.configRepository.save(ctx, {
+      const { id } = await this.configRepository.insert(ctx, {
         createdBy: ctx.admin?.id,
         createdAt: ctx.startedAt,
         values: this.#encryptValues(payload.values),
@@ -184,7 +184,7 @@ export class DBConfigService extends ConfigService {
         throw new ValidationError();
       }
 
-      const { id } = await this.configRepository.save(ctx, {
+      const { id } = await this.configRepository.insert(ctx, {
         createdBy: ctx.admin?.id,
         createdAt: ctx.startedAt,
         values: this.#encryptValues(values),

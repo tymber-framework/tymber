@@ -7,5 +7,5 @@ interface Value {
 
 export class MiscRepository extends Repository<string, Value> {
   tableName = "t_misc";
-  idField = "key";
+  idFields = ["key"];
 }

@@ -64,7 +64,7 @@ export class Init extends Endpoint {
             throw "already initialized";
           }
 
-          const { id } = await this.adminUserRepository.save(ctx, {
+          const { id } = await this.adminUserRepository.insert(ctx, {
             username: payload.username,
             password: await hash(payload.password),
           });
@@ -73,7 +73,7 @@ export class Init extends Endpoint {
 
           const [sessionId] = await Promise.all([
             this.adminUserRepository.createSession(ctx, id),
-            this.miscRepository.save(ctx, {
+            this.miscRepository.insert(ctx, {
               key: "app",
               value: {
                 name: payload.applicationName,

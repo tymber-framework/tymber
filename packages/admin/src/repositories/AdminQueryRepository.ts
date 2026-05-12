@@ -62,7 +62,7 @@ export class AdminQueryRepository extends Repository<number, AdminQuery> {
   async runQuery(ctx: Context, query: string, comment: string) {
     const { affectedRows } = await this.db.run(ctx, sql.rawStatement(query));
 
-    const { id } = await this.save(ctx, {
+    const { id } = await this.insert(ctx, {
       createdAt: ctx.startedAt,
       createdBy: ctx.admin!.id,
       query,

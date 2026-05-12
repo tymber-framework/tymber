@@ -26,7 +26,7 @@ describe("SQLite - Repository", () => {
       tableName = "users";
     })(db);
 
-    const returnedValue = await repository.save(emptyContext(), {
+    const returnedValue = await repository.insert(emptyContext(), {
       firstName: "Bob",
     });
 
@@ -36,7 +36,7 @@ describe("SQLite - Repository", () => {
 
     assert.deepStrictEqual(storedValue, { id: 1, firstName: "Bob" });
 
-    await repository.save(emptyContext(), {
+    await repository.update(emptyContext(), {
       id: 1,
       firstName: "Alice",
     });
@@ -75,10 +75,10 @@ describe("SQLite - Repository", () => {
       User
     > {
       tableName = "users";
-      idField = ["orgId", "id"];
+      idFields = ["orgId", "id"];
     })(db);
 
-    const returnedValue = await repository.save(emptyContext(), {
+    const returnedValue = await repository.insert(emptyContext(), {
       orgId: "1",
       id: 1,
       name: "Apple",

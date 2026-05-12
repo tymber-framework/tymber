@@ -48,7 +48,7 @@ export class InitPassword extends AdminEndpoint {
         }
 
         await Promise.all([
-          this.adminUserRepository.save(ctx, {
+          this.adminUserRepository.update(ctx, {
             id: ctx.admin!.id,
             password: await hash(payload.password),
             isTemporaryPassword: false,

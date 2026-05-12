@@ -5,7 +5,9 @@ import { DB } from "./DB.js";
 import type { Context } from "./Context.js";
 import { sql, Statement } from "./utils/sql.js";
 
-export class EntityNotFoundError extends Error {}
+class RepositoryError extends Error {}
+
+export class EntityNotFoundError extends RepositoryError {}
 
 export abstract class Repository<
   ID,
@@ -14,7 +16,7 @@ export abstract class Repository<
   static [INJECT] = [DB];
 
   protected abstract tableName: string;
-  protected idField: string | string[] = "id";
+  protected idFields: string[] = ["id"];
   protected dateFields: string[] = [];
   protected jsonFields: string[] = [];
 
@@ -39,47 +41,20 @@ export abstract class Repository<
   }
 
   private idClause(id: ID) {
-    if (Array.isArray(this.idField)) {
-      return this.idField.reduce((acc, k) => {
+    if (this.idFields.length === 1) {
+      return {
+        [camelToSnakeCase(this.idFields[0])]: id,
+      };
+    } else {
+      return this.idFields.reduce((acc, k) => {
         // @ts-expect-error
         acc[camelToSnakeCase(k)] = id[k];
         return acc;
       }, {});
-    } else {
-      return {
-        [camelToSnakeCase(this.idField)]: id,
-      };
     }
   }
 
-  public async save(ctx: Context, entity: Partial<T>) {
-    const idFields = Array.isArray(this.idField)
-      ? this.idField
-      : [this.idField];
-    const isIDSpecified = idFields.every(
-      (idField) => entity[idField] !== undefined,
-    );
-
-    if (isIDSpecified) {
-      const idClause: Record<string, any> = {};
-      idFields.forEach((idField) => {
-        idClause[camelToSnakeCase(idField)] = entity[idField];
-      });
-
-      this.onBeforeUpdate(ctx, entity);
-
-      const { affectedRows } = await this.db.run(
-        ctx,
-        sql.update(this.tableName).set(this.toRow(entity)).where(idClause),
-      );
-
-      if (affectedRows > 1) {
-        throw "unexpected number of updated rows";
-      } else if (affectedRows === 1) {
-        return entity as T;
-      }
-    }
-
+  async insert(ctx: Context, entity: Partial<T>) {
     this.onBeforeInsert(ctx, entity);
 
     const rows = await this.db.query(
@@ -88,16 +63,52 @@ export abstract class Repository<
         .insert()
         .into(this.tableName)
         .values([this.toRow(entity)])
-        .returning(idFields.map((idField) => camelToSnakeCase(idField))),
+        .returning(this.idFields.map((idField) => camelToSnakeCase(idField))),
     );
 
     if (rows.length !== 1) {
-      throw "unexpected number of inserted rows";
+      throw new RepositoryError("unexpected number of inserted rows");
     }
 
     Object.assign(entity, this.toEntity(rows[0]));
 
     return entity as T;
+  }
+
+  async update(ctx: Context, entity: Partial<T>) {
+    const isIDSpecified = this.idFields.every(
+      (idField) => entity[idField] !== undefined,
+    );
+
+    if (!isIDSpecified) {
+      throw new RepositoryError("id is required");
+    }
+
+    this.onBeforeUpdate(ctx, entity);
+
+    const idClause: Record<string, any> = {};
+    const entityWithoutId = Object.assign({}, entity);
+
+    for (const idField of this.idFields) {
+      idClause[camelToSnakeCase(idField)] = entity[idField];
+      delete entityWithoutId[idField];
+    }
+
+    const { affectedRows } = await this.db.run(
+      ctx,
+      sql
+        .update(this.tableName)
+        .set(this.toRow(entityWithoutId))
+        .where(idClause),
+    );
+
+    if (affectedRows === 0) {
+      throw new EntityNotFoundError();
+    } else if (affectedRows > 1) {
+      throw new RepositoryError("unexpected number of updated rows");
+    } else {
+      return entity as T;
+    }
   }
 
   public startTransaction<R>(ctx: Context, fn: () => Promise<R>) {
