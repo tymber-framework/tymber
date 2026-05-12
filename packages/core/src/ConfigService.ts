@@ -47,7 +47,7 @@ export abstract class ConfigService extends Component {
       const config: ConfigValues = {};
 
       for (const { key, defaultValue } of elem.configDefinitions) {
-        config[key] = values[key] || defaultValue;
+        config[key] = values[key] ?? defaultValue;
       }
 
       const configHash = hash("sha256", JSON.stringify(config));

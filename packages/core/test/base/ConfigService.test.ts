@@ -15,6 +15,7 @@ describe("ConfigService", () => {
           C: ["3", "4"],
           D: true,
           E: 5,
+          G: 0,
         });
       }
     })();
@@ -35,6 +36,11 @@ describe("ConfigService", () => {
           type: "string",
           defaultValue: "3",
         },
+        {
+          key: "G",
+          type: "number",
+          defaultValue: 1,
+        },
       ],
       (config) => {
         count++;
@@ -42,6 +48,7 @@ describe("ConfigService", () => {
           A: count === 1 ? 1 : 3,
           B: "2",
           F: "3",
+          G: 0,
         });
       },
     );
