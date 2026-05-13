@@ -8,11 +8,15 @@ import {
   type AdminSessionId,
   AdminUserRepository,
 } from "../repositories/AdminUserRepository.js";
+import { AdminCookieService } from "../services/AdminCookieService.js";
 
 export class ParseAdminSession extends Middleware {
-  static [INJECT] = [AdminUserRepository];
+  static [INJECT] = [AdminUserRepository, AdminCookieService];
 
-  constructor(private readonly adminUserRepository: AdminUserRepository) {
+  constructor(
+    private readonly adminUserRepository: AdminUserRepository,
+    private readonly adminCookieService: AdminCookieService,
+  ) {
     super();
   }
 
@@ -22,6 +26,8 @@ export class ParseAdminSession extends Middleware {
     if (!adminSessionId) {
       return;
     }
+
+    const { headers } = ctx;
 
     const admin = await this.adminUserRepository.findBySessionId(
       ctx,
@@ -34,11 +40,7 @@ export class ParseAdminSession extends Middleware {
     } else {
       ctx.responseHeaders.append(
         "set-cookie",
-        createCookie("ssid", "", {
-          path: "/",
-          httpOnly: true,
-          maxAge: 0,
-        }),
+        this.adminCookieService.createExpiredCookie(headers),
       );
     }
   }
