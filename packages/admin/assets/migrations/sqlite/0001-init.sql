@@ -40,8 +40,8 @@ CREATE TABLE t_admin_audit_logs
     created_by INTEGER REFERENCES t_admin_users (id),
 
     action     TEXT,
-    details    JSONB
-);
+    details    TEXT
+) STRICT;
 
 CREATE INDEX t_idx_admin_audit_logs_created_at ON t_admin_audit_logs (created_at);
 CREATE INDEX t_idx_admin_audit_logs_action_created_at ON t_admin_audit_logs (action, created_at);
