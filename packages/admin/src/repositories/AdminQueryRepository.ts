@@ -35,6 +35,8 @@ export interface Query {
   sort: "id:asc" | "id:desc" | "created_at:asc" | "created_at:desc";
 }
 
+class RollbackSignal extends Error {}
+
 export class AdminQueryRepository extends Repository<number, AdminQuery> {
   tableName = "t_admin_queries";
   dateFields = ["createdAt"];
@@ -48,10 +50,10 @@ export class AdminQueryRepository extends Repository<number, AdminQuery> {
 
         affectedRows = result.affectedRows;
 
-        throw "trigger rollback";
+        throw new RollbackSignal();
       });
     } catch (e) {
-      if (e !== "trigger rollback") {
+      if (!(e instanceof RollbackSignal)) {
         throw e;
       }
     }

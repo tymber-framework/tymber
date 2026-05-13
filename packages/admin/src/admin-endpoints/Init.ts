@@ -3,10 +3,14 @@ import {
   Endpoint,
   type HttpContext,
   INJECT,
+  type Result,
 } from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 import { hash } from "argon2";
-import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
+import {
+  type AdminSessionId,
+  AdminUserRepository,
+} from "../repositories/AdminUserRepository.js";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 import { AdminCookieService } from "../services/AdminCookieService.js";
 
@@ -56,55 +60,49 @@ export class Init extends Endpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload, headers } = ctx;
 
-    try {
-      const sessionId = await this.adminUserRepository.startTransaction(
-        ctx,
-        async () => {
-          if (await this.miscRepository.findById(ctx, "app")) {
-            throw "already initialized";
-          }
+    const result: Result<AdminSessionId> =
+      await this.adminUserRepository.startTransaction(ctx, async () => {
+        if (await this.miscRepository.findById(ctx, "app")) {
+          return { ok: false, reason: "already initialized" };
+        }
 
-          const { id } = await this.adminUserRepository.insert(ctx, {
-            username: payload.username,
-            password: await hash(payload.password),
-          });
+        const { id } = await this.adminUserRepository.insert(ctx, {
+          username: payload.username,
+          password: await hash(payload.password),
+        });
 
-          ctx.admin = { id };
+        ctx.admin = { id };
 
-          const [sessionId] = await Promise.all([
-            this.adminUserRepository.createSession(ctx, id),
-            this.miscRepository.insert(ctx, {
-              key: "app",
-              value: {
-                name: payload.applicationName,
-                environment: {
-                  name: payload.environmentName,
-                  color: payload.environmentColorHex,
-                },
+        const [sessionId] = await Promise.all([
+          this.adminUserRepository.createSession(ctx, id),
+          this.miscRepository.insert(ctx, {
+            key: "app",
+            value: {
+              name: payload.applicationName,
+              environment: {
+                name: payload.environmentName,
+                color: payload.environmentColorHex,
               },
-            }),
-            this.adminAuditService.log(ctx, "INIT"),
-          ]);
+            },
+          }),
+          this.adminAuditService.log(ctx, "INIT"),
+        ]);
 
-          return sessionId;
-        },
-      );
-
-      return new Response(null, {
-        status: 204,
-        headers: {
-          "set-cookie": this.adminCookieService.createCookie(
-            sessionId,
-            headers,
-          ),
-        },
+        return { ok: true, value: sessionId };
       });
-    } catch (e) {
-      if (e === "already initialized") {
-        return this.badRequest("already initialized");
-      } else {
-        throw e;
-      }
+
+    if (!result.ok) {
+      return this.badRequest(result.reason);
     }
+
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "set-cookie": this.adminCookieService.createCookie(
+          result.value,
+          headers,
+        ),
+      },
+    });
   }
 }

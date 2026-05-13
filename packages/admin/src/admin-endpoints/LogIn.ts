@@ -1,11 +1,15 @@
 import { type JSONSchemaType } from "ajv";
 import { verify } from "argon2";
-import { AdminUserRepository } from "../repositories/AdminUserRepository.js";
+import {
+  type AdminSessionId,
+  AdminUserRepository,
+} from "../repositories/AdminUserRepository.js";
 import {
   AdminAuditService,
   Endpoint,
   type HttpContext,
   INJECT,
+  type Result,
 } from "@tymber/core";
 import { AdminCookieService } from "../services/AdminCookieService.js";
 
@@ -41,54 +45,48 @@ export class LogIn extends Endpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload, headers } = ctx;
 
-    try {
-      const sessionId = await this.adminUserRepository.startTransaction(
-        ctx,
-        async () => {
-          const adminUser = await this.adminUserRepository.findByUsername(
-            ctx,
-            payload.username,
-          );
+    const result: Result<AdminSessionId> =
+      await this.adminUserRepository.startTransaction(ctx, async () => {
+        const adminUser = await this.adminUserRepository.findByUsername(
+          ctx,
+          payload.username,
+        );
 
-          if (!adminUser) {
-            throw "invalid credentials";
-          }
+        if (!adminUser) {
+          return { ok: false, reason: "invalid credentials" };
+        }
 
-          const isPasswordValid = await verify(
-            adminUser.password!,
-            payload.password,
-          );
+        const isPasswordValid = await verify(
+          adminUser.password!,
+          payload.password,
+        );
 
-          if (!isPasswordValid) {
-            throw "invalid credentials";
-          }
+        if (!isPasswordValid) {
+          return { ok: false, reason: "invalid credentials" };
+        }
 
-          ctx.admin = { id: adminUser.id };
+        ctx.admin = { id: adminUser.id };
 
-          const [sessionId] = await Promise.all([
-            this.adminUserRepository.createSession(ctx, adminUser.id),
-            this.adminAuditService.log(ctx, "LOG_IN"),
-          ]);
+        const [sessionId] = await Promise.all([
+          this.adminUserRepository.createSession(ctx, adminUser.id),
+          this.adminAuditService.log(ctx, "LOG_IN"),
+        ]);
 
-          return sessionId;
-        },
-      );
-
-      return new Response(null, {
-        status: 204,
-        headers: {
-          "set-cookie": this.adminCookieService.createCookie(
-            sessionId,
-            headers,
-          ),
-        },
+        return { ok: true, value: sessionId };
       });
-    } catch (e) {
-      if (e === "invalid credentials") {
-        return this.badRequest("invalid credentials");
-      } else {
-        throw e;
-      }
+
+    if (!result.ok) {
+      return this.badRequest(result.reason);
     }
+
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "set-cookie": this.adminCookieService.createCookie(
+          result.value,
+          headers,
+        ),
+      },
+    });
   }
 }

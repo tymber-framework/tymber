@@ -9,6 +9,7 @@ import {
   AdminEndpoint,
   type HttpContext,
   INJECT,
+  type Result,
 } from "@tymber/core";
 
 interface Payload {
@@ -36,15 +37,16 @@ export class InitPassword extends AdminEndpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload } = ctx;
 
-    try {
-      await this.adminUserRepository.startTransaction(ctx, async () => {
+    const result: Result = await this.adminUserRepository.startTransaction(
+      ctx,
+      async () => {
         const user = (await this.adminUserRepository.findById(
           ctx,
           ctx.admin!.id,
         )) as AdminUser;
 
         if (!user.isTemporaryPassword) {
-          throw "password already set";
+          return { ok: false, reason: "password already set" };
         }
 
         await Promise.all([
@@ -55,12 +57,13 @@ export class InitPassword extends AdminEndpoint {
           }),
           this.adminAuditService.log(ctx, "INIT_PASSWORD"),
         ]);
-      });
-    } catch (e) {
-      if (e === "password already set") {
-        return this.badRequest("password already set");
-      }
-      throw e;
+
+        return { ok: true };
+      },
+    );
+
+    if (!result.ok) {
+      return this.badRequest(result.reason);
     }
 
     return new Response(null, {
