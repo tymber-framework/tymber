@@ -52,5 +52,5 @@ export { snakeToCamelCase } from "./utils/snakeToCamelCase.js";
 export { sortBy } from "./utils/sortBy.js";
 export { sql, Statement } from "./utils/sql.js";
 export { toNodeHandler } from "./utils/toNodeHandler.js";
-export { type Brand } from "./utils/types.js";
+export { type Brand, type Result } from "./utils/types.js";
 export { waitFor } from "./utils/waitFor.js";
