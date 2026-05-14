@@ -2,17 +2,16 @@ import {
   type AdminSessionId,
   AdminUserRepository,
 } from "../repositories/AdminUserRepository.js";
-import {
-  AdminEndpoint,
-  createCookie,
-  type HttpContext,
-  INJECT,
-} from "@tymber/core";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
+import { AdminCookieService } from "../services/AdminCookieService.js";
 
 export class LogOut extends AdminEndpoint {
-  static [INJECT] = [AdminUserRepository];
+  static [INJECT] = [AdminUserRepository, AdminCookieService];
 
-  constructor(private readonly adminUserRepository: AdminUserRepository) {
+  constructor(
+    private readonly adminUserRepository: AdminUserRepository,
+    private readonly adminCookieService: AdminCookieService,
+  ) {
     super();
   }
 
@@ -29,11 +28,7 @@ export class LogOut extends AdminEndpoint {
     return new Response(null, {
       status: 204,
       headers: {
-        "set-cookie": createCookie("ssid", "", {
-          path: "/",
-          httpOnly: true,
-          maxAge: 0,
-        }),
+        "set-cookie": this.adminCookieService.createExpiredCookie(),
       },
     });
   }

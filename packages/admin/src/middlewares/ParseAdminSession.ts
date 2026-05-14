@@ -27,8 +27,6 @@ export class ParseAdminSession extends Middleware {
       return;
     }
 
-    const { headers } = ctx;
-
     const admin = await this.adminUserRepository.findBySessionId(
       ctx,
       adminSessionId as AdminSessionId,
@@ -40,7 +38,7 @@ export class ParseAdminSession extends Middleware {
     } else {
       ctx.responseHeaders.append(
         "set-cookie",
-        this.adminCookieService.createExpiredCookie(headers),
+        this.adminCookieService.createExpiredCookie(),
       );
     }
   }

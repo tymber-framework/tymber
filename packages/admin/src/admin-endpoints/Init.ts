@@ -61,7 +61,7 @@ export class Init extends Endpoint {
   };
 
   async handle(ctx: HttpContext<Payload>) {
-    const { payload, headers } = ctx;
+    const { payload } = ctx;
 
     const result: Result<AdminSessionId> =
       await this.adminUserRepository.startTransaction(ctx, async () => {
@@ -101,10 +101,7 @@ export class Init extends Endpoint {
     return new Response(null, {
       status: 204,
       headers: {
-        "set-cookie": this.adminCookieService.createCookie(
-          result.value,
-          headers,
-        ),
+        "set-cookie": this.adminCookieService.createCookie(result.value),
       },
     });
   }
