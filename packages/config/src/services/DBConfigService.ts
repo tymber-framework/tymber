@@ -71,10 +71,17 @@ export class DBConfigService extends ConfigService {
     const secretKeys = process.env.CONFIG_SECRET_KEYS;
 
     if (!secretKeys) {
-      throw "CONFIG_SECRET_KEYS environment variable is not set";
+      throw new Error("CONFIG_SECRET_KEYS environment variable is not set");
     }
 
-    this.#secretKeys = secretKeys.split(",");
+    this.#secretKeys = secretKeys
+      .split(",")
+      .map((key) => key.trim())
+      .filter(Boolean);
+
+    if (this.#secretKeys.length === 0) {
+      throw new Error("CONFIG_SECRET_KEYS must contain at least one key");
+    }
 
     return super.init();
   }
