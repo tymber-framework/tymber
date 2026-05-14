@@ -119,7 +119,7 @@ function createOperation(moduleName: string, endpoint: Route) {
       operation.parameters!.push({
         name,
         in: "path",
-        required: !!pathParamsSchema.required?.includes(name),
+        required: true,
         schema: schema as OpenAPIV3.SchemaObject,
       });
     }
