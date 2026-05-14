@@ -26,6 +26,7 @@ describe("LogOut", () => {
           {
             id: sessionId,
             user_id: ctx.adminUserId,
+            expires_at: new Date(Date.now() + 1000),
           },
         ]),
     );

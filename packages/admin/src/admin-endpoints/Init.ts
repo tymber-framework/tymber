@@ -13,6 +13,7 @@ import {
 } from "../repositories/AdminUserRepository.js";
 import { MiscRepository } from "../repositories/MiscRepository.js";
 import { AdminCookieService } from "../services/AdminCookieService.js";
+import { AdminUserService } from "../services/AdminUserService.js";
 
 interface Payload {
   applicationName: string;
@@ -27,6 +28,7 @@ export class Init extends Endpoint {
     MiscRepository,
     AdminUserRepository,
     AdminCookieService,
+    AdminUserService,
     AdminAuditService,
   ];
 
@@ -34,6 +36,7 @@ export class Init extends Endpoint {
     private readonly miscRepository: MiscRepository,
     private readonly adminUserRepository: AdminUserRepository,
     private readonly adminCookieService: AdminCookieService,
+    private readonly adminUserService: AdminUserService,
     private readonly adminAuditService: AdminAuditService,
   ) {
     super();
@@ -74,7 +77,7 @@ export class Init extends Endpoint {
         ctx.admin = { id };
 
         const [sessionId] = await Promise.all([
-          this.adminUserRepository.createSession(ctx, id),
+          this.adminUserService.createSession(ctx, id),
           this.miscRepository.insert(ctx, {
             key: "app",
             value: {

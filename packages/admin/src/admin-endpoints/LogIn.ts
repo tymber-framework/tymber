@@ -12,6 +12,7 @@ import {
   type Result,
 } from "@tymber/core";
 import { AdminCookieService } from "../services/AdminCookieService.js";
+import { AdminUserService } from "../services/AdminUserService.js";
 
 interface Payload {
   username: string;
@@ -22,12 +23,14 @@ export class LogIn extends Endpoint {
   static [INJECT] = [
     AdminUserRepository,
     AdminCookieService,
+    AdminUserService,
     AdminAuditService,
   ];
 
   constructor(
     private readonly adminUserRepository: AdminUserRepository,
     private readonly adminCookieService: AdminCookieService,
+    private readonly adminUserService: AdminUserService,
     private readonly adminAuditService: AdminAuditService,
   ) {
     super();
@@ -68,7 +71,7 @@ export class LogIn extends Endpoint {
         ctx.admin = { id: adminUser.id };
 
         const [sessionId] = await Promise.all([
-          this.adminUserRepository.createSession(ctx, adminUser.id),
+          this.adminUserService.createSession(ctx, adminUser.id),
           this.adminAuditService.log(ctx, "LOG_IN"),
         ]);
 

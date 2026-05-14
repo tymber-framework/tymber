@@ -11,6 +11,7 @@ import { GetSelf } from "./admin-endpoints/GetSelf.js";
 import { ListAdminUsers } from "./admin-endpoints/ListAdminUsers.js";
 import { ListMigrations } from "./admin-endpoints/ListMigrations.js";
 import { AdminCookieService } from "./services/AdminCookieService.js";
+import { AdminUserService } from "./services/AdminUserService.js";
 import { LogIn } from "./admin-endpoints/LogIn.js";
 import { LogOut } from "./admin-endpoints/LogOut.js";
 import { ListAdminAuditLogs } from "./admin-endpoints/ListAdminAuditLogs.js";
@@ -86,6 +87,7 @@ export const AdminModule: Module = {
     app.component(AdminAuditRepository);
 
     app.component(AdminCookieService);
+    app.component(AdminUserService);
     app.component(AdminAuditServiceImpl);
 
     app.middleware(CORS);

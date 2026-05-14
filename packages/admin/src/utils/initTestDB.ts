@@ -35,6 +35,7 @@ async function createAdminUser(ctx: Context, db: DB) {
 
 async function createSession(ctx: Context, db: DB, adminUserId: AdminUserId) {
   const adminSessionId = randomUUID();
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
 
   await db.run(
     ctx,
@@ -45,6 +46,7 @@ async function createSession(ctx: Context, db: DB, adminUserId: AdminUserId) {
         {
           id: adminSessionId,
           user_id: adminUserId,
+          expires_at: expiresAt,
         },
       ]),
   );

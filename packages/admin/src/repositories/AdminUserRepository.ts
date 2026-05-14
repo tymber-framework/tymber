@@ -45,6 +45,7 @@ export class AdminUserRepository extends Repository<AdminUserId, AdminUser> {
   async createSession(
     ctx: Context,
     adminUserId: AdminUserId,
+    expiresAt: Date,
   ): Promise<AdminSessionId> {
     const sessionId = randomUUID();
 
@@ -56,7 +57,7 @@ export class AdminUserRepository extends Repository<AdminUserId, AdminUser> {
           {
             id: sessionId,
             user_id: adminUserId,
-            // TODO expires_at
+            expires_at: expiresAt,
           },
         ]),
     );
@@ -71,13 +72,21 @@ export class AdminUserRepository extends Repository<AdminUserId, AdminUser> {
     );
   }
 
+  async deleteExpiredSessions(ctx: Context) {
+    await this.db.query(
+      ctx,
+      deleteFrom("t_admin_sessions").where(sql.lt("expires_at", new Date())),
+    );
+  }
+
   findBySessionId(ctx: Context, sessionId: AdminSessionId) {
     return this.one(
       ctx,
       select(["a.id", "a.username", "a.is_temporary_password"])
         .from("t_admin_sessions s")
         .innerJoin("t_admin_users a", { "a.id": "s.user_id" })
-        .where({ "s.id": sessionId }),
+        .where({ "s.id": sessionId })
+        .where(sql.gt("s.expires_at", new Date())),
     );
   }
 
