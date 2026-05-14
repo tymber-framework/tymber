@@ -1,13 +1,5 @@
-import {
-  AdminEndpoint,
-  EntityNotFoundError,
-  type HttpContext,
-  INJECT,
-} from "@tymber/core";
-import {
-  DBConfigService,
-  ValidationError,
-} from "../services/DBConfigService.js";
+import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
+import { DBConfigService } from "../services/DBConfigService.js";
 import { type JSONSchemaType } from "ajv";
 
 interface PathParams {
@@ -44,23 +36,16 @@ export class RevertToRevision extends AdminEndpoint {
   async handle(ctx: HttpContext<never, PathParams>) {
     const { pathParams, payload } = ctx;
 
-    try {
-      const { id } = await this.configService.revertToRevision(
-        ctx,
-        pathParams.revisionId,
-        payload,
-      );
+    const result = await this.configService.revertToRevision(
+      ctx,
+      pathParams.revisionId,
+      payload,
+    );
 
-      return Response.json({ id });
-    } catch (e) {
-      if (e instanceof EntityNotFoundError) {
-        return this.badRequest("invalid revision ID");
-      } else if (e instanceof ValidationError) {
-        return this.badRequest("invalid values");
-      }
-      {
-        throw e;
-      }
+    if (!result.ok) {
+      return this.badRequest(result.reason);
     }
+
+    return Response.json({ id: result.value });
   }
 }

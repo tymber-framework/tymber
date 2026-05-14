@@ -1,8 +1,5 @@
 import { AdminEndpoint, type HttpContext, INJECT } from "@tymber/core";
-import {
-  DBConfigService,
-  ValidationError,
-} from "../services/DBConfigService.js";
+import { DBConfigService } from "../services/DBConfigService.js";
 import type { JSONSchemaType } from "ajv";
 
 interface Payload {
@@ -29,16 +26,12 @@ export class CreateConfigRevision extends AdminEndpoint {
   async handle(ctx: HttpContext<Payload>) {
     const { payload } = ctx;
 
-    try {
-      const { id } = await this.configService.createNewRevision(ctx, payload);
+    const result = await this.configService.createNewRevision(ctx, payload);
 
-      return Response.json({ id });
-    } catch (e) {
-      if (e instanceof ValidationError) {
-        return this.badRequest("invalid values");
-      } else {
-        throw e;
-      }
+    if (!result.ok) {
+      return this.badRequest(result.reason);
     }
+
+    return Response.json({ id: result.value });
   }
 }

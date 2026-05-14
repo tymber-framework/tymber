@@ -6,8 +6,8 @@ import {
   PubSubService,
   AdminAuditService,
   AJV_INSTANCE,
-  EntityNotFoundError,
   I18nService,
+  type Result,
 } from "@tymber/core";
 import {
   ConfigRepository,
@@ -15,8 +15,6 @@ import {
 } from "../repositories/ConfigRepository.js";
 import { encryptValue } from "../utils/encryptValue.js";
 import { decryptValue } from "../utils/decryptValue.js";
-
-export class ValidationError extends Error {}
 
 export class DBConfigService extends ConfigService {
   static [INJECT] = [
@@ -127,7 +125,7 @@ export class DBConfigService extends ConfigService {
   async createNewRevision(
     ctx: Context,
     payload: { values: Record<string, any>; comment: string },
-  ) {
+  ): Promise<Result<number>> {
     if (!this.#validateConfig) {
       this.#validateConfig = this.#createValidationSchema();
     }
@@ -135,78 +133,99 @@ export class DBConfigService extends ConfigService {
     const isValid = this.#validateConfig(payload.values);
 
     if (!isValid) {
-      throw new ValidationError();
+      return { ok: false, reason: "invalid values" };
     }
 
-    return this.configRepository.startTransaction(ctx, async () => {
-      const { id } = await this.configRepository.insert(ctx, {
-        createdBy: ctx.admin?.id,
-        createdAt: ctx.startedAt,
-        values: this.#encryptValues(payload.values),
-        comment: payload.comment,
-      });
+    const { id } = await this.configRepository.startTransaction(
+      ctx,
+      async () => {
+        const { id } = await this.configRepository.insert(ctx, {
+          createdBy: ctx.admin?.id,
+          createdAt: ctx.startedAt,
+          values: this.#encryptValues(payload.values),
+          comment: payload.comment,
+        });
 
-      this.pubSubService.publish(ctx, "config:update");
+        this.pubSubService.publish(ctx, "config:update");
 
-      await this.adminAuditService.log(ctx, "CREATE_CONFIG_REVISION", {
-        id,
-      });
+        await this.adminAuditService.log(ctx, "CREATE_CONFIG_REVISION", {
+          id,
+        });
 
-      await this.notifyConsumers(ctx);
+        return {
+          id,
+        };
+      },
+    );
 
-      return {
-        id,
-      };
-    });
+    await this.notifyConsumers(ctx);
+
+    return {
+      ok: true,
+      value: id,
+    };
   }
 
   async revertToRevision(
     ctx: Context,
     revisionId: number,
     payload: { comment: string },
-  ) {
+  ): Promise<Result<number>> {
     if (!this.#validateConfig) {
       this.#validateConfig = this.#createValidationSchema();
     }
 
-    return this.configRepository.startTransaction(ctx, async () => {
-      const [revision, currentRevision] = await Promise.all([
-        this.configRepository.findById(ctx, revisionId),
-        this.configRepository.findCurrentRevision(ctx),
-      ]);
+    const result: Result<number> = await this.configRepository.startTransaction(
+      ctx,
+      async () => {
+        const [revision, currentRevision] = await Promise.all([
+          this.configRepository.findById(ctx, revisionId),
+          this.configRepository.findCurrentRevision(ctx),
+        ]);
 
-      if (!revision) {
-        throw new EntityNotFoundError();
-      }
+        if (!revision) {
+          return { ok: false, reason: "revision not found" } as const;
+        }
 
-      if (currentRevision && revision.id === currentRevision.id) {
-        throw new ValidationError();
-      }
+        if (currentRevision && revision.id === currentRevision.id) {
+          return {
+            ok: false,
+            reason: "already current",
+          } as const;
+        }
 
-      const values = this.#decryptValues(revision);
-      const isValid = this.#validateConfig!(values);
+        const values = this.#decryptValues(revision);
+        const isValid = this.#validateConfig!(values);
 
-      if (!isValid) {
-        // config schema might have changed since the revision was created
-        throw new ValidationError();
-      }
+        if (!isValid) {
+          // config schema might have changed since the revision was created
+          return { ok: false, reason: "invalid values" };
+        }
 
-      const { id } = await this.configRepository.insert(ctx, {
-        createdBy: ctx.admin?.id,
-        createdAt: ctx.startedAt,
-        values: this.#encryptValues(values),
-        ...payload,
-      });
+        const { id } = await this.configRepository.insert(ctx, {
+          createdBy: ctx.admin?.id,
+          createdAt: ctx.startedAt,
+          values: this.#encryptValues(values),
+          ...payload,
+        });
 
-      await this.adminAuditService.log(ctx, "REVERT_CONFIG_REVISION", {
-        id: revisionId,
-      });
+        this.pubSubService.publish(ctx, "config:update");
 
+        await this.adminAuditService.log(ctx, "REVERT_CONFIG_REVISION", {
+          id: revisionId,
+        });
+
+        return {
+          ok: true,
+          value: id,
+        };
+      },
+    );
+
+    if (result.ok) {
       await this.notifyConsumers(ctx);
+    }
 
-      return {
-        id,
-      };
-    });
+    return result;
   }
 }
