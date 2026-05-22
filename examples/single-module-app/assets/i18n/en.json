@@ -1,0 +1,13 @@
+{
+  "todo": {
+    "title": "To do",
+    "whatNeedsToBeDone": "What needs to be done?",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "nItemsLeft": "N items left",
+    "clearCompleted": "Clear completed"
+  }
+}

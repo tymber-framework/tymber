@@ -4,7 +4,7 @@ Tymber provides a lightweight database migrations system, allowing you to easily
 
 ## File structure
 
-Translations are stored in the `assets/migrations` directory of your module with a `.sql` extension:
+Migrations are stored in the `assets/migrations` directory of your module with a `.sql` extension:
 
 ```text
 my-module/

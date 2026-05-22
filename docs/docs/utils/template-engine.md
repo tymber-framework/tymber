@@ -37,8 +37,8 @@ The templating engine supports three types of tags:
 | Tag          | Usage                                |
 |--------------|--------------------------------------|
 | `<% ... %>`  | Execute arbitrary JavaScript code.   |
-| `<%= ... %>` | Interpolate a value (HTML-escaped).  |
-| `<%- ... %>` | Interpolate a value (raw/unescaped). |
+| `<%= ... %>` | Interpolate a value (raw/unescaped). |
+| `<%- ... %>` | Interpolate a value (HTML-escaped).  |
 
 Example:
 

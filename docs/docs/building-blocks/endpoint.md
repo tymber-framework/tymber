@@ -2,9 +2,10 @@
 
 An `Endpoint` is a special [`Component`](./component.md) that handles HTTP requests and returns a `Response` object.
 
-They come in two flavors:
+They come in multiple flavors:
 
-- `Endpoint` for user-facing endpoints
+- `Endpoint` for anonymous endpoints
+- `UserEndpoint` for user-facing endpoints
 - `AdminEndpoint` for admin-only endpoints
 
 ## Definition
@@ -181,27 +182,6 @@ export class ListTodos extends Endpoint {
         return Response.json(items);
     }
 }
-```
-
-## Authentication and anonymous access
-
-By default, an anonymous request will return a `HTTP 401 Unauthorized` response.
-
-You can allow anonymous access by setting `allowAnonymous = true` in your endpoint:
-
-```ts
-import { Endpoint, type HttpContext } from "@tymber/core";
-
-export class MyEndpoint extends Endpoint {
-    allowAnonymous = true;
-
-    async handle(ctx: HttpContext) {
-        return Response.json({
-            hello: "world",
-        });
-    }
-}
-
 ```
 
 ## Authorization

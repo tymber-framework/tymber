@@ -97,6 +97,12 @@ const config = {
             label: 'Docs',
           },
           {
+            type: 'docSidebar',
+            sidebarId: 'tutorialSidebar',
+            position: 'left',
+            label: 'Tutorial',
+          },
+          {
             href: 'https://github.com/tymber-framework/tymber',
             label: 'GitHub',
             position: 'right',

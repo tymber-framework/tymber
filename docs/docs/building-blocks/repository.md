@@ -70,12 +70,22 @@ try {
 }
 ```
 
-#### `save(ctx, entity)`
+#### `insert(ctx, entity)`
 
-Upsert the entity:
+Insert an entity:
 
 ```ts
-const { id } = await todoRepository.save(ctx, todoItem);
+const { id } = await todoRepository.insert(ctx, todoItem);
+```
+
+The entity is converted to a row with the [`toRow()`](#torowentity) method.
+
+#### `update(ctx, entity)`
+
+Update an entity:
+
+```ts
+await todoRepository.update(ctx, todoItem);
 ```
 
 The entity is converted to a row with the [`toRow()`](#torowentity) method.

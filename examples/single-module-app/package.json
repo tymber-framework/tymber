@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@tymber/single-module-app",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/entrypoint.ts",
+    "format:check": "prettier -c src/ test/ assets/templates/",
+    "format:fix": "prettier -w src/ test/ assets/templates/",
+    "test": "tsx --test"
+  },
+  "dependencies": {
+    "@tymber/core": "*",
+    "@tymber/postgres": "*"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "*",
+    "@types/node": "*",
+    "prettier": "*",
+    "tsx": "*",
+    "typescript": "*"
+  }
+}

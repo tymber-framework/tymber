@@ -46,7 +46,13 @@ const sidebars = {
               'utils/template-engine',
           ]
       },
-  ]
+  ],
+    tutorialSidebar: [
+        'tutorial/step1',
+        'tutorial/step2',
+        'tutorial/step3',
+        'tutorial/step4',
+    ]
 };
 
 export default sidebars;

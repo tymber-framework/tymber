@@ -2,9 +2,10 @@
 
 An `View` is a special [`Component`](./component.md) that handles HTTP requests and returns a view.
 
-They come in two flavors:
+They come in multiple flavors:
 
-- `View` for user-facing views
+- `View` for anonymous views
+- `UserView` for user-facing views
 - `AdminView` for admin-only views
 
 ## Definition

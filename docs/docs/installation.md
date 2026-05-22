@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="npm" default>
 
 ```bash
-npm install @tymber/core @tymber/admin @tymber/postgres pg
+npm install @tymber/core @tymber/admin @tymber/postgres
 ```
 
   </TabItem>
@@ -15,7 +15,7 @@ npm install @tymber/core @tymber/admin @tymber/postgres pg
   <TabItem value="bun" label="Bun">
 
 ```bash
-bun add @tymber/core @tymber/admin @tymber/postgres pg
+bun add @tymber/core @tymber/admin @tymber/postgres
 ```
 
   </TabItem>
@@ -163,3 +163,5 @@ Tymber provides additional modules that can be installed separately:
 | `@tymber/user`     | The user module                                                            |
 | `@tymber/postgres` | The PostgreSQL module                                                      |
 | `@tymber/sqlite`   | The SQLite module                                                          |
+| `@tymber/openapi`  | The OpenAPI module                                                         |
+| `@tymber/config`   | The configuration module                                                   |

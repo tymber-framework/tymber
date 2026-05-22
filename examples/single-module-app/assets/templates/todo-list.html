@@ -1,0 +1,266 @@
+<div id="app"></div>
+
+<footer class="info">
+  <p>Double-click to edit a todo</p>
+  <!-- Remove the below line ↓ -->
+  <p>Template by <a href="https://sindresorhus.com">Sindre Sorhus</a></p>
+  <!-- Change this out with your name and url ↓ -->
+  <p>
+    Created with <a href="https://github.com/tymber-framework/tymber">Tymber</a>
+  </p>
+  <p>Part of <a href="https://todomvc.com">TodoMVC</a></p>
+</footer>
+
+<script type="module">
+  import { createApp } from "vue";
+  import { doFetch } from "./utils";
+
+  createApp({
+    data() {
+      return {
+        items: [],
+        newItemTitle: "",
+        filter: "all",
+      };
+    },
+
+    async mounted() {
+      await this.loadItems();
+    },
+
+    methods: {
+      async loadItems() {
+        const res = await doFetch({
+          method: "GET",
+          path: "/api/todos",
+        });
+
+        if (res.ok) {
+          this.items = res.body;
+        } else {
+          this.handleError();
+        }
+      },
+
+      async addItem() {
+        if (this.newItemTitle.length === 0) return;
+
+        const res = await doFetch({
+          method: "POST",
+          path: "/api/todos",
+          payload: {
+            title: this.newItemTitle,
+          },
+        });
+
+        if (res.ok) {
+          this.items.unshift(res.body);
+          this.newItemTitle = "";
+        } else {
+          this.handleError();
+        }
+      },
+
+      async toggleItem(item) {
+        const res = await doFetch({
+          method: "PUT",
+          path: "/api/todos/" + item.id,
+          payload: {
+            ...item,
+            completed: !item.completed,
+          },
+        });
+
+        if (res.ok) {
+          item.completed = !item.completed;
+        } else {
+          this.handleError();
+        }
+      },
+
+      async toggleAll() {
+        const finalState = this.hasActiveItems;
+
+        for (const item of this.items) {
+          const res = await doFetch({
+            method: "PUT",
+            path: "/api/todos/" + item.id,
+            payload: {
+              ...item,
+              completed: finalState,
+            },
+          });
+
+          if (res.ok) {
+            item.completed = finalState;
+          } else {
+            return this.handleError();
+          }
+        }
+      },
+
+      async updateItem(item) {
+        if (item.title.length === 0) {
+          return;
+        }
+
+        const res = await doFetch({
+          method: "PUT",
+          path: "/api/todos/" + item.id,
+          payload: item,
+        });
+
+        if (res.ok) {
+          item.editing = false;
+        } else {
+          this.handleError();
+        }
+      },
+
+      async deleteItem(item) {
+        const res = await doFetch({
+          method: "DELETE",
+          path: "/api/todos/" + item.id,
+        });
+
+        if (res.ok) {
+          this.items = this.items.filter((current) => current.id !== item.id);
+        } else {
+          this.handleError();
+        }
+      },
+
+      async clearCompleted() {
+        for (const item of this.items) {
+          if (item.completed) {
+            const res = await doFetch({
+              method: "DELETE",
+              path: "/api/todos/" + item.id,
+            });
+
+            if (!res.ok) {
+              return this.handleError();
+            }
+          }
+        }
+
+        this.items = this.items.filter((item) => !item.completed);
+      },
+
+      handleError(error) {
+        // TODO handle error
+      },
+    },
+
+    computed: {
+      filteredItems() {
+        return this.items.filter((item) => {
+          switch (this.filter) {
+            case "active":
+              return !item.completed;
+            case "completed":
+              return item.completed;
+            default:
+              return true;
+          }
+        });
+      },
+
+      activeCount() {
+        return this.items.reduce((count, item) => {
+          return count + (item.completed ? 0 : 1);
+        }, 0);
+      },
+
+      hasActiveItems() {
+        return this.items.some((item) => !item.completed);
+      },
+
+      hasCompletedItems() {
+        return this.items.some((item) => item.completed);
+      },
+    },
+
+    template: `
+<section class="todoapp">
+  <header class="header">
+    <h1><%= $t('todo.title') %></h1>
+    <input
+      v-model.trim="newItemTitle"
+      @keyup.enter="addItem"
+      class="new-todo"
+      placeholder="<%= $t('todo.whatNeedsToBeDone') %>"
+      autofocus
+    />
+  </header>
+
+  <section class="main" v-if="this.items.length > 0">
+    <input
+      id="toggle-all"
+      class="toggle-all"
+      type="checkbox"
+      @click="toggleAll()"
+    />
+    <label for="toggle-all">Mark all as complete</label>
+    <ul class="todo-list">
+
+      <li
+        v-for="item of filteredItems"
+        :key="item.id"
+        :class="{ completed: item.completed, editing: item.editing }"
+      >
+        <div class="view" v-if="!item.editing">
+          <input
+            class="toggle"
+            type="checkbox"
+            @click="toggleItem(item)"
+            :checked="item.completed"
+          />
+          <label @dblclick="item.editing = true">{{ item.title }}</label>
+          <button class="destroy" @click="deleteItem(item)"></button>
+        </div>
+        <input
+          class="edit"
+          @keyup.enter="updateItem(item)"
+          v-model.trim="item.title"
+          v-else
+        />
+      </li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <span class="todo-count"><strong>{{ activeCount }}</strong> item left</span>
+
+    <ul class="filters">
+      <li>
+        <a @click="filter = 'all'" :class="{ selected: filter === 'all' }"
+          ><%= $t('todo.filters.all') %></a
+        >
+      </li>
+      <li>
+        <a @click="filter = 'active'" :class="{ selected: filter === 'active' }"
+          ><%= $t('todo.filters.active') %></a
+        >
+      </li>
+      <li>
+        <a
+          @click="filter = 'completed'"
+          :class="{ selected: filter === 'completed' }"
+          ><%= $t('todo.filters.completed') %></a
+        >
+      </li>
+    </ul>
+
+    <button
+      class="clear-completed"
+      v-show="hasCompletedItems"
+      @click="clearCompleted"
+    >
+      <%= $t('todo.clearCompleted') %>
+    </button>
+  </footer>
+</section>
+    `,
+  }).mount("#app");
+</script>
