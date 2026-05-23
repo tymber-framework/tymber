@@ -12,8 +12,16 @@ import helloWorldTemplate from "../templates/src/endpoints/HelloWorld.ts.tpl";
 import setupTestTemplate from "../templates/test/setup.ts.tpl";
 import helloWorldTestTemplate from "../templates/test/endpoints/HelloWorld.test.ts.tpl";
 
-// @ts-expect-error unknown global
-const isBunRuntime = typeof Bun !== "undefined";
+const packageManager = (() => {
+  const userAgent = process.env.npm_config_user_agent ?? "";
+
+  if (userAgent.startsWith("bun/")) return "bun";
+  if (userAgent.startsWith("pnpm/")) return "pnpm";
+  if (userAgent.startsWith("yarn/")) return "yarn";
+  return "npm";
+})();
+
+const isBunPackageManager = packageManager === "bun";
 
 async function main() {
   p.intro("Welcome to Tymber project generator!");
@@ -62,7 +70,7 @@ async function main() {
 
   const templateData = {
     projectName,
-    isBunRuntime,
+    isBunPackageManager,
     db,
     modules,
   };
@@ -80,7 +88,7 @@ async function main() {
     name: projectName,
     version: "0.0.0",
     type: "module",
-    scripts: isBunRuntime
+    scripts: isBunPackageManager
       ? {
           start: "bun src/entrypoint.ts",
           test: "bun test",
@@ -90,7 +98,7 @@ async function main() {
           test: "tsx --test test/**/*.test.ts",
         },
     dependencies,
-    devDependencies: isBunRuntime
+    devDependencies: isBunPackageManager
       ? {
           "@types/bun": "latest",
           typescript: "latest",
@@ -112,9 +120,9 @@ async function main() {
   // tsconfig.json
   await fs.writeFile(
     path.join(projectDir, "tsconfig.json"),
-    compileTemplate(isBunRuntime ? bunTsconfigTemplate : nodeTsconfigTemplate)(
-      templateData,
-    ),
+    compileTemplate(
+      isBunPackageManager ? bunTsconfigTemplate : nodeTsconfigTemplate,
+    )(templateData),
   );
 
   // src directory
@@ -125,7 +133,7 @@ async function main() {
   await fs.writeFile(
     path.join(srcDir, "entrypoint.ts"),
     compileTemplate(
-      isBunRuntime ? bunEntrypointTemplate : nodeEntrypointTemplate,
+      isBunPackageManager ? bunEntrypointTemplate : nodeEntrypointTemplate,
     )(templateData),
   );
 
@@ -168,8 +176,8 @@ async function main() {
   p.note(
     `Next steps:
   cd ${projectName}
-  ${isBunRuntime ? "bun install" : "npm install"}
-  ${isBunRuntime ? "bun start" : "npm start"}`,
+  ${packageManager} install
+  ${packageManager} start`,
     "Done!",
   );
 

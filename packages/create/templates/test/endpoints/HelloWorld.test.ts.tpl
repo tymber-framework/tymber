@@ -1,4 +1,4 @@
-<% if (isBunRuntime) { %>
+<% if (isBunPackageManager) { %>
 import { describe, it, beforeAll, afterAll } from "bun:test";
 <% } else { %>
 import { describe, it, before, after } from "node:test";
@@ -9,11 +9,11 @@ import { setup, type TestContext } from "../setup.js";
 describe("HelloWorld", () => {
   let ctx: TestContext;
 
-  before<% if (isBunRuntime) { %>All<% } %>(async () => {
+  before<% if (isBunPackageManager) { %>All<% } %>(async () => {
     ctx = await setup();
   });
 
-  after<% if (isBunRuntime) { %>All<% } %>(() => ctx.close());
+  after<% if (isBunPackageManager) { %>All<% } %>(() => ctx.close());
 
   it("should work", async () => {
     const res = await fetch(`${ctx.baseUrl}/hello`);
