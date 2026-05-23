@@ -13,13 +13,21 @@
     "packages/admin",
     "packages/user",
     "packages/openapi",
-    "packages/config"
+    "packages/config",
+    "packages/create"
   ],
   "devDependencies": {
+    "@clack/prompts": "^1.4.0",
+    "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
     "@tsconfig/node24": "^24.0.1",
     "@types/node": "^24.10.0",
     "handlebars": "^4.7.8",
     "prettier": "^3.5.3",
+    "rollup": "^4.60.4",
+    "rollup-plugin-string": "^3.0.0",
+    "tslib": "^2.8.1",
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   },
