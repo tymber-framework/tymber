@@ -1,7 +1,13 @@
 import { createTestDB } from "@tymber/<%= db %>";
-import { type BaseTestContext, createTestApp } from "@tymber/core";
 <% if (modules.includes("admin")) { %>
+import {
+  type BaseTestContext,
+  type AdminUserId,
+  createTestApp,
+} from "@tymber/core";
 import { AdminModule, initTestDB } from "@tymber/admin";
+<% } else { %>
+import { type BaseTestContext, createTestApp } from "@tymber/core";
 <% } %>
 <% if (modules.includes("config")) { %>
 import { ConfigModule } from "@tymber/config";
@@ -14,7 +20,12 @@ import { UserModule } from "@tymber/user";
 <% } %>
 import { MainModule } from "../src/module.js";
 
-export interface TestContext extends BaseTestContext {}
+export interface TestContext extends BaseTestContext {
+  <% if (modules.includes("admin")) { %>
+  adminSessionId: string;
+  adminUserId: AdminUserId;
+  <% } %>
+}
 
 export async function setup(): Promise<TestContext> {
   const ctx = await createTestApp(() => createTestDB(), [
@@ -32,7 +43,6 @@ export async function setup(): Promise<TestContext> {
     <% } %>
     MainModule
   ]);
-
   <% if (modules.includes("admin")) { %>
   const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
   <% } %>
@@ -42,5 +52,9 @@ export async function setup(): Promise<TestContext> {
 
   return {
     ...ctx,
+    <% if (modules.includes("admin")) { %>
+    adminSessionId,
+    adminUserId,
+    <% } %>
   };
 }
