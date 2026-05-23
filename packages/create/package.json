@@ -1,6 +1,6 @@
 {
   "name": "@tymber/create",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Scaffold a new Tymber project",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
