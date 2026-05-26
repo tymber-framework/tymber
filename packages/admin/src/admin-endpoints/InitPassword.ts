@@ -32,6 +32,7 @@ export class InitPassword extends AdminEndpoint {
       password: { type: "string", minLength: 8, maxLength: 100 },
     },
     required: ["password"],
+    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

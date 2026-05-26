@@ -13,9 +13,7 @@ export const AJV_INSTANCE = new Ajv({
 addFormats(AJV_INSTANCE);
 
 // no defaults, no coercion
-export const AJV_INSTANCE_STRICT = new Ajv({
-  removeAdditional: "all",
-});
+export const AJV_INSTANCE_STRICT = new Ajv();
 
 // @ts-expect-error FIXME
 addFormats(AJV_INSTANCE_STRICT);

@@ -88,6 +88,7 @@ export class AddUserToGroup extends AdminEndpoint {
       role: { type: "integer", minimum: 0 },
     },
     required: ["role"],
+    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload, PathParams>) {

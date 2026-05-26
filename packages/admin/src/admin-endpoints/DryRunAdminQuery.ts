@@ -19,6 +19,7 @@ export class DryRunAdminQuery extends AdminEndpoint {
       query: { type: "string", maxLength: 1000 },
     },
     required: ["query"],
+    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

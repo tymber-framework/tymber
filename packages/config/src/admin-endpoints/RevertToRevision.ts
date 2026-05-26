@@ -31,6 +31,7 @@ export class RevertToRevision extends AdminEndpoint {
       comment: { type: "string", maxLength: 1000 },
     },
     required: ["comment"],
+    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<never, PathParams>) {

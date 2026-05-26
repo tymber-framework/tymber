@@ -43,6 +43,7 @@ export class LogIn extends Endpoint {
       password: { type: "string", maxLength: 100 },
     },
     required: ["username", "password"],
+    additionalProperties: false,
   };
 
   async handle(ctx: HttpContext<Payload>) {

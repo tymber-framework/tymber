@@ -129,6 +129,7 @@ describe("Endpoint", () => {
                     id: { type: "string" },
                   },
                   required: ["id"],
+                  additionalProperties: false,
                 };
 
                 override handle() {
@@ -142,21 +143,64 @@ describe("Endpoint", () => {
     );
 
     const client = new Client(ctx.baseUrl);
-    const res = await client.fetch({
-      method: "POST",
-      path: "/test",
-      payload: {},
-    });
-    assert.equal(res.status, 400);
-    assert.deepEqual(res.body, {
-      message: "invalid payload",
-      errors: [
-        {
-          keyword: "required",
-          message: "must have required property 'id'",
+    {
+      const res = await client.fetch({
+        method: "POST",
+        path: "/test",
+        payload: {},
+      });
+      assert.equal(res.status, 400);
+      assert.deepEqual(res.body, {
+        message: "invalid payload",
+        errors: [
+          {
+            keyword: "required",
+            message: "must have required property 'id'",
+          },
+        ],
+      });
+    }
+
+    {
+      const res = await client.fetch({
+        method: "POST",
+        path: "/test",
+        payload: {
+          id: 123,
         },
-      ],
-    });
+      });
+      assert.equal(res.status, 400);
+      assert.deepEqual(res.body, {
+        message: "invalid payload",
+        errors: [
+          {
+            keyword: "type",
+            message: "must be string",
+          },
+        ],
+      });
+    }
+
+    {
+      const res = await client.fetch({
+        method: "POST",
+        path: "/test",
+        payload: {
+          id: "123",
+          unknownField: "123",
+        },
+      });
+      assert.equal(res.status, 400);
+      assert.deepEqual(res.body, {
+        message: "invalid payload",
+        errors: [
+          {
+            keyword: "additionalProperties",
+            message: "must NOT have additional properties",
+          },
+        ],
+      });
+    }
 
     return ctx.close();
   });
@@ -179,6 +223,7 @@ describe("Endpoint", () => {
                     id: { type: "string" },
                   },
                   required: ["id"],
+                  additionalProperties: false,
                 };
 
                 handle() {
@@ -234,6 +279,7 @@ describe("Endpoint", () => {
                     snakeCase: { type: "boolean" },
                   },
                   required: [],
+                  additionalProperties: false,
                 };
 
                 handle(ctx: HttpContext<never, never, Query>) {
