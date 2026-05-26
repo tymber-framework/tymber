@@ -3,12 +3,12 @@ import { type ErrorObject, type ValidateFunction } from "ajv";
 import { Handler } from "./Handler.js";
 import { AJV_INSTANCE, AJV_INSTANCE_STRICT } from "./utils/ajv.js";
 
-function formatErrors(
-  errors: ErrorObject<string, Record<string, any>, unknown>[],
-) {
+function formatErrors(errors: ErrorObject[]) {
+  // i18n reference: https://github.com/ajv-validator/ajv-i18n
   return errors.map((error) => ({
     keyword: error.keyword,
-    message: error.message,
+    instancePath: error.instancePath,
+    params: error.params,
   }));
 }
 

@@ -154,8 +154,11 @@ describe("Endpoint", () => {
         message: "invalid payload",
         errors: [
           {
+            instancePath: "",
             keyword: "required",
-            message: "must have required property 'id'",
+            params: {
+              missingProperty: "id",
+            },
           },
         ],
       });
@@ -174,8 +177,11 @@ describe("Endpoint", () => {
         message: "invalid payload",
         errors: [
           {
+            instancePath: "/id",
             keyword: "type",
-            message: "must be string",
+            params: {
+              type: "string",
+            },
           },
         ],
       });
@@ -195,8 +201,11 @@ describe("Endpoint", () => {
         message: "invalid payload",
         errors: [
           {
+            instancePath: "",
             keyword: "additionalProperties",
-            message: "must NOT have additional properties",
+            params: {
+              additionalProperty: "unknownField",
+            },
           },
         ],
       });
