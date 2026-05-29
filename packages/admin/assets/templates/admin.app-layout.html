@@ -185,8 +185,8 @@
     </li>
   </ul>
 
-  <% for (const module of CTX.app.modules) { %> <% if
-  (module.adminSidebarItems.length === 0) { continue; } %>
+  <% for (const module of CTX.app.modules) { %> <% if (!module.adminSidebarItems
+  || module.adminSidebarItems.length === 0) { continue; } %>
 
   <p class="menu-label"><%= module.name %></p>
 
