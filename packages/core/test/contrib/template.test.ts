@@ -18,4 +18,29 @@ describe("template", () => {
     assert.equal(t({ value: true }), "value = true");
     assert.equal(t({ value: false }), "");
   });
+
+  it("should work (evaluate + newlines)", () => {
+    const t = compileTemplate(`
+        <% if (true) { %>1<% } %>
+        <% if (false) { %>2<% } %>
+        3
+        <% if (true) { %>
+        4
+        <% } %>
+        <% if (false) { %>
+        5
+        <% } %>
+        6
+        <%= '7' %>
+        `);
+    assert.equal(
+      t({}),
+      `1
+        3
+        4
+        6
+        7
+        `,
+    );
+  });
 });

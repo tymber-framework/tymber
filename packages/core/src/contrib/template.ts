@@ -49,6 +49,9 @@ var bareIdentifier = /^\s*(\w|\$)+\s*$/;
 // and correctly escapes quotes within interpolated code.
 // NB: `oldSettings` only exists for backwards compatibility.
 export function compileTemplate(text: string): (data: any) => string {
+  // remove newlines and spaces before "evaluate" delimiters
+  text = text.replace(/\r?\n[ \t]+<% /g, "<% ");
+
   const settings = {
     evaluate: /<%([\s\S]+?)%>/g,
     interpolate: /<%=([\s\S]+?)%>/g,
