@@ -26,6 +26,8 @@ export interface HttpContext<
     data?: Record<string, any>,
   ) => Promise<Response>;
 
+  onFinish: (listener: (res: Response) => void | Promise<void>) => void;
+
   redirect(path: string, type?: HttpRedirectCode): Response;
 }
 

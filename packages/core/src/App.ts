@@ -150,6 +150,8 @@ export class App {
     const url = new URL(req.url, "http://localhost");
 
     const locale = this.viewRenderer.computeLocale(req);
+    const onFinishListeners: Array<(res: Response) => void | Promise<void>> =
+      [];
 
     const ctx = {
       startedAt: new Date(),
@@ -189,8 +191,24 @@ export class App {
           },
         });
       },
+
+      onFinish(listener: (res: Response) => void | Promise<void>) {
+        onFinishListeners.push(listener);
+      },
     } as HttpContext;
 
+    const res = await this.handleRequest(ctx, req);
+
+    for (const listener of onFinishListeners) {
+      try {
+        await listener(res);
+      } catch (e) {}
+    }
+
+    return res;
+  }
+
+  private async handleRequest(ctx: HttpContext, req: Request) {
     ctx.signal.throwIfAborted();
 
     if (ctx.path.startsWith("/static")) {
@@ -234,7 +252,7 @@ export class App {
       }
     }
 
-    const route = this.router.findRoute(req.method as HttpMethod, url.pathname);
+    const route = this.router.findRoute(ctx.method, ctx.path);
 
     if (!route) {
       return this.renderHttp404Error(ctx);

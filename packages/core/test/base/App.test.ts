@@ -48,6 +48,45 @@ describe("App", () => {
     assert.equal(closeCalled, true);
   });
 
+  it("should call onFinish listeners at the end of the request cycle", async () => {
+    let onFinishCalled = false;
+    let responseFromListener: Response | null = null;
+
+    const app = await App.create({
+      components: [],
+      modules: [
+        {
+          name: "test",
+          version: "0.0.1",
+          init(app: AppInit) {
+            app.endpoint(
+              "GET",
+              "/test",
+              class extends Endpoint {
+                override handle(ctx) {
+                  ctx.onFinish((res) => {
+                    onFinishCalled = true;
+                    responseFromListener = res;
+                  });
+                  return new Response("ok");
+                }
+              },
+            );
+          },
+        },
+      ],
+    });
+
+    const req = new Request("http://localhost/test");
+    const res = await app.fetch(req);
+
+    assert.equal(await res.text(), "ok");
+    assert.equal(onFinishCalled, true);
+    assert.strictEqual(responseFromListener, res);
+
+    await app.close();
+  });
+
   describe("aborted requests", () => {
     it("should handle a request aborted by the client", async () => {
       let abortSignalTriggered = false;
