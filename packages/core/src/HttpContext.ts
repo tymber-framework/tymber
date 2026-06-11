@@ -14,7 +14,7 @@ export interface HttpContext<
   query: QueryParams;
   headers: Headers;
   cookies: Record<string, string>;
-  abortSignal: AbortSignal;
+  signal: AbortSignal;
 
   locale: Locale;
   responseHeaders: Headers;

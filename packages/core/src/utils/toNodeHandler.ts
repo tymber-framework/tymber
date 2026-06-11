@@ -35,7 +35,10 @@ function readBody(req: IncomingMessage) {
   });
 }
 
-function createNativeRequest(nodeReq: IncomingMessage) {
+function createNativeRequest(
+  nodeReq: IncomingMessage,
+  nodeRes: ServerResponse,
+) {
   const req = Object.create(null);
 
   req.url = nodeReq.url;
@@ -45,7 +48,12 @@ function createNativeRequest(nodeReq: IncomingMessage) {
 
   const controller = new AbortController();
   req.signal = controller.signal;
-  nodeReq.on("close", () => controller.abort());
+  nodeRes.on("close", () => {
+    const wasAbortedByClient = !nodeRes.writableEnded;
+    if (wasAbortedByClient) {
+      controller.abort();
+    }
+  });
 
   return req as Request;
 }
@@ -112,9 +120,16 @@ export function toNodeHandler(
   nativeHandler: (req: Request) => Promise<Response>,
 ): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
   return async function (nodeReq, nodeRes) {
-    const req = createNativeRequest(nodeReq);
+    const req = createNativeRequest(nodeReq, nodeRes);
 
-    const httpResponse = await nativeHandler(req);
+    let httpResponse: Response;
+
+    try {
+      httpResponse = await nativeHandler(req);
+    } catch (e) {
+      // request was aborted, swallow error
+      return;
+    }
 
     writeResponse(nodeReq, nodeRes, httpResponse);
   };

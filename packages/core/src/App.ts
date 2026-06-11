@@ -158,14 +158,20 @@ export class App {
       query: parseQueryParams(url),
       headers: req.headers,
       cookies: parseCookieHeader(req.headers.get("cookie") || ""),
-      abortSignal: req.signal,
+      signal: req.signal,
       locale,
       responseHeaders: new Headers(),
 
       render: async (view, data = {}) => {
         try {
-          return this.viewRenderer.render(ctx, view, data);
+          const res = await this.viewRenderer.render(ctx, view, data);
+
+          ctx.signal.throwIfAborted();
+
+          return res;
         } catch (e) {
+          ctx.signal.throwIfAborted();
+
           return this.renderHttp500Error(ctx, e as Error);
         }
       },
@@ -184,6 +190,8 @@ export class App {
         });
       },
     } as HttpContext;
+
+    ctx.signal.throwIfAborted();
 
     if (ctx.path.startsWith("/static")) {
       if (!this.assets.has(ctx.path)) {
@@ -210,6 +218,8 @@ export class App {
       try {
         const httpRes = await middleware.handle(ctx);
 
+        ctx.signal.throwIfAborted();
+
         if (httpRes) {
           ctx.responseHeaders.forEach((value, key) => {
             httpRes.headers.set(key, value);
@@ -218,6 +228,8 @@ export class App {
           return httpRes;
         }
       } catch (e) {
+        ctx.signal.throwIfAborted();
+
         return this.renderHttp500Error(ctx, e as Error);
       }
     }
@@ -251,7 +263,11 @@ export class App {
       try {
         // @ts-expect-error
         ctx.payload = await req.json();
+
+        ctx.signal.throwIfAborted();
       } catch {
+        ctx.signal.throwIfAborted();
+
         return Response.json(
           {
             message: "invalid request body",
@@ -266,12 +282,16 @@ export class App {
     try {
       const httpRes = await route.handler.doHandle(ctx);
 
+      ctx.signal.throwIfAborted();
+
       ctx.responseHeaders.forEach((value, key) => {
         httpRes.headers.set(key, value);
       });
 
       return httpRes;
     } catch (e) {
+      ctx.signal.throwIfAborted();
+
       return this.renderHttp500Error(ctx, e as Error);
     }
   }
