@@ -20,28 +20,31 @@ describe("ConfigService", () => {
       }
     })();
 
-    configService.subscribe(
-      [
-        {
-          key: "A",
+    interface Config {
+      A: number;
+      B: string;
+      F: string;
+      G: number;
+    }
+
+    configService.subscribe<Config>(
+      {
+        A: {
           type: "number",
-          defaultValue: 123,
+          default: 123,
         },
-        {
-          key: "B",
+        B: {
           type: "string",
         },
-        {
-          key: "F",
+        F: {
           type: "string",
-          defaultValue: "3",
+          default: "3",
         },
-        {
-          key: "G",
+        G: {
           type: "number",
-          defaultValue: 1,
+          default: 1,
         },
-      ],
+      },
       (config) => {
         count++;
         assert.deepEqual(config, {

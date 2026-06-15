@@ -33,16 +33,15 @@ export class AdminUserService extends Component {
     private readonly adminUserRepository: AdminUserRepository,
   ) {
     super();
-    configService.subscribe(
-      [
-        {
-          key: "ADMIN_COOKIE_MAX_AGE_IN_SECONDS",
+    configService.subscribe<Config>(
+      {
+        ADMIN_COOKIE_MAX_AGE_IN_SECONDS: {
           type: "number",
-          defaultValue: 60 * 60 * 24 * 365,
+          default: 60 * 60 * 24 * 365,
         },
-      ],
+      },
       (config) => {
-        this.config = config as Config;
+        this.config = config;
       },
     );
   }

@@ -21,26 +21,24 @@ export class AdminCookieService extends Component {
 
   constructor(configService: ConfigService) {
     super();
-    configService.subscribe(
-      [
-        {
-          key: "ADMIN_COOKIE_MAX_AGE_IN_SECONDS",
+    configService.subscribe<Config>(
+      {
+        ADMIN_COOKIE_MAX_AGE_IN_SECONDS: {
           type: "number",
-          defaultValue: 60 * 60 * 24 * 365,
+          default: 60 * 60 * 24 * 365,
         },
-        {
-          key: "ADMIN_COOKIE_SECURE_ATTRIBUTE",
+        ADMIN_COOKIE_SECURE_ATTRIBUTE: {
           type: "boolean",
-          defaultValue: isProduction,
+          default: isProduction,
         },
-        {
-          key: "ADMIN_COOKIE_SAME_SITE_ATTRIBUTE",
+        ADMIN_COOKIE_SAME_SITE_ATTRIBUTE: {
           type: "string",
-          defaultValue: "strict",
+          default: "strict",
+          enum: ["strict", "lax", "none"],
         },
-      ],
+      },
       (config) => {
-        this.config = config as Config;
+        this.config = config;
       },
     );
   }

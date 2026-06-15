@@ -199,7 +199,7 @@
 
         const nonDefaultValues = this.internalValues
           .filter((e) => {
-            return !isStrictEqual(e.value, e.defaultValue);
+            return !isStrictEqual(e.value, e.default);
           })
           .reduce((acc, e) => {
             acc[e.key] = e.value;
@@ -330,10 +330,17 @@
             <input type="checkbox" v-model="item.value" :disabled="!isEditing"/>
         </label>
 
-        <input v-if="item.type === 'string'" class="input" type="text" v-model="item.value" :disabled="!isEditing"/>
+        <input v-if="item.type === 'string' && !item.enum" class="input" type="text" v-model="item.value" :disabled="!isEditing"/>
+
+        <div v-if="item.type === 'string' && item.enum" class="select">
+            <select v-model="item.value" :disabled="!isEditing">
+                <option v-for="option of item.enum" :key="option" :value="option">{{ option }}</option>
+            </select>
+        </div>
+
         <input v-if="item.type === 'number'" class="input" type="number" v-model="item.value" :disabled="!isEditing"/>
 
-        <div v-if="item.type === 'string[]'">
+        <div v-if="item.type === 'array'">
             <span class="is-italic" v-if="item.value.length === 0 && !isEditing"><%= $t("tymber.config.emptyList") %></span>
 
             <div v-for="(value, i) of item.value" :key="i" class="field is-horizontal">

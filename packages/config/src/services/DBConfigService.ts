@@ -5,7 +5,6 @@ import {
   emptyContext,
   PubSubService,
   AdminAuditService,
-  AJV_INSTANCE,
   I18nService,
   type Result,
 } from "@tymber/core";
@@ -23,8 +22,6 @@ export class DBConfigService extends ConfigService {
     AdminAuditService,
     I18nService,
   ];
-
-  #validateConfig?: (values: Record<string, any>) => boolean;
 
   #secretKeys: string[] = [];
 
@@ -89,7 +86,7 @@ export class DBConfigService extends ConfigService {
     return revision ? this.#decryptValues(revision) : {};
   }
 
-  #decryptValues(revision: Revision) {
+  #decryptValues(revision: Revision): Record<string, any> {
     for (const secretKey of this.#secretKeys) {
       try {
         const decryptedPayload = decryptValue(revision.values, secretKey);
@@ -104,33 +101,11 @@ export class DBConfigService extends ConfigService {
     return encryptValue(JSON.stringify(values), this.#secretKeys[0]);
   }
 
-  #createValidationSchema() {
-    const properties: Record<string, any> = {};
-
-    for (const { key, type } of this.getDefinitions()) {
-      if (type === "string[]") {
-        properties[key] = { type: "array", items: { type: "string" } };
-      } else {
-        properties[key] = { type };
-      }
-    }
-
-    return AJV_INSTANCE.compile({
-      type: "object",
-      properties,
-      required: [],
-    });
-  }
-
   async createNewRevision(
     ctx: Context,
     payload: { values: Record<string, any>; comment: string },
   ): Promise<Result<number>> {
-    if (!this.#validateConfig) {
-      this.#validateConfig = this.#createValidationSchema();
-    }
-
-    const isValid = this.#validateConfig(payload.values);
+    const isValid = this.validateConfig(payload.values);
 
     if (!isValid) {
       return { ok: false, reason: "invalid values" };
@@ -158,7 +133,7 @@ export class DBConfigService extends ConfigService {
       },
     );
 
-    await this.notifyConsumers(ctx);
+    await this.notifyConsumers(ctx, payload.values);
 
     return {
       ok: true,
@@ -171,10 +146,6 @@ export class DBConfigService extends ConfigService {
     revisionId: number,
     payload: { comment: string },
   ): Promise<Result<number>> {
-    if (!this.#validateConfig) {
-      this.#validateConfig = this.#createValidationSchema();
-    }
-
     const result: Result<number> = await this.configRepository.startTransaction(
       ctx,
       async () => {
@@ -195,7 +166,7 @@ export class DBConfigService extends ConfigService {
         }
 
         const values = this.#decryptValues(revision);
-        const isValid = this.#validateConfig!(values);
+        const isValid = this.validateConfig(values);
 
         if (!isValid) {
           // config schema might have changed since the revision was created

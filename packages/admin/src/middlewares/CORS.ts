@@ -5,7 +5,7 @@ import {
   Middleware,
 } from "@tymber/core";
 
-interface CorsOptions {
+interface Config {
   CORS_ALLOW_ORIGINS: string[];
   CORS_ALLOW_CREDENTIALS: boolean;
   CORS_ALLOW_METHODS: string[];
@@ -23,43 +23,48 @@ function isOriginAllowed(origin: string, allowedOrigins: string[]) {
  */
 export class CORS extends Middleware {
   // @ts-expect-error will be initialized by the ConfigService
-  private cors: CorsOptions;
+  private config: Config;
 
   static [INJECT] = [ConfigService];
 
   constructor(configService: ConfigService) {
     super();
-    configService.subscribe(
-      [
-        {
-          key: "CORS_ALLOW_ORIGINS",
-          type: "string[]",
-          defaultValue: [],
+    configService.subscribe<Config>(
+      {
+        CORS_ALLOW_ORIGINS: {
+          type: "array",
+          items: {
+            type: "string",
+            format: "uri",
+          },
+          default: [],
         },
-        {
-          key: "CORS_ALLOW_CREDENTIALS",
+        CORS_ALLOW_CREDENTIALS: {
           type: "boolean",
-          defaultValue: false,
+          default: false,
         },
-        {
-          key: "CORS_ALLOW_METHODS",
-          type: "string[]",
-          defaultValue: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        CORS_ALLOW_METHODS: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+          },
+          default: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
         },
-        {
-          key: "CORS_ALLOW_HEADERS",
-          type: "string[]",
-          defaultValue: [],
+        CORS_ALLOW_HEADERS: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          default: [],
         },
-        {
-          key: "CORS_MAX_AGE_IN_SECONDS",
+        CORS_MAX_AGE_IN_SECONDS: {
           type: "number",
-          defaultValue: 5,
+          default: 5,
         },
-      ],
-      (newValue) => {
-        this.cors = newValue as CorsOptions;
-        this.cors.CORS_ALLOW_HEADERS.push("x-csrf-token");
+      },
+      (config) => {
+        this.config = config;
       },
     );
   }
@@ -91,7 +96,7 @@ export class CORS extends Middleware {
   private _configureOrigin(requestHeaders: Headers, responseHeaders: Headers) {
     const origin = requestHeaders.get("origin") as string;
 
-    const isAllowed = isOriginAllowed(origin, this.cors.CORS_ALLOW_ORIGINS);
+    const isAllowed = isOriginAllowed(origin, this.config.CORS_ALLOW_ORIGINS);
 
     responseHeaders.set(
       "access-control-allow-origin",
@@ -104,7 +109,7 @@ export class CORS extends Middleware {
     _requestHeaders: Headers,
     responseHeaders: Headers,
   ) {
-    if (this.cors.CORS_ALLOW_CREDENTIALS) {
+    if (this.config.CORS_ALLOW_CREDENTIALS) {
       responseHeaders.set("access-control-allow-credentials", "true");
     }
   }
@@ -115,7 +120,7 @@ export class CORS extends Middleware {
   ) {
     responseHeaders.set(
       "access-control-allow-methods",
-      this.cors.CORS_ALLOW_METHODS.join(","),
+      this.config.CORS_ALLOW_METHODS.join(","),
     );
   }
 
@@ -125,14 +130,14 @@ export class CORS extends Middleware {
   ) {
     responseHeaders.set(
       "access-control-allow-headers",
-      this.cors.CORS_ALLOW_HEADERS.join(","),
+      [...this.config.CORS_ALLOW_HEADERS, "x-csrf-token"].join(","),
     );
   }
 
   private _configureMaxAge(requestHeaders: Headers, responseHeaders: Headers) {
     responseHeaders.set(
       "access-control-max-age",
-      this.cors.CORS_MAX_AGE_IN_SECONDS.toString(),
+      this.config.CORS_MAX_AGE_IN_SECONDS.toString(),
     );
   }
 
