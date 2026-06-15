@@ -30,7 +30,7 @@ function readBody(req: IncomingMessage) {
     const chunks: string[] = [];
     req.setEncoding("utf8");
     req.on("data", (chunk) => chunks.push(chunk));
-    req.on("end", () => resolve(chunks.join()));
+    req.on("end", () => resolve(chunks.join("")));
     req.on("error", (err) => reject(err));
   });
 }
