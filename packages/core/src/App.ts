@@ -199,13 +199,22 @@ export class App {
 
     const res = await this.handleRequest(ctx, req);
 
-    for (const listener of onFinishListeners) {
-      try {
-        await listener(res);
-      } catch (e) {}
-    }
+    void this.runOnFinishListeners(onFinishListeners, res);
 
     return res;
+  }
+
+  private async runOnFinishListeners(
+    listeners: Array<(res: Response) => void | Promise<void>>,
+    res: Response,
+  ) {
+    for (const listener of listeners) {
+      try {
+        await listener(res);
+      } catch (e) {
+        debug("error running onFinish listener: %s", e);
+      }
+    }
   }
 
   private async handleRequest(ctx: HttpContext, req: Request) {
