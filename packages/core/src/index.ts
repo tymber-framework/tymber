@@ -2,9 +2,10 @@ export { Component, type Ctor, ComponentFactory, INJECT } from "./Component.js";
 export {
   type InternalUserId,
   type UserId,
+  type UserRole,
   type InternalGroupId,
   type GroupId,
-  type Role,
+  type GroupRole,
   type ConnectedUser,
   type AdminUserId,
   type Admin,

@@ -200,6 +200,7 @@ export class UserRepository extends Repository<UserId, User> {
         firstName: row.first_name,
         lastName: row.last_name,
         email: row.email,
+        roles: [],
         groups: row.group_id
           ? rows.map((row: any) => ({
               internalId: row.internal_group_id,

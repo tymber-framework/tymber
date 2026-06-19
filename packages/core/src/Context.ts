@@ -2,9 +2,10 @@ import { type Brand } from "./utils/types.js";
 
 export type InternalUserId = Brand<bigint, "InternalUserId">;
 export type UserId = Brand<string, "UserId">;
+export type UserRole = Brand<number, "UserRole">;
 export type InternalGroupId = Brand<bigint, "InternalGroupId">;
 export type GroupId = Brand<string, "GroupId">;
-export type Role = Brand<number, "Role">;
+export type GroupRole = Brand<number, "GroupRole">;
 export type AdminUserId = Brand<number, "AdminUserId">;
 
 export interface ConnectedUser {
@@ -14,12 +15,13 @@ export interface ConnectedUser {
   firstName: string;
   lastName: string;
   email: string;
+  roles: UserRole[];
 
   groups: Array<{
     internalId: InternalGroupId;
     id: GroupId;
     label: string;
-    role: Role;
+    role: GroupRole;
   }>;
 }
 
