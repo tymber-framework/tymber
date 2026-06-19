@@ -36,7 +36,7 @@ export abstract class FileBasedTemplateEngine extends TemplateEngine {
   private async loadTemplates() {
     for (const module of this.modules.modules) {
       if (!module.assetsDir) {
-        return;
+        continue;
       }
       try {
         for (const filename of await FS.readDirRecursively(
