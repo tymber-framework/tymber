@@ -2,12 +2,34 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.3.0](#030-2026-06-19) | June 2026     |
 | [0.2.3](#023-2026-05-14) | May 2026      |
 | [0.2.2](#022-2026-05-12) | May 2026      |
 | [0.2.1](#021-2026-03-11) | March 2026    |
 | [0.2.0](#020-2026-02-19) | February 2026 |
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
+
+## [0.3.0](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.3...@tymber/core@0.3.0)
+
+
+### Bug Fixes
+
+* do not skip templates ([4a15579](https://github.com/tymber-framework/tymber/commit/4a15579076e61b46cdf7c4fe5c362c3dcd080153))
+* properly handle multiple chunks ([c5c31a7](https://github.com/tymber-framework/tymber/commit/c5c31a7d8b6bb102b6aa7f0895479a5a22316692))
+* properly handle aborted requests ([177310f](https://github.com/tymber-framework/tymber/commit/177310f6402cb7c583ecf119791f2eaf51466e1b))
+
+### Features
+
+* add onFinish listeners ([0357f2b](https://github.com/tymber-framework/tymber/commit/0357f2b7cf1dc2c94efaa1bea2fee955df7a1b2d))
+* add user roles ([b98f617](https://github.com/tymber-framework/tymber/commit/b98f617307c19370e222deeee8265da600ac4615))
+* implement validation for configuration values ([74aabb1](https://github.com/tymber-framework/tymber/commit/74aabb1bfd913e8bca35bedd1617734fd7724b31))
+
+### Dependencies
+
+- [`ajv@~8.18.0`](https://www.npmjs.com/package/ajv/v/8.18.0) (no change)
+- [`ajv-formats@~3.0.1`](https://www.npmjs.com/package/ajv-formats/v/3.0.1) (no change)
+
 
 ## [0.2.3](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.2...@tymber/core@0.2.3) (2026-05-14)
 
