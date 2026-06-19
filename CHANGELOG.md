@@ -12,3 +12,4 @@ Here are the detailed changelogs for each package in this monorepo:
 | `@tymber/user`     | [link](packages/user/CHANGELOG.md)     |
 | `@tymber/openapi`  | [link](packages/openapi/CHANGELOG.md)  |
 | `@tymber/config`   | [link](packages/config/CHANGELOG.md)   |
+| `@tymber/sse`      | [link](packages/sse/CHANGELOG.md)      |
