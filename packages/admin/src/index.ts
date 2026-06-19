@@ -36,7 +36,7 @@ import { AdminAuditRepository } from "./repositories/AdminAuditRepository.js";
 
 export const AdminModule: Module = {
   name: "@tymber/admin",
-  version: "0.1.1",
+  version: "0.1.2",
 
   assetsDir: FS.join(import.meta.dirname, "..", "assets"),
 
