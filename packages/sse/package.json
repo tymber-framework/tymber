@@ -1,0 +1,34 @@
+{
+  "name": "@tymber/sse",
+  "version": "0.0.0",
+  "description": "Server-sent events module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/",
+    "format:fix": "prettier -w src/ test/",
+    "test": "tsx --test"
+  },
+  "peerDependencies": {
+    "@tymber/core": "*"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  },
+  "keywords": [
+    "tymber",
+    "typescript",
+    "framework",
+    "sse"
+  ]
+}

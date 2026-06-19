@@ -46,6 +46,7 @@ This repository contains the following packages:
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      |
 | `@tymber/sqlite`   | The SQLite module                                                          |
 | `@tymber/user`     | The user module                                                            |
+| `@tymber/sse`      | The server-sent events module                                              |
 
 ## License
 
