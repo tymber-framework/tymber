@@ -35,6 +35,7 @@ const sidebars = {
       },
       'getting-started/dependency-injection',
       'getting-started/database-migrations',
+      'getting-started/configuration',
       'getting-started/i18n',
       {
           type: 'category',

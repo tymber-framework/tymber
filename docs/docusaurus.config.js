@@ -103,6 +103,18 @@ const config = {
             label: 'Tutorial',
           },
           {
+            type: 'dropdown',
+            position: 'left',
+            label: 'Built-in modules',
+            items: [
+              {
+                type: 'doc',
+                label: '@tymber/config',
+                docId: 'built-in-modules/config',
+              },
+            ],
+          },
+          {
             href: 'https://github.com/tymber-framework/tymber',
             label: 'GitHub',
             position: 'right',
@@ -122,6 +134,19 @@ const config = {
               {
                 label: 'Installation',
                 to: '/docs/installation',
+              },
+              {
+                label: 'Tutorial',
+                to: '/docs/installation',
+              },
+            ],
+          },
+          {
+            title: 'Built-in modules',
+            items: [
+              {
+                label: '@tymber/config',
+                to: '/docs/built-in-modules/config',
               },
             ],
           },
