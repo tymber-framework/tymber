@@ -165,3 +165,4 @@ Tymber provides additional modules that can be installed separately:
 | `@tymber/sqlite`   | The SQLite module                                                          |
 | `@tymber/openapi`  | The OpenAPI module                                                         |
 | `@tymber/config`   | The configuration module                                                   |
+| `@tymber/sse`      | The server-sent events module                                              |
