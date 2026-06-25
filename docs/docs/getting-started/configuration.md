@@ -70,4 +70,4 @@ You can use it with the `dotenv` package (or [Node.js built-in .env support](htt
 
 ### Database
 
-For more advanced needs, the [@tymber/config](../built-in-modules/config.md) module provides a database-backed implementation with versioning and encryption.
+For more advanced needs, the [@tymber/config](../first-party-modules/config.md) module provides a database-backed implementation with versioning and encryption.

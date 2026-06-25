@@ -105,12 +105,12 @@ const config = {
           {
             type: 'dropdown',
             position: 'left',
-            label: 'Built-in modules',
+            label: 'First-party modules',
             items: [
               {
                 type: 'doc',
                 label: '@tymber/config',
-                docId: 'built-in-modules/config',
+                docId: 'first-party-modules/config',
               },
             ],
           },
@@ -142,11 +142,11 @@ const config = {
             ],
           },
           {
-            title: 'Built-in modules',
+            title: 'First-party modules',
             items: [
               {
                 label: '@tymber/config',
-                to: '/docs/built-in-modules/config',
+                to: '/docs/first-party-modules/config',
               },
             ],
           },
