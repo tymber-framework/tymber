@@ -47,6 +47,15 @@ const sidebars = {
               'utils/template-engine',
           ]
       },
+      {
+          type: 'category',
+          label: 'Deployment',
+          collapsed: false,
+          collapsible: false,
+          items: [
+              'deployment/scaling-out',
+          ]
+      },
   ],
     tutorialSidebar: [
         'tutorial/step1',
