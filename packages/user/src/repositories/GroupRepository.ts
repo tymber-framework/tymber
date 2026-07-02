@@ -30,12 +30,12 @@ export class GroupRepository extends Repository<GroupId, Group> {
   public async find(
     ctx: Context,
     query: Query,
-    fields: string[] = [],
+    fields: Array<keyof Group> = [],
   ): Promise<Page<Group>> {
     const columns = fields.map((field) => `g.${camelToSnakeCase(field)}`);
 
     if (query.userId) {
-      columns.push("r.role");
+      columns.push("m.role");
     }
 
     const sqlQuery = sql
@@ -52,17 +52,17 @@ export class GroupRepository extends Repository<GroupId, Group> {
 
     if (query.userId) {
       sqlQuery
-        .innerJoin("t_user_roles r", { "r.group_id": "g.internal_id" })
-        .innerJoin("t_users u", { "u.internal_id": "r.user_id" })
+        .innerJoin("t_memberships m", { "m.group_id": "g.internal_id" })
+        .innerJoin("t_users u", { "u.internal_id": "m.user_id" })
         .where({ "u.id": query.userId });
     }
 
     switch (query.sort) {
       case "label:asc":
-        sqlQuery.orderBy(["lower(label)", "g.id"]);
+        sqlQuery.orderBy(["lower(g.label)", "g.id"]);
         break;
       case "label:desc":
-        sqlQuery.orderBy(["lower(label) desc", "g.id DESC"]);
+        sqlQuery.orderBy(["lower(g.label) desc", "g.id DESC"]);
         break;
     }
 

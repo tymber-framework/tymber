@@ -12,6 +12,7 @@ import {
 import { UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { GroupRepository } from "../repositories/GroupRepository.js";
+import { MembershipRepository } from "../repositories/MembershipRepository.js";
 
 interface PathParams {
   userId: UserId;
@@ -21,6 +22,7 @@ interface PathParams {
 export class RemoveUserFromGroup extends AdminEndpoint {
   static [INJECT] = [
     UserRepository,
+    MembershipRepository,
     AdminAuditService,
     GroupRepository,
     I18nService,
@@ -28,8 +30,9 @@ export class RemoveUserFromGroup extends AdminEndpoint {
 
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly membershipRepository: MembershipRepository,
     private readonly adminAuditService: AdminAuditService,
-    groupRepository: GroupRepository,
+    private readonly groupRepository: GroupRepository,
     i18n: I18nService,
   ) {
     super();
@@ -67,22 +70,51 @@ export class RemoveUserFromGroup extends AdminEndpoint {
       userId: { type: "string", format: "uuid" },
       groupId: { type: "string", format: "uuid" },
     },
-    required: ["userId"],
+    required: ["userId", "groupId"],
   };
 
   async handle(ctx: HttpContext<never, PathParams>) {
     const { pathParams } = ctx;
     const { userId, groupId } = pathParams;
 
+    const [user, group] = await Promise.all([
+      this.userRepository.findById(ctx, userId),
+      this.groupRepository.findById(ctx, groupId),
+    ]);
+
+    if (!user) {
+      return Response.json(
+        {
+          message: "user not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    if (!group) {
+      return Response.json(
+        {
+          message: "group not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
     try {
-      await this.userRepository.startTransaction(ctx, async () => {
-        await Promise.all([
-          this.userRepository.removeUserFromGroup(ctx, userId, groupId),
-          this.adminAuditService.log(ctx, "REMOVE_USER_FROM_GROUP", {
-            userId,
-            groupId,
-          }),
-        ]);
+      await this.membershipRepository.startTransaction(ctx, async () => {
+        await this.membershipRepository.deleteById(ctx, {
+          userId: user.internalId,
+          groupId: group.internalId,
+        });
+
+        await this.adminAuditService.log(ctx, "REMOVE_USER_FROM_GROUP", {
+          userId,
+          groupId,
+        });
       });
     } catch (e) {
       if (e instanceof EntityNotFoundError) {

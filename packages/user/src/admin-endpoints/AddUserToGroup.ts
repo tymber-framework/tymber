@@ -3,7 +3,6 @@ import {
   AdminEndpoint,
   computeBaseUrl,
   DuplicateKeyError,
-  EntityNotFoundError,
   type GroupId,
   type HttpContext,
   I18nService,
@@ -13,6 +12,7 @@ import {
 import { USER_ROLES, UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { GroupRepository } from "../repositories/GroupRepository.js";
+import { MembershipRepository } from "../repositories/MembershipRepository.js";
 
 interface PathParams {
   userId: UserId;
@@ -26,6 +26,7 @@ interface Payload {
 export class AddUserToGroup extends AdminEndpoint {
   static [INJECT] = [
     UserRepository,
+    MembershipRepository,
     AdminAuditService,
     GroupRepository,
     I18nService,
@@ -33,8 +34,9 @@ export class AddUserToGroup extends AdminEndpoint {
 
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly membershipRepository: MembershipRepository,
     private readonly adminAuditService: AdminAuditService,
-    groupRepository: GroupRepository,
+    private readonly groupRepository: GroupRepository,
     i18n: I18nService,
   ) {
     super();
@@ -100,22 +102,57 @@ export class AddUserToGroup extends AdminEndpoint {
       return this.badRequest("invalid role");
     }
 
+    const [user, group] = await Promise.all([
+      this.userRepository.findById(ctx, userId),
+      this.groupRepository.findById(ctx, groupId),
+    ]);
+
+    if (!user) {
+      return Response.json(
+        {
+          message: "user not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    if (!group) {
+      return Response.json(
+        {
+          message: "group not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
     try {
-      await this.userRepository.startTransaction(ctx, async () => {
-        await Promise.all([
-          this.userRepository.addUserToGroup(ctx, userId, groupId, role),
-          this.adminAuditService.log(ctx, "ADD_USER_TO_GROUP", {
-            userId,
-            groupId,
-            role,
-          }),
-        ]);
+      await this.membershipRepository.startTransaction(ctx, async () => {
+        await this.membershipRepository.insert(ctx, {
+          userId: user.internalId,
+          groupId: group.internalId,
+          role,
+        });
+
+        await this.adminAuditService.log(ctx, "ADD_USER_TO_GROUP", {
+          userId,
+          groupId,
+          role,
+        });
       });
     } catch (e) {
       if (e instanceof DuplicateKeyError) {
-        return this.badRequest("user already in group");
-      } else if (e instanceof EntityNotFoundError) {
-        return this.badRequest("user or group not found");
+        return Response.json(
+          {
+            message: "user already in group",
+          },
+          {
+            status: 409,
+          },
+        );
       }
       throw e;
     }

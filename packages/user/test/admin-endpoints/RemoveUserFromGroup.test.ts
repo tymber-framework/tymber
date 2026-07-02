@@ -19,7 +19,7 @@ describe("RemoveUserFromGroup", () => {
       emptyContext(),
       sql
         .insert()
-        .into("t_user_roles")
+        .into("t_memberships")
         .values([
           {
             user_id: internalUserId,
@@ -38,7 +38,7 @@ describe("RemoveUserFromGroup", () => {
 
     const rows = await ctx.db.query(
       emptyContext(),
-      sql.select().from("t_user_roles").where({
+      sql.select().from("t_memberships").where({
         user_id: internalUserId,
       }),
     );
@@ -52,7 +52,7 @@ describe("RemoveUserFromGroup", () => {
       ctx.groupIds[0],
     );
 
-    assert.equal(res.status, 400);
+    assert.equal(res.status, 404);
   });
 
   it("should fail with an invalid group ID", async () => {
@@ -61,6 +61,6 @@ describe("RemoveUserFromGroup", () => {
       randomUUID(),
     );
 
-    assert.equal(res.status, 400);
+    assert.equal(res.status, 404);
   });
 });

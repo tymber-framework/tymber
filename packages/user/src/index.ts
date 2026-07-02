@@ -2,6 +2,8 @@ import { join } from "node:path";
 import type { Module } from "@tymber/core";
 import { UserRepository } from "./repositories/UserRepository.js";
 import { GroupRepository } from "./repositories/GroupRepository.js";
+import { SessionRepository } from "./repositories/SessionRepository.js";
+import { MembershipRepository } from "./repositories/MembershipRepository.js";
 import { ParseSession } from "./middlewares/ParseSession.js";
 import { ImpersonateUser } from "./admin-endpoints/ImpersonateUser.js";
 import { ListUsers } from "./admin-endpoints/ListUsers.js";
@@ -16,6 +18,8 @@ import { AddUserToGroup } from "./admin-endpoints/AddUserToGroup.js";
 import { RemoveUserFromGroup } from "./admin-endpoints/RemoveUserFromGroup.js";
 import { ListUsersInGroup } from "./admin-endpoints/ListUsersInGroup.js";
 import { ListGroupsForUser } from "./admin-endpoints/ListGroupsForUser.js";
+import { CookieService } from "./services/CookieService.js";
+import { UserService } from "./services/UserService.js";
 
 export const UserModule: Module = {
   name: "@tymber/user",
@@ -41,6 +45,11 @@ export const UserModule: Module = {
   init(app) {
     app.component(UserRepository);
     app.component(GroupRepository);
+    app.component(SessionRepository);
+    app.component(MembershipRepository);
+
+    app.component(CookieService);
+    app.component(UserService);
 
     app.middleware(ParseSession);
 
@@ -83,3 +92,4 @@ export const UserModule: Module = {
 };
 
 export { USER_ROLES } from "./repositories/UserRepository.js";
+export { UserRepository, GroupRepository, UserService, CookieService };

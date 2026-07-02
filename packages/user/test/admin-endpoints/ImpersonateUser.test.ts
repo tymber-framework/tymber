@@ -40,6 +40,6 @@ describe("ImpersonateUser", () => {
   it("should fail with an invalid user ID", async () => {
     const res = await ctx.adminClient.impersonateUser(randomUUID());
 
-    assert.equal(res.status, 400);
+    assert.equal(res.status, 404);
   });
 });

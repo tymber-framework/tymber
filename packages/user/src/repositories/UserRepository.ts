@@ -9,23 +9,14 @@ import {
   camelToSnakeCase,
   escapeValue,
   type InternalUserId,
-  EntityNotFoundError,
-  type InternalGroupId,
 } from "@tymber/core";
-import { randomUUID } from "node:crypto";
-
-type AuthType = "magic link" | "password";
-
-export type SessionId = string;
 
 export interface User {
   internalId: InternalUserId;
   id: UserId;
   firstName?: string;
   lastName?: string;
-  authType?: AuthType;
   email?: string;
-  password?: string;
 }
 
 export const USER_ROLES: number[] = [0];
@@ -50,12 +41,12 @@ export class UserRepository extends Repository<UserId, User> {
   public async find(
     ctx: Context,
     query: UserQuery,
-    fields: string[] = ["*"],
+    fields: Array<keyof User> = [],
   ): Promise<Page<User>> {
     const columns = fields.map((field) => `u.${camelToSnakeCase(field)}`);
 
     if (query.groupId) {
-      columns.push("r.role");
+      columns.push("m.role");
     }
 
     const sqlQuery = sql
@@ -78,29 +69,35 @@ export class UserRepository extends Repository<UserId, User> {
 
     if (query.groupId) {
       sqlQuery
-        .innerJoin("t_user_roles r", { "r.user_id": "u.internal_id" })
-        .innerJoin("t_groups g", { "r.group_id": "g.internal_id" })
+        .innerJoin("t_memberships m", { "m.user_id": "u.internal_id" })
+        .innerJoin("t_groups g", { "g.internal_id": "m.group_id" })
         .where({ "g.id": query.groupId });
     }
 
     switch (query.sort) {
       case "first_name:asc":
-        sqlQuery.orderBy(["lower(first_name)", "lower(last_name)"]);
+        sqlQuery.orderBy(["lower(u.first_name)", "lower(u.last_name)"]);
         break;
       case "first_name:desc":
-        sqlQuery.orderBy(["lower(first_name) desc", "lower(last_name) desc"]);
+        sqlQuery.orderBy([
+          "lower(u.first_name) desc",
+          "lower(u.last_name) desc",
+        ]);
         break;
       case "last_name:asc":
-        sqlQuery.orderBy(["lower(last_name)", "lower(first_name)"]);
+        sqlQuery.orderBy(["lower(u.last_name)", "lower(u.first_name)"]);
         break;
       case "last_name:desc":
-        sqlQuery.orderBy(["lower(last_name) desc", "lower(first_name) desc"]);
+        sqlQuery.orderBy([
+          "lower(u.last_name) desc",
+          "lower(u.first_name) desc",
+        ]);
         break;
       case "email:asc":
-        sqlQuery.orderBy(["email", "id"]);
+        sqlQuery.orderBy(["u.email", "u.id"]);
         break;
       case "email:desc":
-        sqlQuery.orderBy(["email desc", "id desc"]);
+        sqlQuery.orderBy(["u.email desc", "u.id desc"]);
         break;
     }
 
@@ -109,63 +106,6 @@ export class UserRepository extends Repository<UserId, User> {
     return {
       items,
     };
-  }
-
-  async createSession(ctx: Context, userId: UserId): Promise<SessionId> {
-    const sessionId = randomUUID();
-
-    const internalUserId = await this.getInternalUserId(ctx, userId);
-
-    await this.db.query(
-      ctx,
-      sql
-        .insert()
-        .into("t_user_sessions")
-        .values([
-          {
-            id: sessionId,
-            user_id: internalUserId,
-          },
-        ]),
-    );
-
-    return sessionId;
-  }
-
-  private async getInternalUserId(
-    ctx: Context,
-    userId: UserId,
-  ): Promise<InternalUserId> {
-    const result = await this.db.query(
-      ctx,
-      sql.select(["internal_id"]).from(this.tableName).where({
-        id: userId,
-      }),
-    );
-
-    if (result.length === 0) {
-      throw new EntityNotFoundError();
-    }
-
-    return result[0].internal_id as InternalUserId;
-  }
-
-  private async getInternalGroupId(
-    ctx: Context,
-    groupId: GroupId,
-  ): Promise<InternalGroupId> {
-    const result = await this.db.query(
-      ctx,
-      sql.select(["internal_id"]).from("t_groups").where({
-        id: groupId,
-      }),
-    );
-
-    if (result.length === 0) {
-      throw new EntityNotFoundError();
-    }
-
-    return result[0].internal_id as InternalGroupId;
   }
 
   public async findBySessionId(
@@ -181,16 +121,17 @@ export class UserRepository extends Repository<UserId, User> {
           "u.first_name",
           "u.last_name",
           "u.email",
-          "r.role",
+          "m.role",
           "g.id AS group_id",
           "g.label AS group_label",
           "g.internal_id AS internal_group_id",
         ])
         .from("t_user_sessions s")
         .innerJoin("t_users u", { "u.internal_id": "s.user_id" })
-        .leftJoin("t_user_roles r", { "r.user_id": "u.internal_id" })
-        .leftJoin("t_groups g", { "g.internal_id": "r.group_id" })
-        .where({ "s.id": sessionId }),
+        .leftJoin("t_memberships m", { "m.user_id": "u.internal_id" })
+        .leftJoin("t_groups g", { "g.internal_id": "m.group_id" })
+        .where({ "s.id": sessionId })
+        .where(sql.gt("s.expires_at", new Date())),
     );
     if (rows.length > 0) {
       const row = rows[0];
@@ -210,58 +151,6 @@ export class UserRepository extends Repository<UserId, User> {
             }))
           : [],
       };
-    }
-  }
-
-  async deleteSession(ctx: Context, sessionId: SessionId) {
-    await this.db.query(
-      ctx,
-      sql.deleteFrom("t_user_sessions").where({ id: sessionId }),
-    );
-  }
-
-  async addUserToGroup(
-    ctx: Context,
-    userId: UserId,
-    groupId: GroupId,
-    role: number,
-  ) {
-    const [internalUserId, internalGroupId] = await Promise.all([
-      this.getInternalUserId(ctx, userId),
-      this.getInternalGroupId(ctx, groupId),
-    ]);
-
-    await this.db.run(
-      ctx,
-      sql
-        .insert()
-        .into("t_user_roles")
-        .values([
-          {
-            user_id: internalUserId,
-            group_id: internalGroupId,
-            role,
-          },
-        ]),
-    );
-  }
-
-  async removeUserFromGroup(ctx: Context, userId: UserId, groupId: GroupId) {
-    const [internalUserId, internalGroupId] = await Promise.all([
-      this.getInternalUserId(ctx, userId),
-      this.getInternalGroupId(ctx, groupId),
-    ]);
-
-    const res = await this.db.run(
-      ctx,
-      sql.deleteFrom("t_user_roles").where({
-        user_id: internalUserId,
-        group_id: internalGroupId,
-      }),
-    );
-
-    if (res.affectedRows === 0) {
-      throw new Error(`User ${userId} is not in group ${groupId}`);
     }
   }
 }

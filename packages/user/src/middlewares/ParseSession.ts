@@ -1,22 +1,19 @@
-import {
-  createCookie,
-  type HttpContext,
-  INJECT,
-  Middleware,
-} from "@tymber/core";
+import { type HttpContext, INJECT, Middleware } from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
-
-export const SESSION_COOKIE = "sid";
+import { CookieService } from "../services/CookieService.js";
 
 export class ParseSession extends Middleware {
-  static [INJECT] = [UserRepository];
+  static [INJECT] = [UserRepository, CookieService];
 
-  constructor(private readonly userRepository: UserRepository) {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly cookieService: CookieService,
+  ) {
     super();
   }
 
   override async handle(ctx: HttpContext) {
-    const sessionId = ctx.cookies[SESSION_COOKIE];
+    const sessionId = ctx.cookies["sid"];
 
     if (!sessionId) {
       return;
@@ -30,11 +27,7 @@ export class ParseSession extends Middleware {
     } else {
       ctx.responseHeaders.append(
         "set-cookie",
-        createCookie(SESSION_COOKIE, "", {
-          path: "/",
-          httpOnly: true,
-          maxAge: 0,
-        }),
+        this.cookieService.createExpiredCookie(),
       );
     }
   }

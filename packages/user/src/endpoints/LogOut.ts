@@ -1,19 +1,17 @@
+import { UserEndpoint, type HttpContext, INJECT } from "@tymber/core";
 import {
-  createCookie,
-  UserEndpoint,
-  type HttpContext,
-  INJECT,
-} from "@tymber/core";
-import {
+  SessionRepository,
   type SessionId,
-  UserRepository,
-} from "../repositories/UserRepository.js";
-import { SESSION_COOKIE } from "../middlewares/ParseSession.js";
+} from "../repositories/SessionRepository.js";
+import { CookieService } from "../services/CookieService.js";
 
 export class LogOut extends UserEndpoint {
-  static [INJECT] = [UserRepository];
+  static [INJECT] = [SessionRepository, CookieService];
 
-  constructor(private readonly userRepository: UserRepository) {
+  constructor(
+    private readonly sessionRepository: SessionRepository,
+    private readonly cookieService: CookieService,
+  ) {
     super();
   }
 
@@ -21,17 +19,15 @@ export class LogOut extends UserEndpoint {
     const { sessionId } = ctx;
 
     if (sessionId) {
-      await this.userRepository.deleteSession(ctx, sessionId as SessionId);
+      try {
+        await this.sessionRepository.deleteById(ctx, sessionId as SessionId);
+      } catch (e) {}
     }
 
     return new Response(null, {
       status: 204,
       headers: {
-        "set-cookie": createCookie(SESSION_COOKIE, "", {
-          path: "/",
-          httpOnly: true,
-          maxAge: 0,
-        }),
+        "set-cookie": this.cookieService.createExpiredCookie(),
       },
     });
   }

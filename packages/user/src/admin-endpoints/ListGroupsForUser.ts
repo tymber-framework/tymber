@@ -46,10 +46,16 @@ export class ListGroupsForUser extends AdminEndpoint {
 
   override async handle(ctx: HttpContext<never, PathParams, Query>) {
     const { pathParams, query } = ctx;
+    const { userId } = pathParams;
 
-    query.userId = pathParams.userId;
-
-    const output = await this.groupRepository.find(ctx, query, ["id", "label"]);
+    const output = await this.groupRepository.find(
+      ctx,
+      {
+        ...query,
+        userId,
+      },
+      ["id", "label"],
+    );
 
     return Response.json(output);
   }
