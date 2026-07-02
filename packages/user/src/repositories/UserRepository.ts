@@ -9,6 +9,7 @@ import {
   camelToSnakeCase,
   escapeValue,
   type InternalUserId,
+  type UserRole,
 } from "@tymber/core";
 
 export interface User<UserData = any> {
@@ -17,10 +18,9 @@ export interface User<UserData = any> {
   firstName?: string;
   lastName?: string;
   email?: string;
+  role: UserRole;
   data: UserData;
 }
-
-export const USER_ROLES: number[] = [0];
 
 export interface UserQuery {
   q?: string;
@@ -125,8 +125,9 @@ export class UserRepository<UserData = any> extends Repository<
           "u.id",
           "u.first_name",
           "u.last_name",
+          "u.role",
           "u.email",
-          "m.role",
+          "m.role as group_role",
           "g.id AS group_id",
           "g.label AS group_label",
           "g.internal_id AS internal_group_id",
@@ -146,13 +147,13 @@ export class UserRepository<UserData = any> extends Repository<
         firstName: row.first_name,
         lastName: row.last_name,
         email: row.email,
-        roles: [],
+        role: row.role,
         groups: row.group_id
           ? rows.map((row: any) => ({
               internalId: row.internal_group_id,
               id: row.group_id,
               label: row.group_label,
-              role: row.role,
+              role: row.group_role,
             }))
           : [],
       };

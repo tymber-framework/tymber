@@ -6,8 +6,8 @@
       "groups": "Groups",
       "group": "Group",
       "role": "Role",
-      "roles": {
-        "0": "Manager"
+      "userRoles": {
+        "0": "Default"
       },
       "firstName": "First name",
       "lastName": "Last name",
@@ -20,13 +20,16 @@
       "addUser": "Add user",
       "removeUser": "Remove user",
       "removeUserConfirmation": "Are you sure you want to remove this user from the group?",
+      "updateRole": "Update role",
+      "updateRoleConfirmation": "Are you sure you want to update the role of the user?",
       "toast": {
         "impersonationStarted": "The impersonation has started.",
         "impersonationStopped": "The impersonation has stopped.",
         "userNotFound": "The user was not found.",
         "userAdded": "The user has successfully been added to the group.",
         "userRemoved": "The user has successfully been removed from the group.",
-        "groupNotFound": "The group was not found."
+        "groupNotFound": "The group was not found.",
+        "roleUpdated": "The role of the user has successfully been updated."
       }
     },
     "adminAuditLogs": {
@@ -35,8 +38,12 @@
         "description": "User <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has been added to group <a href=\"<%= groupUrl %>\"><%= group.label %></a> with role <b><%= role %></b>"
       },
       "REMOVE_USER_FROM_GROUP": {
-        "label": "Revove user from group",
+        "label": "Remove user from group",
         "description": "User <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has been removed from group <a href=\"<%= groupUrl %>\"><%= group.label %></a>"
+      },
+      "UPDATE_USER_ROLE": {
+        "label": "Update user role",
+        "description": "The role of user <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> has been updated to <b><%= role %></b>"
       },
       "IMPERSONATE_USER": {
         "label": "User impersonation",

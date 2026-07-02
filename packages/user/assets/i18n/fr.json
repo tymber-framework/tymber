@@ -6,8 +6,8 @@
       "groups": "Groupes",
       "group": "Groupe",
       "role": "Rôle",
-      "roles": {
-        "0": "Gérant"
+      "userRoles": {
+        "0": "Défaut"
       },
       "firstName": "Prénom",
       "lastName": "Nom",
@@ -20,13 +20,16 @@
       "addUser": "Ajout d'un utilisateur",
       "removeUser": "Suppression d'un utilisateur",
       "removeUserConfirmation": "Êtes-vous sûr de vouloir supprimer l'utilisateur de ce groupe ?",
+      "updateRole": "Mise à jour du rôle",
+      "updateRoleConfirmation": "Êtes-vous sûr de vouloir mettre à jour le rôle de l'utilisateur ?",
       "toast": {
         "impersonationStarted": "L'emprunt d'identité est en cours.",
         "impersonationStopped": "L'emprunt d'identité est terminé.",
         "userNotFound": "L'utilisateur n'a pas été trouvé.",
         "userAdded": "L'utilisateur a bien été ajouté au groupe.",
         "userRemoved": "L'utilisateur a bien été retiré du groupe.",
-        "groupNotFound": "Le groupe n'a pas été trouvé."
+        "groupNotFound": "Le groupe n'a pas été trouvé.",
+        "roleUpdated": "Le rôle de l'utilisateur a bien été mis à jour."
       }
     },
     "adminAuditLogs": {
@@ -37,6 +40,10 @@
       "REMOVE_USER_FROM_GROUP": {
         "label": "Suppression d'un utilisateur d'un groupe",
         "description": "Suppression de l'utilisateur <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> du groupe <a href=\"<%= groupUrl %>\"><%= group.label %></a>"
+      },
+      "UPDATE_USER_ROLE": {
+        "label": "Update user role",
+        "description": "Le rôle de l'utilisateur <a href=\"<%= userUrl %>\"><%= user.firstName %> <%= user.lastName %></a> a été changé en <b><%= role %></b>"
       },
       "IMPERSONATE_USER": {
         "label": "Emprunt de l'identité d'un utilisateur",

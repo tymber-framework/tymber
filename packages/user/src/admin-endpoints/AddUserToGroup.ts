@@ -9,10 +9,12 @@ import {
   INJECT,
   type UserId,
 } from "@tymber/core";
-import { USER_ROLES, UserRepository } from "../repositories/UserRepository.js";
+import { UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { GroupRepository } from "../repositories/GroupRepository.js";
 import { MembershipRepository } from "../repositories/MembershipRepository.js";
+import { GroupRoleRegistry } from "../services/GroupRoleRegistry.js";
+import { type GroupRole } from "@tymber/core";
 
 interface PathParams {
   userId: UserId;
@@ -29,6 +31,7 @@ export class AddUserToGroup extends AdminEndpoint {
     MembershipRepository,
     AdminAuditService,
     GroupRepository,
+    GroupRoleRegistry,
     I18nService,
   ];
 
@@ -37,6 +40,7 @@ export class AddUserToGroup extends AdminEndpoint {
     private readonly membershipRepository: MembershipRepository,
     private readonly adminAuditService: AdminAuditService,
     private readonly groupRepository: GroupRepository,
+    private readonly groupRoleRegistry: GroupRoleRegistry,
     i18n: I18nService,
   ) {
     super();
@@ -56,7 +60,7 @@ export class AddUserToGroup extends AdminEndpoint {
         const role = i18n.translate(
           ctx,
           ctx.locale,
-          `tymber.user.roles.${log.details.role}`,
+          `tymber.user.groupRoles.${log.details.role}`,
         );
 
         return i18n.translate(
@@ -98,7 +102,7 @@ export class AddUserToGroup extends AdminEndpoint {
     const { userId, groupId } = pathParams;
     const { role } = payload;
 
-    if (!USER_ROLES.includes(role)) {
+    if (!this.groupRoleRegistry.has(role as GroupRole)) {
       return this.badRequest("invalid role");
     }
 

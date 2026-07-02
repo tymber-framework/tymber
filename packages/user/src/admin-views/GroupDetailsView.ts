@@ -7,17 +7,18 @@ import {
 } from "@tymber/core";
 import { GroupRepository } from "../repositories/GroupRepository.js";
 import type { JSONSchemaType } from "ajv";
-import { USER_ROLES } from "../repositories/UserRepository.js";
+import { GroupRoleRegistry } from "../services/GroupRoleRegistry.js";
 
 interface PathParams {
   groupId: GroupId;
 }
 
 export class GroupDetailsView extends AdminView {
-  static [INJECT] = [GroupRepository, I18nService];
+  static [INJECT] = [GroupRepository, GroupRoleRegistry, I18nService];
 
   constructor(
     private readonly groupRepository: GroupRepository,
+    private readonly groupRoleRegistry: GroupRoleRegistry,
     private readonly i18nService: I18nService,
   ) {
     super();
@@ -40,18 +41,18 @@ export class GroupDetailsView extends AdminView {
     }
 
     // TODO create a cache (per locale)
-    const roles = USER_ROLES.map((role) => ({
+    const groupRoles = this.groupRoleRegistry.all().map((role) => ({
       id: role,
       text: this.i18nService.translate(
         ctx,
         ctx.locale,
-        `tymber.user.roles.${role}`,
+        `tymber.user.groupRoles.${role}`,
       ),
     }));
 
     return ctx.render(["admin.layout", "admin.app-layout", "admin.group"], {
       group,
-      roles,
+      groupRoles,
     });
   }
 }

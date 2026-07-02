@@ -22,6 +22,7 @@ describe("ListUsers", () => {
       firstName: "CAROL",
       lastName: "DOE",
       email: "carol.doe@example.com",
+      role: 3,
     });
   });
 

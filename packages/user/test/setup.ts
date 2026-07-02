@@ -4,13 +4,16 @@ import {
   sql,
   emptyContext,
   AdminUserId,
+  Component,
+  INJECT,
 } from "@tymber/core";
-import { UserModule } from "../src";
+import { GroupRoleRegistry, UserModule, UserRoleRegistry } from "../src";
 import { randomUUID } from "node:crypto";
 import { UserAdminClient, UserClient } from "@tymber/client";
 import { createTestDB as createSQLiteDB } from "@tymber/sqlite";
 import { createTestDB as createPGDB } from "@tymber/postgres";
 import { AdminModule, initTestDB } from "@tymber/admin";
+import { join } from "node:path";
 
 export interface TestContext extends BaseTestContext {
   adminSessionId: string;
@@ -22,9 +25,11 @@ export interface TestContext extends BaseTestContext {
   sessionIds: string[];
   clients: UserClient[];
   adminClient: UserAdminClient;
+  userRoleRegistry: UserRoleRegistry;
+  groupRoleRegistry: GroupRoleRegistry;
 }
 
-export function createTestDB() {
+function createTestDB() {
   if (process.env.USE_SQLITE) {
     return createSQLiteDB();
   } else {
@@ -35,9 +40,37 @@ export function createTestDB() {
 
 export async function setup(): Promise<TestContext> {
   try {
+    let userRoleRegistry: UserRoleRegistry;
+    let groupRoleRegistry: GroupRoleRegistry;
+
     const ctx = await createTestApp(
       () => createTestDB(),
-      [AdminModule, UserModule],
+      [
+        AdminModule,
+        UserModule,
+        {
+          name: "test",
+          version: "0.0.0",
+          // load translations for roles
+          assetsDir: join(import.meta.dirname, "assets"),
+          init(app) {
+            app.component(
+              class extends Component {
+                static [INJECT] = [UserRoleRegistry, GroupRoleRegistry];
+
+                constructor(
+                  _userRoleRegistry: UserRoleRegistry,
+                  _groupRoleRegistry: GroupRoleRegistry,
+                ) {
+                  super();
+                  userRoleRegistry = _userRoleRegistry;
+                  groupRoleRegistry = _groupRoleRegistry;
+                }
+              },
+            );
+          },
+        },
+      ],
     );
 
     const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
@@ -55,18 +88,21 @@ export async function setup(): Promise<TestContext> {
             first_name: "Alice",
             last_name: "Smith",
             email: "alice@smith.com",
+            role: 1,
           },
           {
             id: userIds[1],
             first_name: "bob",
             last_name: "johnson",
             email: "bob@johnson.com",
+            role: 2,
           },
           {
             id: userIds[2],
             first_name: "CAROL",
             last_name: "DOE",
             email: "carol.doe@example.com",
+            role: 3,
           },
         ])
         .returning(["internal_id"]),
@@ -174,6 +210,8 @@ export async function setup(): Promise<TestContext> {
       adminClient: new UserAdminClient(ctx.baseUrl, {
         cookie: `ssid=${adminSessionId}`,
       }),
+      userRoleRegistry,
+      groupRoleRegistry,
     };
   } catch (e) {
     throw e;

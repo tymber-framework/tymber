@@ -7,6 +7,7 @@ CREATE TABLE t_users
     last_name   TEXT,
 
     email       TEXT UNIQUE,
+    role        INTEGER DEFAULT 0,
     data        JSONB
 );
 

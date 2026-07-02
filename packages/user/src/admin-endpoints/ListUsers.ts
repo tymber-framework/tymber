@@ -42,6 +42,7 @@ export class ListUsers extends AdminEndpoint {
       "firstName",
       "lastName",
       "email",
+      "role",
     ]);
 
     return Response.json(output);

@@ -67,11 +67,131 @@
             </div>
           </div>
         </div>
-      </fieldset>
 
-      <div class="field">
-        <label class="label"><%= $t("tymber.user.data") %></label>
-        <pre>{{ user.data }}</pre>
+        <div class="field">
+          <label class="label"><%= $t("tymber.user.data") %></label>
+          <pre>{{ user.data }}</pre>
+        </div>
+      </fieldset>
+    `,
+  };
+
+  const UpdateRoleModal = {
+    components: {
+      Modal,
+    },
+
+    props: {
+      modelValue: Boolean,
+      isLoading: Boolean,
+    },
+
+    emits: ["update:modelValue", "submit"],
+
+    data() {
+      return {};
+    },
+
+    methods: {
+      async onSubmit() {
+        this.$emit("submit");
+      },
+
+      closeModal() {
+        this.$emit("update:modelValue", false);
+      },
+    },
+
+    template: `
+      <Modal :model-value="modelValue" @update:model-value="closeModal()">
+        <template #header>
+          <p class="modal-card-title"><%= $t("tymber.user.updateRole") %></p>
+        </template>
+
+        <template #content>
+          <p><%= $t("tymber.user.updateRoleConfirmation") %></p>
+
+          <form @submit.prevent="onSubmit">
+            <div class="field is-grouped is-grouped-right mt-3">
+              <div class="control">
+                <button class="button" type="reset" @click="closeModal()"><%= $t("tymber.common.cancel") %></button>
+              </div>
+              <div class="control">
+                <button class="button is-primary" type="submit" :class="{ 'is-loading': isLoading }">
+                  <%= $t("tymber.common.confirm") %>
+                </button>
+              </div>
+            </div>
+          </form>
+        </template>
+      </Modal>
+    `,
+  };
+
+  const UserRole = {
+    components: {
+      Toast,
+      UpdateRoleModal,
+    },
+
+    props: {
+      user: Object,
+      userRoles: Array,
+    },
+
+    data() {
+      return {
+        isLoading: false,
+        role: this.user.role,
+        showUpdateRoleModal: false,
+        showUnknownErrorToast: false,
+        showRoleUpdatedToast: false,
+      };
+    },
+
+    methods: {
+      async updateRole() {
+        this.isLoading = true;
+
+        const res = await doFetch({
+          method: "PATCH",
+          path: `/api/admin/users/${this.user.id}/role`,
+          payload: {
+            role: this.role,
+          },
+        });
+
+        if (res.ok) {
+          this.showUpdateRoleModal = false;
+          this.user.role = this.role;
+          this.showRoleUpdatedToast = true;
+        } else {
+          this.showUnknownErrorToast = true;
+        }
+
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 200);
+      },
+    },
+
+    template: `
+      <Toast v-model="showUnknownErrorToast" class="is-danger"><%= $t("tymber.common.unknownError") %></Toast>
+      <Toast v-model="showRoleUpdatedToast" class="is-success"><%= $t("tymber.user.toast.roleUpdated") %></Toast>
+
+      <UpdateRoleModal v-model="showUpdateRoleModal" :is-loading="isLoading" @submit="updateRole" />
+
+      <div class="field is-grouped">
+        <div class="control">
+          <div class="select">
+            <select id="role" v-model="role">
+              <option v-for="(role) in userRoles" :key="role.id" :value="role.id">{{ role.text }}</option>
+            </select>
+          </div>
+        </div>
+        <p class="control" v-show="role !== user.role">
+          <button class="button is-primary" @click="showUpdateRoleModal = true" :disabled="isLoading"><%= $t("tymber.common.confirm") %></button>
+        </p>
       </div>
     `,
   };
@@ -162,7 +282,7 @@
 
     props: {
       modelValue: Boolean,
-      roles: Array,
+      groupRoles: Array,
       isLoading: Boolean,
     },
 
@@ -226,7 +346,7 @@
               <div class="control">
                 <div class="select">
                   <select id="role" v-model="form.role">
-                    <option v-for="(role) in roles" :key="role.id" :value="role.id">{{ role.text }}</option>
+                    <option v-for="(role) in groupRoles" :key="role.id" :value="role.id">{{ role.text }}</option>
                   </select>
                 </div>
               </div>
@@ -311,7 +431,7 @@
 
     props: {
       userId: String,
-      roles: Array,
+      groupRoles: Array,
     },
 
     data() {
@@ -443,7 +563,7 @@
       },
 
       computeRoleLabel(roleId) {
-        const role = this.roles.find((role) => role.id === roleId);
+        const role = this.groupRoles.find((role) => role.id === roleId);
         return role ? role.text : "-";
       },
 
@@ -463,7 +583,7 @@
 
       <AddUserToGroupModal
         v-model="showAddUserToGroupModal"
-        :roles="roles"
+        :group-roles="groupRoles"
         :is-loading="isLoading"
         @submit="addUserToGroup"
       />
@@ -533,13 +653,15 @@
   createApp({
     components: {
       UserDetails,
+      UserRole,
       GroupTable,
     },
 
     data() {
       return {
         user: JSON.parse(`<%= JSON.stringify(user) %>`),
-        roles: JSON.parse(`<%= JSON.stringify(roles) %>`),
+        userRoles: JSON.parse(`<%= JSON.stringify(userRoles) %>`),
+        groupRoles: JSON.parse(`<%= JSON.stringify(groupRoles) %>`),
       };
     },
 
@@ -548,9 +670,13 @@
 
       <UserDetails :user="user" />
 
+      <h2 class="subtitle mt-6"><%= $t("tymber.user.role") %></h2>
+
+      <UserRole :user="user" :user-roles="userRoles" />
+
       <h2 class="subtitle mt-6"><%= $t("tymber.user.groups") %></h2>
 
-      <GroupTable :user-id="user.id" :roles="roles" />
+      <GroupTable :user-id="user.id" :group-roles="groupRoles" />
     `,
   }).mount("#app");
 </script>

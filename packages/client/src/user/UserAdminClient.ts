@@ -104,4 +104,12 @@ export class UserAdminClient extends Client {
       path: `/api/admin/users/${userId}/groups/${groupId}`,
     });
   }
+
+  updateUserRole(userId: string, role: number) {
+    return this.fetch({
+      method: "PATCH",
+      path: `/api/admin/users/${userId}/role`,
+      payload: { role },
+    });
+  }
 }

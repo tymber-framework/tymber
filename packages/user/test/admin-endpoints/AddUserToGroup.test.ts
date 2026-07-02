@@ -1,21 +1,20 @@
 import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert/strict";
 import { insertTestUser, setup, TestContext } from "../setup";
-import { emptyContext, randomUUID, sql } from "@tymber/core";
-import { USER_ROLES } from "../../src";
+import { emptyContext, randomUUID, sql, type GroupRole } from "@tymber/core";
 
 describe("AddUserToGroup", () => {
   let ctx: TestContext;
 
   before(async () => {
     ctx = await setup();
+    ctx.groupRoleRegistry.add(0 as GroupRole);
+    ctx.groupRoleRegistry.add(3 as GroupRole);
   });
 
   after(() => ctx.close());
 
   it("should work", async () => {
-    USER_ROLES.push(3);
-
     const { userId, internalUserId } = await insertTestUser(ctx);
 
     const res = await ctx.adminClient.addUserToGroup(

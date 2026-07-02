@@ -120,7 +120,7 @@
 
     props: {
       modelValue: Boolean,
-      roles: Array,
+      groupRoles: Array,
       isLoading: Boolean,
     },
 
@@ -184,7 +184,7 @@
               <div class="control">
                 <div class="select">
                   <select id="role" v-model="form.role">
-                    <option v-for="(role) in roles" :key="role.id" :value="role.id">{{ role.text }}</option>
+                    <option v-for="(role) in groupRoles" :key="role.id" :value="role.id">{{ role.text }}</option>
                   </select>
                 </div>
               </div>
@@ -269,7 +269,7 @@
 
     props: {
       groupId: String,
-      roles: Array,
+      groupRoles: Array,
     },
 
     data() {
@@ -408,7 +408,7 @@
       },
 
       computeRoleLabel(roleId) {
-        const role = this.roles.find((role) => role.id === roleId);
+        const role = this.groupRoles.find((role) => role.id === roleId);
         return role ? role.text : "-";
       },
 
@@ -428,7 +428,7 @@
 
       <AddUserToGroupModal
         v-model="showAddUserToGroupModal"
-        :roles="roles"
+        :groupRoles="groupRoles"
         :is-loading="isLoading"
         @submit="addUserToGroup" />
 
@@ -502,7 +502,7 @@
     data() {
       return {
         group: JSON.parse(`<%= JSON.stringify(group) %>`),
-        roles: JSON.parse(`<%= JSON.stringify(roles) %>`),
+        groupRoles: JSON.parse(`<%= JSON.stringify(groupRoles) %>`),
       };
     },
 
@@ -520,16 +520,16 @@
             </div>
           </div>
         </div>
-      </fieldset>
 
-      <div class="field">
-        <label class="label"><%= $t("tymber.user.data") %></label>
-        <pre>{{ group.data }}</pre>
-      </div>
+        <div class="field">
+          <label class="label"><%= $t("tymber.user.data") %></label>
+          <pre>{{ group.data }}</pre>
+        </div>
+      </fieldset>
 
       <h2 class="subtitle mt-6"><%= $t("tymber.user.users") %></h2>
 
-      <UserTable :group-id="group.id" :roles="roles" />
+      <UserTable :group-id="group.id" :group-roles="groupRoles" />
     `,
   }).mount("#app");
 </script>

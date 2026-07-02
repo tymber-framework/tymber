@@ -4,6 +4,8 @@ import { UserRepository } from "./repositories/UserRepository.js";
 import { GroupRepository } from "./repositories/GroupRepository.js";
 import { SessionRepository } from "./repositories/SessionRepository.js";
 import { MembershipRepository } from "./repositories/MembershipRepository.js";
+import { UserRoleRegistry } from "./services/UserRoleRegistry.js";
+import { GroupRoleRegistry } from "./services/GroupRoleRegistry.js";
 import { ParseSession } from "./middlewares/ParseSession.js";
 import { ImpersonateUser } from "./admin-endpoints/ImpersonateUser.js";
 import { ListUsers } from "./admin-endpoints/ListUsers.js";
@@ -15,6 +17,7 @@ import { GroupDetailsView } from "./admin-views/GroupDetailsView.js";
 import { ListGroups } from "./admin-endpoints/ListGroups.js";
 import { LogOut } from "./endpoints/LogOut.js";
 import { AddUserToGroup } from "./admin-endpoints/AddUserToGroup.js";
+import { UpdateUserRole } from "./admin-endpoints/UpdateUserRole.js";
 import { RemoveUserFromGroup } from "./admin-endpoints/RemoveUserFromGroup.js";
 import { ListUsersInGroup } from "./admin-endpoints/ListUsersInGroup.js";
 import { ListGroupsForUser } from "./admin-endpoints/ListGroupsForUser.js";
@@ -47,6 +50,8 @@ export const UserModule: Module = {
     app.component(GroupRepository);
     app.component(SessionRepository);
     app.component(MembershipRepository);
+    app.component(UserRoleRegistry);
+    app.component(GroupRoleRegistry);
 
     app.component(CookieService);
     app.component(UserService);
@@ -78,6 +83,7 @@ export const UserModule: Module = {
       "/api/admin/users/:userId/_impersonate",
       ImpersonateUser,
     );
+    app.adminEndpoint("PATCH", "/api/admin/users/:userId/role", UpdateUserRole);
     app.adminEndpoint(
       "POST",
       "/api/admin/users/:userId/groups/:groupId",
@@ -91,5 +97,11 @@ export const UserModule: Module = {
   },
 };
 
-export { USER_ROLES } from "./repositories/UserRepository.js";
-export { UserRepository, GroupRepository, UserService, CookieService };
+export {
+  UserRepository,
+  GroupRepository,
+  UserService,
+  CookieService,
+  UserRoleRegistry,
+  GroupRoleRegistry,
+};

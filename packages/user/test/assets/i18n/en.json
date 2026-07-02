@@ -1,0 +1,12 @@
+{
+  "tymber": {
+    "user": {
+      "userRoles": {
+        "1": "manager"
+      },
+      "groupRoles": {
+        "0": "analyst"
+      }
+    }
+  }
+}
