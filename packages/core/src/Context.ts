@@ -15,7 +15,7 @@ export interface ConnectedUser {
   firstName: string;
   lastName: string;
   email: string;
-  roles: UserRole[];
+  role: UserRole;
 
   groups: Array<{
     internalId: InternalGroupId;
