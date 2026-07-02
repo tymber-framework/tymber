@@ -2,6 +2,7 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.3.1](#031-2026-07-02) | July 2026     |
 | [0.3.0](#030-2026-06-19) | June 2026     |
 | [0.2.3](#023-2026-05-14) | May 2026      |
 | [0.2.2](#022-2026-05-12) | May 2026      |
@@ -10,7 +11,16 @@
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
 
-## [0.3.0](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.3...@tymber/core@0.3.0)
+## [0.3.1](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.3.0...@tymber/core@0.3.1) (2026-07-02)
+
+### Dependencies
+
+- [`ajv@~8.18.0`](https://www.npmjs.com/package/ajv/v/8.18.0) (no change)
+- [`ajv-formats@~3.0.1`](https://www.npmjs.com/package/ajv-formats/v/3.0.1) (no change)
+
+
+
+## [0.3.0](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.2.3...@tymber/core@0.3.0) (2026-06-19)
 
 
 ### Bug Fixes
