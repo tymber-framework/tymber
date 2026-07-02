@@ -26,7 +26,7 @@ import { UserService } from "./services/UserService.js";
 
 export const UserModule: Module = {
   name: "@tymber/user",
-  version: "0.1.0",
+  version: "0.2.0",
 
   assetsDir: join(import.meta.dirname, "..", "assets"),
 
