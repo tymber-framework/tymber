@@ -133,7 +133,7 @@ async function initUsers(ctx: BaseTestContext) {
     emptyContext(),
     sql
       .insert()
-      .into("t_user_roles")
+      .into("t_memberships")
       .values([
         {
           user_id: internalUserIds[0],
@@ -169,14 +169,17 @@ async function initUsers(ctx: BaseTestContext) {
         {
           id: sessionIds[0],
           user_id: internalUserIds[0],
+          expires_at: new Date(Date.now() + 1_000),
         },
         {
           id: sessionIds[1],
           user_id: internalUserIds[1],
+          expires_at: new Date(Date.now() + 1_000),
         },
         {
           id: sessionIds[2],
           user_id: internalUserIds[2],
+          expires_at: new Date(Date.now() + 1_000),
         },
       ]),
   );
