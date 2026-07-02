@@ -4,7 +4,7 @@ import { SSEEndpoint } from "./endpoints/SSEEndpoint.js";
 
 export const SSEModule: Module = {
   name: "@tymber/sse",
-  version: "0.0.1",
+  version: "0.0.2",
 
   init(app) {
     app.component(SSEService);

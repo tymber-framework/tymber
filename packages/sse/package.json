@@ -1,6 +1,6 @@
 {
   "name": "@tymber/sse",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Server-sent events module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
