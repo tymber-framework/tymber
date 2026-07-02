@@ -22,11 +22,18 @@ describe("GetSelf", () => {
       firstName: "Alice",
       lastName: "Smith",
       email: "alice@smith.com",
+      role: {
+        id: 1,
+        label: "manager",
+      },
       groups: [
         {
           id: ctx.groupIds[0],
           label: "AAA",
-          role: 0,
+          role: {
+            id: 0,
+            label: "analyst",
+          },
         },
       ],
     });
