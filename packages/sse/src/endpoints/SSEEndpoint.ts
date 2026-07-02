@@ -26,7 +26,7 @@ function isIncluded(filter: Filter, user: ConnectedUser) {
     case "user":
       return user.id === filter.data.userId;
     case "role":
-      return user.roles.includes(filter.data.role);
+      return user.role === filter.data.role;
     case "group":
       return user.groups.some((group) => group.id === filter.data.groupId);
     case "group-role":
