@@ -12,6 +12,7 @@
       "firstName": "Prénom",
       "lastName": "Nom",
       "email": "Adresse e-mail",
+      "data": "Données",
       "label": "Libellé",
       "stopUserImpersonation": "Arrêt de l'emprunt d'identité",
       "details": "Détails",

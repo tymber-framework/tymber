@@ -522,6 +522,11 @@
         </div>
       </fieldset>
 
+      <div class="field">
+        <label class="label"><%= $t("tymber.user.data") %></label>
+        <pre>{{ group.data }}</pre>
+      </div>
+
       <h2 class="subtitle mt-6"><%= $t("tymber.user.users") %></h2>
 
       <UserTable :group-id="group.id" :roles="roles" />

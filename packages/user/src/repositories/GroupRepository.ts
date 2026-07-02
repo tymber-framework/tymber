@@ -10,10 +10,11 @@ import {
   escapeValue,
 } from "@tymber/core";
 
-export interface Group {
+export interface Group<GroupData = any> {
   internalId: InternalGroupId;
   id: GroupId;
   label?: string;
+  data: GroupData;
 }
 
 export interface Query {
@@ -24,8 +25,12 @@ export interface Query {
   userId?: UserId;
 }
 
-export class GroupRepository extends Repository<GroupId, Group> {
+export class GroupRepository<GroupData = any> extends Repository<
+  GroupId,
+  Group<GroupData>
+> {
   tableName = "t_groups";
+  jsonFields = ["data"];
 
   public async find(
     ctx: Context,

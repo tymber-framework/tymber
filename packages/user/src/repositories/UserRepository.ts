@@ -11,12 +11,13 @@ import {
   type InternalUserId,
 } from "@tymber/core";
 
-export interface User {
+export interface User<UserData = any> {
   internalId: InternalUserId;
   id: UserId;
   firstName?: string;
   lastName?: string;
   email?: string;
+  data: UserData;
 }
 
 export const USER_ROLES: number[] = [0];
@@ -35,8 +36,12 @@ export interface UserQuery {
     | "email:desc";
 }
 
-export class UserRepository extends Repository<UserId, User> {
+export class UserRepository<UserData = any> extends Repository<
+  UserId,
+  User<UserData>
+> {
   tableName = "t_users";
+  jsonFields = ["data"];
 
   public async find(
     ctx: Context,

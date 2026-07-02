@@ -12,6 +12,7 @@
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email address",
+      "data": "Data",
       "label": "Label",
       "stopUserImpersonation": "Stop impersonation",
       "details": "Details",

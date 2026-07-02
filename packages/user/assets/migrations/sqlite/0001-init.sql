@@ -6,7 +6,8 @@ CREATE TABLE t_users
     first_name  TEXT,
     last_name   TEXT,
 
-    email       TEXT UNIQUE
+    email       TEXT UNIQUE,
+    data        TEXT -- JSON
 ) STRICT;
 
 CREATE INDEX t_idx_users_first_name ON t_users (LOWER(first_name));
@@ -17,7 +18,8 @@ CREATE TABLE t_groups
     internal_id INTEGER PRIMARY KEY AUTOINCREMENT,
     id          TEXT UNIQUE,
 
-    label       TEXT
+    label       TEXT,
+    data        TEXT -- JSON
 ) STRICT;
 
 CREATE INDEX t_idx_groups_label ON t_groups (LOWER(label));
