@@ -9,3 +9,6 @@ export { UserAdminClient } from "./user/UserAdminClient.js";
 
 // @tymber/config
 export { ConfigAdminClient } from "./config/ConfigAdminClient.js";
+
+// @tymber/mail
+export { MailAdminClient } from "./mail/MailAdminClient.js";

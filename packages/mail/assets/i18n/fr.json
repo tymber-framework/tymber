@@ -1,0 +1,19 @@
+{
+  "tymber": {
+    "mail": {
+      "mails": "Mails",
+      "subject": "Sujet",
+      "recipients": "Destinataire(s)",
+      "cc": "Copie carbone (cc)",
+      "bcc": "Copie carbone invisible (cci)",
+      "status": "Statut",
+      "allStatuses": "Tous les statuts",
+      "statusLabels": {
+        "0": "En attente",
+        "1": "En cours d'envoi",
+        "2": "Envoyé",
+        "3": "Erreur"
+      }
+    }
+  }
+}

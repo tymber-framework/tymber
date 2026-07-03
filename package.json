@@ -15,7 +15,8 @@
     "packages/openapi",
     "packages/config",
     "packages/create",
-    "packages/sse"
+    "packages/sse",
+    "packages/mail"
   ],
   "devDependencies": {
     "@clack/prompts": "^1.4.0",
