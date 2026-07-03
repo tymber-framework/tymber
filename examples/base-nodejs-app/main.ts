@@ -3,7 +3,7 @@ import { PostgresDB } from "@tymber/postgres";
 import { App, emptyContext, sql, toNodeHandler } from "@tymber/core";
 import { AdminModule } from "@tymber/admin";
 import { createServer } from "node:http";
-import { USER_ROLES, UserModule } from "@tymber/user";
+import { UserModule } from "@tymber/user";
 import { randomUUID } from "node:crypto";
 
 const pgPool = new pg.Pool({
@@ -19,7 +19,7 @@ const app = await App.create({
 });
 
 await db.run(emptyContext(), sql.deleteFrom("t_user_sessions"));
-await db.run(emptyContext(), sql.deleteFrom("t_user_roles"));
+await db.run(emptyContext(), sql.deleteFrom("t_memberships"));
 await db.run(emptyContext(), sql.deleteFrom("t_users"));
 await db.run(emptyContext(), sql.deleteFrom("t_groups"));
 
