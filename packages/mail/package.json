@@ -1,6 +1,6 @@
 {
   "name": "@tymber/mail",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Mail module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
