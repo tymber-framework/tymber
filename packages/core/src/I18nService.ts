@@ -49,20 +49,22 @@ export class BaseI18nService extends I18nService {
   }
 
   private async loadTranslations() {
-    try {
-      for (const module of this.modules.modules) {
-        if (!module.assetsDir) {
-          continue;
-        }
-        for (const filename of await FS.readDirRecursively(
-          FS.join(module.assetsDir, "i18n"),
-        )) {
+    for (const module of this.modules.modules) {
+      if (!module.assetsDir) {
+        continue;
+      }
+      try {
+        const directoryPath = FS.join(module.assetsDir, "i18n");
+        debug("loading translations from directory %s", directoryPath);
+
+        for (const filename of await FS.readDirRecursively(directoryPath)) {
           if (!filename.endsWith(".json")) {
             continue;
           }
-          const content = await FS.readFile(
-            FS.join(module.assetsDir, "i18n", filename),
-          );
+          const filePath = FS.join(module.assetsDir, "i18n", filename);
+          debug("loading translations from file %s", filePath);
+
+          const content = await FS.readFile(filePath);
           const locale = filename.slice(0, -5);
           const values = JSON.parse(content);
 
@@ -75,8 +77,8 @@ export class BaseI18nService extends I18nService {
             localizedTranslations.set(key, value);
           }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
+    }
   }
 
   override availableLocales() {
