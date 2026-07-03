@@ -166,3 +166,4 @@ Tymber provides additional modules that can be installed separately:
 | `@tymber/openapi`  | The OpenAPI module                                                         |
 | `@tymber/config`   | The configuration module                                                   |
 | `@tymber/sse`      | The server-sent events module                                              |
+| `@tymber/mail`     | The mail module                                                            |
