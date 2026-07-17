@@ -7,7 +7,7 @@ import { ListMails } from "./admin-endpoints/ListMails.js";
 
 export const MailModule: Module = {
   name: "@tymber/mail",
-  version: "0.0.1",
+  version: "0.0.2",
 
   assetsDir: join(import.meta.dirname, "..", "assets"),
 
