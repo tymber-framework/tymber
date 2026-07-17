@@ -4,12 +4,14 @@ import { type AddressInfo } from "node:net";
 import { type Module } from "../Module.js";
 import { App } from "../App.js";
 import { toNodeHandler } from "./toNodeHandler.js";
+import { type Component, type Ctor } from "../Component.js";
 
 const CLOSE_DELAY_MS = 200;
 
 export interface BaseTestContext {
   baseUrl: string;
   db: DB;
+  getInstance: <T extends Component>(ctor: Ctor<T>) => T;
   close: () => Promise<void>;
 }
 
@@ -54,6 +56,7 @@ export async function createTestApp(
   return {
     baseUrl,
     db,
+    getInstance: (ctor) => app.getInstance(ctor),
     async close() {
       clearTimeout(closeTimer);
 

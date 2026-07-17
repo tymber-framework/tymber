@@ -17,7 +17,7 @@ import { runMigrations } from "./utils/runMigrations.js";
 import { createDebug } from "./utils/createDebug.js";
 import { DB } from "./DB.js";
 import { isProduction } from "./utils/isProduction.js";
-import { Component, ComponentFactory } from "./Component.js";
+import { Component, ComponentFactory, type Ctor } from "./Component.js";
 import { PubSubService } from "./PubSubService.js";
 import { FS } from "./utils/fs.js";
 import { EnvironmentBasedConfigService } from "./ConfigService.js";
@@ -63,6 +63,7 @@ export class App {
     modules: ModuleDefinition[],
     private readonly assets: Map<string, string>,
     private readonly viewRenderer: ViewRenderer,
+    private readonly components: Component[],
   ) {
     this.router = createRouter(modules);
     for (const module of modules) {
@@ -134,7 +135,12 @@ export class App {
       } catch (e) {}
     }
 
-    const app = new App(moduleDefinitions, assets, viewRenderer!);
+    const app = new App(
+      moduleDefinitions,
+      assets,
+      viewRenderer!,
+      allComponents,
+    );
 
     app.close = () => {
       debug("closing all components");
@@ -357,6 +363,10 @@ export class App {
         },
       );
     }
+  }
+
+  public getInstance<T extends Component>(ctor: Ctor<T>) {
+    return this.components.findLast((c) => c instanceof ctor) as T;
   }
 
   public close() {

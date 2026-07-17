@@ -2,11 +2,9 @@ import { createTestDB as createPGDB } from "@tymber/postgres";
 import { createTestDB as createSQLiteDB } from "@tymber/sqlite";
 import {
   BaseTestContext,
-  Component,
   createTestApp,
   emptyContext,
   GroupId,
-  INJECT,
   sql,
   UserId,
 } from "@tymber/core";
@@ -32,30 +30,9 @@ export interface TestContext extends BaseTestContext {
 
 export async function setup(): Promise<TestContext> {
   try {
-    let sseService: SSEService | undefined;
-
     const ctx = await createTestApp(
       () => createTestDB(),
-      [
-        UserModule,
-        SSEModule,
-        {
-          name: "test",
-          version: "0.0.0",
-          init(app) {
-            app.component(
-              class extends Component {
-                static [INJECT] = [SSEService];
-
-                constructor(_sseService: SSEService) {
-                  super();
-                  sseService = _sseService;
-                }
-              },
-            );
-          },
-        },
-      ],
+      [UserModule, SSEModule],
     );
 
     const users = await initUsers(ctx);
@@ -63,7 +40,7 @@ export async function setup(): Promise<TestContext> {
     return {
       ...ctx,
       ...users,
-      sseService,
+      sseService: ctx.getInstance(SSEService),
     };
   } catch (e) {
     throw e;

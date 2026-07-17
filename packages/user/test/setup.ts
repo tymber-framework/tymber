@@ -4,8 +4,6 @@ import {
   sql,
   emptyContext,
   AdminUserId,
-  Component,
-  INJECT,
 } from "@tymber/core";
 import { GroupRoleRegistry, UserModule, UserRoleRegistry } from "../src";
 import { randomUUID } from "node:crypto";
@@ -40,9 +38,6 @@ function createTestDB() {
 
 export async function setup(): Promise<TestContext> {
   try {
-    let userRoleRegistry: UserRoleRegistry;
-    let groupRoleRegistry: GroupRoleRegistry;
-
     const ctx = await createTestApp(
       () => createTestDB(),
       [
@@ -53,22 +48,7 @@ export async function setup(): Promise<TestContext> {
           version: "0.0.0",
           // load translations for roles
           assetsDir: join(import.meta.dirname, "assets"),
-          init(app) {
-            app.component(
-              class extends Component {
-                static [INJECT] = [UserRoleRegistry, GroupRoleRegistry];
-
-                constructor(
-                  _userRoleRegistry: UserRoleRegistry,
-                  _groupRoleRegistry: GroupRoleRegistry,
-                ) {
-                  super();
-                  userRoleRegistry = _userRoleRegistry;
-                  groupRoleRegistry = _groupRoleRegistry;
-                }
-              },
-            );
-          },
+          init(app) {},
         },
       ],
     );
@@ -210,8 +190,8 @@ export async function setup(): Promise<TestContext> {
       adminClient: new UserAdminClient(ctx.baseUrl, {
         cookie: `ssid=${adminSessionId}`,
       }),
-      userRoleRegistry,
-      groupRoleRegistry,
+      userRoleRegistry: ctx.getInstance(UserRoleRegistry)!,
+      groupRoleRegistry: ctx.getInstance(GroupRoleRegistry)!,
     };
   } catch (e) {
     throw e;
