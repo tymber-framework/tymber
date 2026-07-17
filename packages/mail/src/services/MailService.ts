@@ -9,6 +9,7 @@ import {
   MailRepository,
   MailStatus,
   type Mail as MailEntity,
+  type MailId,
 } from "../repositories/MailRepository.js";
 import { type ErrorObject } from "ajv";
 import { type Mail, validateMail } from "../utils/validateMail.js";
@@ -30,7 +31,7 @@ export class MailService extends Component {
   public async queue(
     ctx: Context,
     mail: Mail,
-  ): Promise<Result<void, ErrorObject[]>> {
+  ): Promise<Result<MailId, ErrorObject[]>> {
     if (!validateMail(mail)) {
       return {
         ok: false,
@@ -54,6 +55,7 @@ export class MailService extends Component {
 
     return {
       ok: true,
+      value: entity.id,
     };
   }
 

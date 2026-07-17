@@ -65,7 +65,11 @@ export class MailRepository extends Repository<MailId, Mail> {
     ctx: Context,
     mail: Partial<MailWithRecipients>,
   ) {
-    const entity = await this.insert(ctx, mail);
+    const entity = await this.insert(ctx, {
+      createdAt: mail.createdAt,
+      status: mail.status,
+      subject: mail.subject,
+    });
 
     const recipients: MailRecipient[] = [];
 
@@ -94,7 +98,7 @@ export class MailRepository extends Repository<MailId, Mail> {
     }
 
     if (recipients.length > 0) {
-      await this.db.exec(
+      await this.db.run(
         ctx,
         sql
           .insert()
