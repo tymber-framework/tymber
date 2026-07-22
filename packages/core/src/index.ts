@@ -36,6 +36,7 @@ export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateEngine } from "./TemplateEngine.js";
 export { AdminAuditService } from "./AdminAuditService.js";
 
+export { type Locale } from "./contrib/accept-language-parser.js";
 export { createCookie, parseCookieHeader } from "./contrib/cookie.js";
 
 export { AJV_INSTANCE } from "./utils/ajv.js";
