@@ -244,10 +244,7 @@ export class App {
       });
     }
 
-    // make a copy in case a middleware is removed
-    const middlewares = this.middlewares.slice();
-
-    for (const middleware of middlewares) {
+    for (const middleware of this.middlewares) {
       try {
         const httpRes = await middleware.handle(ctx);
 
