@@ -482,17 +482,30 @@ sql.in = (column: string, values: any[]) => {
     `${handleColumn(column)} IN (${values.map((value) => handleValue(value, ctx)).join(", ")})`;
 };
 
-sql.raw = (text: string, values: any[] = []) => {
-  return (ctx: BuildContext) => {
-    let i = 0;
-    return text.replace(/\?/g, () => {
-      if (i >= values.length) {
-        throw new Error("not enough values");
-      }
+function replaceRawPlaceholders(
+  text: string,
+  values: any[],
+  ctx: BuildContext,
+) {
+  let i = 0;
 
-      return handleValue(values[i++], ctx);
-    });
-  };
+  const output = text.replace(/\?/g, () => {
+    if (i >= values.length) {
+      throw new Error("not enough values");
+    }
+
+    return handleValue(values[i++], ctx);
+  });
+
+  if (i < values.length) {
+    throw new Error("too many values");
+  }
+
+  return output;
+}
+
+sql.raw = (text: string, values: any[] = []) => {
+  return (ctx: BuildContext) => replaceRawPlaceholders(text, values, ctx);
 };
 
 function handleColumns(columns: string[]) {
@@ -546,13 +559,17 @@ function handleValue(value: any, ctx: BuildContext) {
 }
 
 class RawStatement extends Statement {
-  constructor(private readonly text: string) {
+  constructor(
+    private readonly text: string,
+    private readonly values: any[],
+  ) {
     super();
   }
 
-  override computeParts(): Array<string | undefined> {
-    return [this.text];
+  protected override computeParts(ctx: BuildContext) {
+    return [replaceRawPlaceholders(this.text, this.values, ctx)];
   }
 }
 
-sql.rawStatement = (text: string) => new RawStatement(text);
+sql.rawStatement = (text: string, values: any[] = []) =>
+  new RawStatement(text, values);

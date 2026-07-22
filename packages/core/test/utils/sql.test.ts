@@ -206,6 +206,14 @@ describe("SQL query builder", () => {
     });
   });
 
+  describe("raw statements", () => {
+    check(
+      sql.rawStatement("SELECT * FROM users WHERE id = ?", [1]),
+      "SELECT * FROM users WHERE id = $1",
+      [1],
+    );
+  });
+
   describe("WHERE clauses", () => {
     describe("=", () => {
       check(sql.eq("id", 1), "id = $1", [1]);
@@ -303,6 +311,18 @@ describe("SQL query builder", () => {
           .where(sql.raw("custom_fn(?, ?)", [1, 2])),
         "SELECT * FROM users WHERE custom_fn($1, $2)",
         [1, 2],
+      );
+    });
+
+    describe("raw() + offset", () => {
+      check(
+        sql
+          .select()
+          .from("users")
+          .where(sql.eq("id", 1))
+          .where(sql.raw("custom_fn(?, ?)", [2, 3])),
+        "SELECT * FROM users WHERE id = $1 AND custom_fn($2, $3)",
+        [1, 2, 3],
       );
     });
   });
