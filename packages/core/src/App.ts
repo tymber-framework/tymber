@@ -48,8 +48,15 @@ function createRouter(modules: ModuleDefinition[]) {
 function parseQueryParams(url: URL) {
   const query = Object.create(null);
 
-  for (const key of new Set(url.searchParams.keys())) {
-    query[snakeToCamelCase(key)] = url.searchParams.getAll(key);
+  for (const [rawKey, value] of url.searchParams) {
+    const key = snakeToCamelCase(rawKey);
+    const existing = query[key];
+
+    if (existing === undefined) {
+      query[key] = [value];
+    } else {
+      existing.push(value);
+    }
   }
 
   return query;
