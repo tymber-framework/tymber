@@ -4,6 +4,7 @@ import { compileTemplate } from "./contrib/template.js";
 import { Component, INJECT } from "./Component.js";
 import type { Context } from "./Context.js";
 import { FS } from "./utils/fs.js";
+import { isProduction } from "./utils/isProduction.js";
 import { createDebug } from "./utils/createDebug.js";
 
 const debug = createDebug("I18nService");
@@ -39,6 +40,10 @@ export class BaseI18nService extends I18nService {
   static [INJECT] = [ModuleDefinitions];
 
   private readonly translations = new Map<string, Map<string, string>>();
+  private readonly compiledTemplates = new Map<
+    string,
+    Map<string, (data: any) => string>
+  >();
 
   constructor(private readonly modules: ModuleDefinitions) {
     super();
@@ -93,14 +98,45 @@ export class BaseI18nService extends I18nService {
   ) {
     const value = this.translations.get(locale)?.get(key);
     if (value && value.includes("<%")) {
-      try {
-        return compileTemplate(value)(arg);
-      } catch (e) {
-        debug("error while translating key %s: %s", key, (e as Error).message);
-        return "";
-      }
+      return this.compileAndExecuteTemplate(locale, key, value, arg);
     } else {
       return value || "";
+    }
+  }
+
+  private compileTemplate(locale: Locale, key: string, value: string) {
+    if (!isProduction) {
+      return compileTemplate(value);
+    }
+
+    let localizedCompiledTemplates = this.compiledTemplates.get(locale);
+    if (!localizedCompiledTemplates) {
+      this.compiledTemplates.set(
+        locale,
+        (localizedCompiledTemplates = new Map()),
+      );
+    }
+
+    let compiled = localizedCompiledTemplates.get(key);
+    if (!compiled) {
+      compiled = compileTemplate(value);
+      localizedCompiledTemplates.set(key, compiled);
+    }
+
+    return compiled;
+  }
+
+  private compileAndExecuteTemplate(
+    locale: Locale,
+    key: string,
+    value: string,
+    arg: Record<string, any>,
+  ) {
+    try {
+      return this.compileTemplate(locale, key, value)(arg);
+    } catch (e) {
+      debug("error while translating key %s: %s", key, (e as Error).message);
+      return "";
     }
   }
 }
