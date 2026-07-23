@@ -2,6 +2,7 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.3.2](#032-2026-07-23) | July 2026     |
 | [0.3.1](#031-2026-07-02) | July 2026     |
 | [0.3.0](#030-2026-06-19) | June 2026     |
 | [0.2.3](#023-2026-05-14) | May 2026      |
@@ -10,6 +11,26 @@
 | [0.2.0](#020-2026-02-19) | February 2026 |
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
+
+## [0.3.2](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.3.1...@tymber/core@0.3.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* do not skip i18n files ([a2fdbe1](https://github.com/tymber-framework/tymber/commit/a2fdbe18172b04f7c61e67d130f3d2220873e3ce))
+
+### Performance Improvements
+
+* cache compiled i18n templates in production ([061da8b](https://github.com/tymber-framework/tymber/commit/061da8b53213aff8a06c62045b745c27e430a270))
+* do not create of copy of the middlewares array ([dcdc0c6](https://github.com/tymber-framework/tymber/commit/dcdc0c6c183936865bb00c36642677fbf7c526b2))
+* improve query parameters parsing ([62709fd](https://github.com/tymber-framework/tymber/commit/62709fdb55287ca55e59811b8b832d1388bc7863))
+* improve router performance using static routes and trie ([55123f9](https://github.com/tymber-framework/tymber/commit/55123f989812e847a247ed03bda40a0358a43ab6))
+
+### Dependencies
+
+- [`ajv@~8.18.0`](https://www.npmjs.com/package/ajv/v/8.18.0) (no change)
+- [`ajv-formats@~3.0.1`](https://www.npmjs.com/package/ajv-formats/v/3.0.1) (no change)
+
 
 ## [0.3.1](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.3.0...@tymber/core@0.3.1) (2026-07-02)
 
