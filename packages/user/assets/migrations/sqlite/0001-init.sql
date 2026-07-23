@@ -1,7 +1,7 @@
 CREATE TABLE t_users
 (
-    internal_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    id          TEXT UNIQUE,
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    external_id TEXT UNIQUE,
 
     first_name  TEXT,
     last_name   TEXT,
@@ -16,8 +16,8 @@ CREATE INDEX t_idx_users_last_name ON t_users (LOWER(last_name));
 
 CREATE TABLE t_groups
 (
-    internal_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    id          TEXT UNIQUE,
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    external_id TEXT UNIQUE,
 
     label       TEXT,
     data        TEXT -- JSON
@@ -27,8 +27,8 @@ CREATE INDEX t_idx_groups_label ON t_groups (LOWER(label));
 
 CREATE TABLE t_memberships
 (
-    user_id  INTEGER NOT NULL REFERENCES t_users (internal_id),
-    group_id INTEGER NOT NULL REFERENCES t_groups (internal_id),
+    user_id  INTEGER NOT NULL REFERENCES t_users (id),
+    group_id INTEGER NOT NULL REFERENCES t_groups (id),
     role     INTEGER NOT NULL,
 
     PRIMARY KEY (user_id, group_id)
@@ -39,7 +39,7 @@ CREATE INDEX t_idx_memberships_group_id ON t_memberships (group_id);
 CREATE TABLE t_user_sessions
 (
     id         TEXT PRIMARY KEY,
-    user_id    INTEGER NOT NULL REFERENCES t_users (internal_id),
+    user_id    INTEGER NOT NULL REFERENCES t_users (id),
     expires_at INTEGER NOT NULL
 ) STRICT;
 

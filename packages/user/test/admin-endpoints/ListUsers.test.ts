@@ -19,6 +19,7 @@ describe("ListUsers", () => {
 
     assert.deepEqual(res.body.items[0], {
       id: ctx.userIds[2],
+      externalId: ctx.externalUserIds[2],
       firstName: "CAROL",
       lastName: "DOE",
       email: "carol.doe@example.com",

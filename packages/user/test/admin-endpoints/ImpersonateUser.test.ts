@@ -3,7 +3,6 @@ import * as assert from "node:assert/strict";
 import { setup, TestContext } from "../setup";
 import { parseCookieHeader } from "@tymber/core";
 import { UserAdminClient } from "@tymber/client";
-import { randomUUID } from "node:crypto";
 
 describe("ImpersonateUser", () => {
   let ctx: TestContext;
@@ -34,11 +33,11 @@ describe("ImpersonateUser", () => {
     });
 
     assert.equal(getSelfRes.status, 200);
-    assert.equal(getSelfRes.body.id, ctx.userIds[0]);
+    assert.equal(getSelfRes.body.id, ctx.externalUserIds[0]);
   });
 
   it("should fail with an invalid user ID", async () => {
-    const res = await ctx.adminClient.impersonateUser(randomUUID());
+    const res = await ctx.adminClient.impersonateUser("123");
 
     assert.equal(res.status, 404);
   });

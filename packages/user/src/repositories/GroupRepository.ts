@@ -1,18 +1,19 @@
 import {
   type Context,
-  type GroupId,
+  type ExternalGroupId,
   type Page,
   Repository,
-  type UserId,
   sql,
   camelToSnakeCase,
-  type InternalGroupId,
   escapeValue,
+  type GroupId,
+  randomUUID,
+  type UserId,
 } from "@tymber/core";
 
 export interface Group<GroupData = any> {
-  internalId: InternalGroupId;
   id: GroupId;
+  externalId: ExternalGroupId;
   label?: string;
   data: GroupData;
 }
@@ -31,6 +32,21 @@ export class GroupRepository<GroupData = any> extends Repository<
 > {
   tableName = "t_groups";
   jsonFields = ["data"];
+
+  override async insert(ctx: Context, entity: Partial<Group<GroupData>>) {
+    if (!entity.externalId) {
+      entity.externalId = randomUUID() as ExternalGroupId;
+    }
+
+    return super.insert(ctx, entity);
+  }
+
+  findByExternalId(ctx: Context, id: ExternalGroupId) {
+    return this.one(
+      ctx,
+      sql.select().from(this.tableName).where(sql.eq("external_id", id)),
+    );
+  }
 
   public async find(
     ctx: Context,
@@ -57,9 +73,8 @@ export class GroupRepository<GroupData = any> extends Repository<
 
     if (query.userId) {
       sqlQuery
-        .innerJoin("t_memberships m", { "m.group_id": "g.internal_id" })
-        .innerJoin("t_users u", { "u.internal_id": "m.user_id" })
-        .where({ "u.id": query.userId });
+        .innerJoin("t_memberships m", { "m.group_id": "g.id" })
+        .where({ "m.user_id": query.userId });
     }
 
     switch (query.sort) {

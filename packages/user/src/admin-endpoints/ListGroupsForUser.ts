@@ -1,17 +1,13 @@
-import {
-  type HttpContext,
-  INJECT,
-  AdminEndpoint,
-  type UserId,
-} from "@tymber/core";
+import { type HttpContext, INJECT, AdminEndpoint } from "@tymber/core";
 import { type JSONSchemaType } from "ajv";
 import {
   GroupRepository,
   type Query,
 } from "../repositories/GroupRepository.js";
+import { toUserId } from "../utils/toUserId.js";
 
 interface PathParams {
-  userId: UserId;
+  userId: string;
 }
 
 export class ListGroupsForUser extends AdminEndpoint {
@@ -24,7 +20,7 @@ export class ListGroupsForUser extends AdminEndpoint {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      userId: { type: "string", format: "uuid" },
+      userId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["userId"],
   };
@@ -52,9 +48,9 @@ export class ListGroupsForUser extends AdminEndpoint {
       ctx,
       {
         ...query,
-        userId,
+        userId: toUserId(userId),
       },
-      ["id", "label"],
+      ["id", "externalId", "label"],
     );
 
     return Response.json(output);

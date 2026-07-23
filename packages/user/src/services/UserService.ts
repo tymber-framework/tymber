@@ -79,7 +79,7 @@ export class UserService extends Component {
 
     await this.sessionRepository.insert(ctx, {
       id: sessionId,
-      userId: user.internalId,
+      userId: user.id,
       expiresAt,
     });
 

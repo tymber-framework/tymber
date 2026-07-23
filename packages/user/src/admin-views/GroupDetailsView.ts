@@ -1,16 +1,11 @@
-import {
-  AdminView,
-  type HttpContext,
-  INJECT,
-  type GroupId,
-  I18nService,
-} from "@tymber/core";
+import { AdminView, type HttpContext, INJECT, I18nService } from "@tymber/core";
 import { GroupRepository } from "../repositories/GroupRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { GroupRoleRegistry } from "../services/GroupRoleRegistry.js";
+import { toGroupId } from "../utils/toGroupId.js";
 
 interface PathParams {
-  groupId: GroupId;
+  groupId: string;
 }
 
 export class GroupDetailsView extends AdminView {
@@ -27,14 +22,14 @@ export class GroupDetailsView extends AdminView {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      groupId: { type: "string", format: "uuid" },
+      groupId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["groupId"],
   };
 
   async handle(ctx: HttpContext<never, PathParams>) {
     const { groupId } = ctx.pathParams;
-    const group = await this.groupRepository.findById(ctx, groupId);
+    const group = await this.groupRepository.findById(ctx, toGroupId(groupId));
 
     if (!group) {
       return ctx.redirect("/admin/groups?group_not_found=1");

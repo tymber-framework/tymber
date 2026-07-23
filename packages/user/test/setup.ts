@@ -16,10 +16,10 @@ import { join } from "node:path";
 export interface TestContext extends BaseTestContext {
   adminSessionId: string;
   adminUserId: AdminUserId;
-  internalUserIds: string[];
   userIds: string[];
-  internalGroupIds: string[];
+  externalUserIds: string[];
   groupIds: string[];
+  externalGroupIds: string[];
   sessionIds: string[];
   clients: UserClient[];
   adminClient: UserAdminClient;
@@ -55,7 +55,7 @@ export async function setup(): Promise<TestContext> {
 
     const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
 
-    const userIds = [randomUUID(), randomUUID(), randomUUID()];
+    const externalUserIds = [randomUUID(), randomUUID(), randomUUID()];
 
     const result = await ctx.db.query(
       emptyContext(),
@@ -64,33 +64,33 @@ export async function setup(): Promise<TestContext> {
         .into("t_users")
         .values([
           {
-            id: userIds[0],
+            external_id: externalUserIds[0],
             first_name: "Alice",
             last_name: "Smith",
             email: "alice@smith.com",
             role: 1,
           },
           {
-            id: userIds[1],
+            external_id: externalUserIds[1],
             first_name: "bob",
             last_name: "johnson",
             email: "bob@johnson.com",
             role: 2,
           },
           {
-            id: userIds[2],
+            external_id: externalUserIds[2],
             first_name: "CAROL",
             last_name: "DOE",
             email: "carol.doe@example.com",
             role: 3,
           },
         ])
-        .returning(["internal_id"]),
+        .returning(["id"]),
     );
 
-    const internalUserIds = result.map((row) => row.internal_id);
+    const userIds = result.map((row) => row.id);
 
-    const groupIds = [randomUUID(), randomUUID()];
+    const externalGroupIds = [randomUUID(), randomUUID()];
 
     const groupResult = await ctx.db.query(
       emptyContext(),
@@ -99,18 +99,18 @@ export async function setup(): Promise<TestContext> {
         .into("t_groups")
         .values([
           {
-            id: groupIds[0],
+            external_id: externalGroupIds[0],
             label: "AAA",
           },
           {
-            id: groupIds[1],
+            external_id: externalGroupIds[1],
             label: "bbb",
           },
         ])
-        .returning(["internal_id"]),
+        .returning(["id"]),
     );
 
-    const internalGroupIds = groupResult.map((row) => row.internal_id);
+    const groupIds = groupResult.map((row) => row.id);
 
     await ctx.db.query(
       emptyContext(),
@@ -119,23 +119,23 @@ export async function setup(): Promise<TestContext> {
         .into("t_memberships")
         .values([
           {
-            user_id: internalUserIds[0],
-            group_id: internalGroupIds[0],
+            user_id: userIds[0],
+            group_id: groupIds[0],
             role: 0,
           },
           {
-            user_id: internalUserIds[1],
-            group_id: internalGroupIds[0],
+            user_id: userIds[1],
+            group_id: groupIds[0],
             role: 1,
           },
           {
-            user_id: internalUserIds[1],
-            group_id: internalGroupIds[1],
+            user_id: userIds[1],
+            group_id: groupIds[1],
             role: 2,
           },
           {
-            user_id: internalUserIds[2],
-            group_id: internalGroupIds[1],
+            user_id: userIds[2],
+            group_id: groupIds[1],
             role: 3,
           },
         ]),
@@ -151,17 +151,17 @@ export async function setup(): Promise<TestContext> {
         .values([
           {
             id: sessionIds[0],
-            user_id: internalUserIds[0],
+            user_id: userIds[0],
             expires_at: new Date(Date.now() + 1_000),
           },
           {
             id: sessionIds[1],
-            user_id: internalUserIds[1],
+            user_id: userIds[1],
             expires_at: new Date(Date.now() + 1_000),
           },
           {
             id: sessionIds[2],
-            user_id: internalUserIds[2],
+            user_id: userIds[2],
             expires_at: new Date(Date.now() + 1_000),
           },
         ]),
@@ -171,10 +171,10 @@ export async function setup(): Promise<TestContext> {
       ...ctx,
       adminSessionId,
       adminUserId,
+      externalUserIds,
       userIds,
-      internalUserIds,
+      externalGroupIds,
       groupIds,
-      internalGroupIds,
       sessionIds,
       clients: [
         new UserClient(ctx.baseUrl, {
@@ -199,8 +199,6 @@ export async function setup(): Promise<TestContext> {
 }
 
 export async function insertTestUser(ctx: TestContext) {
-  const userId = randomUUID();
-
   const result = await ctx.db.query(
     emptyContext(),
     sql
@@ -208,16 +206,15 @@ export async function insertTestUser(ctx: TestContext) {
       .into("t_users")
       .values([
         {
-          id: userId,
+          external_id: randomUUID(),
         },
       ])
-      .returning(["internal_id"]),
+      .returning(["id"]),
   );
 
-  const internalUserId = result[0].internal_id;
+  const userId = result[0].id;
 
   return {
     userId,
-    internalUserId,
   };
 }

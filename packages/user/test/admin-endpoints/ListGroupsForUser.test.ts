@@ -19,6 +19,7 @@ describe("ListGroupsForUser", () => {
     assert.deepEqual(res.body.items, [
       {
         id: ctx.groupIds[0],
+        externalId: ctx.externalGroupIds[0],
         label: "AAA",
         role: 0,
       },

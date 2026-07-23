@@ -3,20 +3,20 @@ import {
   AdminEndpoint,
   computeBaseUrl,
   EntityNotFoundError,
-  type GroupId,
   type HttpContext,
   I18nService,
   INJECT,
-  type UserId,
 } from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { GroupRepository } from "../repositories/GroupRepository.js";
 import { MembershipRepository } from "../repositories/MembershipRepository.js";
+import { toUserId } from "../utils/toUserId.js";
+import { toGroupId } from "../utils/toGroupId.js";
 
 interface PathParams {
-  userId: UserId;
-  groupId: GroupId;
+  userId: string;
+  groupId: string;
 }
 
 export class RemoveUserFromGroup extends AdminEndpoint {
@@ -67,8 +67,8 @@ export class RemoveUserFromGroup extends AdminEndpoint {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      userId: { type: "string", format: "uuid" },
-      groupId: { type: "string", format: "uuid" },
+      userId: { type: "string", pattern: "^[0-9]+$" },
+      groupId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["userId", "groupId"],
   };
@@ -78,8 +78,8 @@ export class RemoveUserFromGroup extends AdminEndpoint {
     const { userId, groupId } = pathParams;
 
     const [user, group] = await Promise.all([
-      this.userRepository.findById(ctx, userId),
-      this.groupRepository.findById(ctx, groupId),
+      this.userRepository.findById(ctx, toUserId(userId)),
+      this.groupRepository.findById(ctx, toGroupId(groupId)),
     ]);
 
     if (!user) {
@@ -107,8 +107,8 @@ export class RemoveUserFromGroup extends AdminEndpoint {
     try {
       await this.membershipRepository.startTransaction(ctx, async () => {
         await this.membershipRepository.deleteById(ctx, {
-          userId: user.internalId,
-          groupId: group.internalId,
+          userId: user.id,
+          groupId: group.id,
         });
 
         await this.adminAuditService.log(ctx, "REMOVE_USER_FROM_GROUP", {

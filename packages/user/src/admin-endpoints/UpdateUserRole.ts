@@ -5,15 +5,15 @@ import {
   type HttpContext,
   I18nService,
   INJECT,
-  type UserId,
   type UserRole,
 } from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 import { UserRoleRegistry } from "../services/UserRoleRegistry.js";
 import type { JSONSchemaType } from "ajv";
+import { toUserId } from "../utils/toUserId.js";
 
 interface PathParams {
-  userId: UserId;
+  userId: string;
 }
 
 interface Payload {
@@ -70,7 +70,7 @@ export class UpdateUserRole extends AdminEndpoint {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      userId: { type: "string", format: "uuid" },
+      userId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["userId"],
   };
@@ -93,7 +93,7 @@ export class UpdateUserRole extends AdminEndpoint {
       return this.badRequest("invalid role");
     }
 
-    const user = await this.userRepository.findById(ctx, userId);
+    const user = await this.userRepository.findById(ctx, toUserId(userId));
 
     if (!user) {
       return Response.json(

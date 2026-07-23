@@ -1,17 +1,12 @@
-import {
-  AdminView,
-  type HttpContext,
-  I18nService,
-  INJECT,
-  type UserId,
-} from "@tymber/core";
+import { AdminView, type HttpContext, I18nService, INJECT } from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 import { UserRoleRegistry } from "../services/UserRoleRegistry.js";
 import { GroupRoleRegistry } from "../services/GroupRoleRegistry.js";
 import type { JSONSchemaType } from "ajv";
+import { toUserId } from "../utils/toUserId.js";
 
 interface PathParams {
-  userId: UserId;
+  userId: string;
 }
 
 export class UserDetailsView extends AdminView {
@@ -34,14 +29,14 @@ export class UserDetailsView extends AdminView {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      userId: { type: "string", format: "uuid" },
+      userId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["userId"],
   };
 
   async handle(ctx: HttpContext<never, PathParams>) {
     const { userId } = ctx.pathParams;
-    const user = await this.userRepository.findById(ctx, userId);
+    const user = await this.userRepository.findById(ctx, toUserId(userId));
 
     if (!user) {
       return ctx.redirect("/admin/users?user_not_found=1");

@@ -15,7 +15,7 @@ describe("AddUserToGroup", () => {
   after(() => ctx.close());
 
   it("should work", async () => {
-    const { userId, internalUserId } = await insertTestUser(ctx);
+    const { userId } = await insertTestUser(ctx);
 
     const res = await ctx.adminClient.addUserToGroup(
       userId,
@@ -28,15 +28,15 @@ describe("AddUserToGroup", () => {
     const rows = await ctx.db.query(
       emptyContext(),
       sql.select().from("t_memberships").where({
-        user_id: internalUserId,
+        user_id: userId,
       }),
     );
 
     assert.equal(rows.length, 1);
 
     assert.deepEqual(rows[0], {
-      user_id: internalUserId,
-      group_id: ctx.internalGroupIds[0],
+      user_id: userId,
+      group_id: ctx.groupIds[0],
       role: 3,
     });
   });
@@ -51,14 +51,14 @@ describe("AddUserToGroup", () => {
         .into("t_users")
         .values([
           {
-            id: userId,
+            external_id: userId,
           },
         ]),
     );
 
     const res = await ctx.adminClient.addUserToGroup(
       userId,
-      ctx.groupIds[0],
+      ctx.externalGroupIds[0],
       12,
     );
 
@@ -66,7 +66,7 @@ describe("AddUserToGroup", () => {
   });
 
   it("should fail if the user is already in the group", async () => {
-    const { userId, internalUserId } = await insertTestUser(ctx);
+    const { userId } = await insertTestUser(ctx);
 
     await ctx.db.run(
       emptyContext(),
@@ -75,8 +75,8 @@ describe("AddUserToGroup", () => {
         .into("t_memberships")
         .values([
           {
-            user_id: internalUserId,
-            group_id: ctx.internalGroupIds[0],
+            user_id: userId,
+            group_id: ctx.groupIds[0],
             role: 0,
           },
         ]),
@@ -92,21 +92,13 @@ describe("AddUserToGroup", () => {
   });
 
   it("should fail with an invalid user ID", async () => {
-    const res = await ctx.adminClient.addUserToGroup(
-      randomUUID(),
-      ctx.groupIds[0],
-      0,
-    );
+    const res = await ctx.adminClient.addUserToGroup("123", ctx.groupIds[0], 0);
 
     assert.equal(res.status, 404);
   });
 
   it("should fail with an invalid group ID", async () => {
-    const res = await ctx.adminClient.addUserToGroup(
-      ctx.userIds[0],
-      randomUUID(),
-      0,
-    );
+    const res = await ctx.adminClient.addUserToGroup(ctx.userIds[0], "123", 0);
 
     assert.equal(res.status, 404);
   });

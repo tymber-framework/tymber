@@ -1,7 +1,7 @@
 import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert/strict";
 import { insertTestUser, setup, TestContext } from "../setup";
-import { emptyContext, randomUUID, sql } from "@tymber/core";
+import { emptyContext, sql } from "@tymber/core";
 
 describe("RemoveUserFromGroup", () => {
   let ctx: TestContext;
@@ -13,7 +13,7 @@ describe("RemoveUserFromGroup", () => {
   after(() => ctx.close());
 
   it("should work", async () => {
-    const { userId, internalUserId } = await insertTestUser(ctx);
+    const { userId } = await insertTestUser(ctx);
 
     await ctx.db.run(
       emptyContext(),
@@ -22,8 +22,8 @@ describe("RemoveUserFromGroup", () => {
         .into("t_memberships")
         .values([
           {
-            user_id: internalUserId,
-            group_id: ctx.internalGroupIds[0],
+            user_id: userId,
+            group_id: ctx.groupIds[0],
             role: 0,
           },
         ]),
@@ -39,7 +39,7 @@ describe("RemoveUserFromGroup", () => {
     const rows = await ctx.db.query(
       emptyContext(),
       sql.select().from("t_memberships").where({
-        user_id: internalUserId,
+        user_id: userId,
       }),
     );
 
@@ -48,7 +48,7 @@ describe("RemoveUserFromGroup", () => {
 
   it("should fail with an invalid user ID", async () => {
     const res = await ctx.adminClient.removeUserFromGroup(
-      randomUUID(),
+      "123",
       ctx.groupIds[0],
     );
 
@@ -58,7 +58,7 @@ describe("RemoveUserFromGroup", () => {
   it("should fail with an invalid group ID", async () => {
     const res = await ctx.adminClient.removeUserFromGroup(
       ctx.userIds[0],
-      randomUUID(),
+      "123",
     );
 
     assert.equal(res.status, 404);

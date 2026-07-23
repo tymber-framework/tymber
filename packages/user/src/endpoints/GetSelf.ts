@@ -17,7 +17,7 @@ export class GetSelf extends UserEndpoint {
     const u = ctx.user as ConnectedUser;
 
     return Response.json({
-      id: u.id,
+      id: u.externalId,
 
       firstName: u.firstName,
       lastName: u.lastName,
@@ -32,7 +32,7 @@ export class GetSelf extends UserEndpoint {
       email: u.email,
 
       groups: u.groups.map((group) => ({
-        id: group.id,
+        id: group.externalId,
         role: {
           id: group.role,
           label: this.i18n.translate(

@@ -19,6 +19,7 @@ describe("ListUsersInGroup", () => {
     assert.deepEqual(res.body.items, [
       {
         id: ctx.userIds[1],
+        externalId: ctx.externalUserIds[1],
         firstName: "bob",
         lastName: "johnson",
         email: "bob@johnson.com",
@@ -26,6 +27,7 @@ describe("ListUsersInGroup", () => {
       },
       {
         id: ctx.userIds[0],
+        externalId: ctx.externalUserIds[0],
         firstName: "Alice",
         lastName: "Smith",
         email: "alice@smith.com",

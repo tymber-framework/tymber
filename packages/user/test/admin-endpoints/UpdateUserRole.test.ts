@@ -1,7 +1,7 @@
 import { after, before, describe, it } from "node:test";
 import * as assert from "node:assert/strict";
 import { insertTestUser, setup, TestContext } from "../setup.js";
-import { emptyContext, randomUUID, sql, UserRole } from "@tymber/core";
+import { emptyContext, sql, UserRole } from "@tymber/core";
 
 describe("UpdateUserRole", () => {
   let ctx: TestContext;
@@ -47,7 +47,7 @@ describe("UpdateUserRole", () => {
   });
 
   it("should fail with an invalid user ID", async () => {
-    const res = await ctx.adminClient.updateUserRole(randomUUID(), 10);
+    const res = await ctx.adminClient.updateUserRole("123", 10);
 
     assert.equal(res.status, 404);
   });

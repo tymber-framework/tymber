@@ -1,17 +1,13 @@
-import {
-  type InternalGroupId,
-  type InternalUserId,
-  Repository,
-} from "@tymber/core";
+import { type GroupId, type UserId, Repository } from "@tymber/core";
 
 interface UserRoleId {
-  userId: InternalUserId;
-  groupId: InternalGroupId;
+  userId: UserId;
+  groupId: GroupId;
 }
 
 interface UserRole {
-  userId: InternalUserId;
-  groupId: InternalGroupId;
+  userId: UserId;
+  groupId: GroupId;
   role: number;
 }
 

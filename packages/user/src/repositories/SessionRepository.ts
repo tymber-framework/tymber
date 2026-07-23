@@ -1,7 +1,7 @@
 import {
   type Brand,
   type Context,
-  type InternalUserId,
+  type UserId,
   Repository,
   sql,
 } from "@tymber/core";
@@ -10,7 +10,7 @@ export type SessionId = Brand<string, "SessionId">;
 
 interface Session {
   id: SessionId;
-  userId: InternalUserId;
+  userId: UserId;
   expiresAt: Date;
 }
 

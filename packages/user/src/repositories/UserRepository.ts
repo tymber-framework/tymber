@@ -1,20 +1,21 @@
 import {
   type Context,
-  type GroupId,
   type Page,
   Repository,
-  type UserId,
+  type ExternalUserId,
   type ConnectedUser,
   sql,
   camelToSnakeCase,
   escapeValue,
-  type InternalUserId,
+  type UserId,
   type UserRole,
+  randomUUID,
+  type GroupId,
 } from "@tymber/core";
 
 export interface User<UserData = any> {
-  internalId: InternalUserId;
   id: UserId;
+  externalId: ExternalUserId;
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -42,6 +43,28 @@ export class UserRepository<UserData = any> extends Repository<
 > {
   tableName = "t_users";
   jsonFields = ["data"];
+
+  override async insert(ctx: Context, entity: Partial<User<UserData>>) {
+    if (!entity.externalId) {
+      entity.externalId = randomUUID() as ExternalUserId;
+    }
+
+    return super.insert(ctx, entity);
+  }
+
+  findByExternalId(ctx: Context, id: ExternalUserId) {
+    return this.one(
+      ctx,
+      sql.select().from(this.tableName).where(sql.eq("external_id", id)),
+    );
+  }
+
+  findByEmail(ctx: Context, email: string) {
+    return this.one(
+      ctx,
+      sql.select().from(this.tableName).where(sql.eq("email", email)),
+    );
+  }
 
   public async find(
     ctx: Context,
@@ -74,9 +97,8 @@ export class UserRepository<UserData = any> extends Repository<
 
     if (query.groupId) {
       sqlQuery
-        .innerJoin("t_memberships m", { "m.user_id": "u.internal_id" })
-        .innerJoin("t_groups g", { "g.internal_id": "m.group_id" })
-        .where({ "g.id": query.groupId });
+        .innerJoin("t_memberships m", { "m.user_id": "u.id" })
+        .where({ "m.group_id": query.groupId });
     }
 
     switch (query.sort) {
@@ -121,8 +143,8 @@ export class UserRepository<UserData = any> extends Repository<
       ctx,
       sql
         .select([
-          "u.internal_id",
           "u.id",
+          "u.external_id",
           "u.first_name",
           "u.last_name",
           "u.role",
@@ -130,28 +152,28 @@ export class UserRepository<UserData = any> extends Repository<
           "m.role as group_role",
           "g.id AS group_id",
           "g.label AS group_label",
-          "g.internal_id AS internal_group_id",
+          "g.external_id AS external_group_id",
         ])
         .from("t_user_sessions s")
-        .innerJoin("t_users u", { "u.internal_id": "s.user_id" })
-        .leftJoin("t_memberships m", { "m.user_id": "u.internal_id" })
-        .leftJoin("t_groups g", { "g.internal_id": "m.group_id" })
+        .innerJoin("t_users u", { "u.id": "s.user_id" })
+        .leftJoin("t_memberships m", { "m.user_id": "u.id" })
+        .leftJoin("t_groups g", { "g.id": "m.group_id" })
         .where({ "s.id": sessionId })
         .where(sql.gt("s.expires_at", new Date())),
     );
     if (rows.length > 0) {
       const row = rows[0];
       return {
-        internalId: row.internal_id,
         id: row.id,
+        externalId: row.external_id,
         firstName: row.first_name,
         lastName: row.last_name,
         email: row.email,
         role: row.role,
         groups: row.group_id
           ? rows.map((row: any) => ({
-              internalId: row.internal_group_id,
               id: row.group_id,
+              externalId: row.external_group_id,
               label: row.group_label,
               role: row.group_role,
             }))

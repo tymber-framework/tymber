@@ -39,6 +39,7 @@ export class ListUsers extends AdminEndpoint {
 
     const output = await this.userRepository.find(ctx, query, [
       "id",
+      "externalId",
       "firstName",
       "lastName",
       "email",

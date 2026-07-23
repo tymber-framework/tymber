@@ -5,15 +5,15 @@ import {
   type HttpContext,
   I18nService,
   INJECT,
-  type UserId,
 } from "@tymber/core";
 import { UserRepository } from "../repositories/UserRepository.js";
 import type { JSONSchemaType } from "ajv";
 import { CookieService } from "../services/CookieService.js";
 import { UserService } from "../services/UserService.js";
+import { toUserId } from "../utils/toUserId.js";
 
 interface PathParams {
-  userId: UserId;
+  userId: string;
 }
 
 export class ImpersonateUser extends AdminEndpoint {
@@ -59,7 +59,7 @@ export class ImpersonateUser extends AdminEndpoint {
   pathParamsSchema: JSONSchemaType<PathParams> = {
     type: "object",
     properties: {
-      userId: { type: "string", format: "uuid" },
+      userId: { type: "string", pattern: "^[0-9]+$" },
     },
     required: ["userId"],
   };
@@ -67,7 +67,7 @@ export class ImpersonateUser extends AdminEndpoint {
   async handle(ctx: HttpContext<never, PathParams>) {
     const { userId } = ctx.pathParams;
 
-    const user = await this.userRepository.findById(ctx, userId);
+    const user = await this.userRepository.findById(ctx, toUserId(userId));
 
     if (!user) {
       return Response.json(

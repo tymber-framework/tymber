@@ -30,7 +30,11 @@ export class ListGroups extends AdminEndpoint {
   override async handle(ctx: HttpContext<never, never, Query>) {
     const { query } = ctx;
 
-    const output = await this.groupRepository.find(ctx, query, ["id", "label"]);
+    const output = await this.groupRepository.find(ctx, query, [
+      "id",
+      "externalId",
+      "label",
+    ]);
 
     return Response.json(output);
   }

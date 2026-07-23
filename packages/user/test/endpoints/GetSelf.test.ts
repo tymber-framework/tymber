@@ -18,7 +18,7 @@ describe("GetSelf", () => {
 
     assert.equal(res.status, 200);
     assert.deepEqual(res.body, {
-      id: ctx.userIds[0],
+      id: ctx.externalUserIds[0],
       firstName: "Alice",
       lastName: "Smith",
       email: "alice@smith.com",
@@ -28,7 +28,7 @@ describe("GetSelf", () => {
       },
       groups: [
         {
-          id: ctx.groupIds[0],
+          id: ctx.externalGroupIds[0],
           label: "AAA",
           role: {
             id: 0,
