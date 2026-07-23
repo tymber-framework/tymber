@@ -1,16 +1,16 @@
 import { type Brand } from "./utils/types.js";
 
-export type InternalUserId = Brand<bigint, "InternalUserId">;
-export type UserId = Brand<string, "UserId">;
+export type UserId = Brand<bigint, "UserId">;
+export type ExternalUserId = Brand<string, "ExternalUserId">;
 export type UserRole = Brand<number, "UserRole">;
-export type InternalGroupId = Brand<bigint, "InternalGroupId">;
-export type GroupId = Brand<string, "GroupId">;
+export type GroupId = Brand<bigint, "GroupId">;
+export type ExternalGroupId = Brand<string, "ExternalGroupId">;
 export type GroupRole = Brand<number, "GroupRole">;
 export type AdminUserId = Brand<number, "AdminUserId">;
 
 export interface ConnectedUser {
-  internalId: InternalUserId;
   id: UserId;
+  externalId: ExternalUserId;
 
   firstName: string;
   lastName: string;
@@ -18,8 +18,8 @@ export interface ConnectedUser {
   role: UserRole;
 
   groups: Array<{
-    internalId: InternalGroupId;
     id: GroupId;
+    externalId: ExternalGroupId;
     label: string;
     role: GroupRole;
   }>;
