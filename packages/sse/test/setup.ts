@@ -48,12 +48,6 @@ export async function setup(): Promise<TestContext> {
 }
 
 async function initUsers(ctx: BaseTestContext) {
-  const userIds = [
-    randomUUID() as UserId,
-    randomUUID() as UserId,
-    randomUUID() as UserId,
-  ];
-
   const result = await ctx.db.query(
     emptyContext(),
     sql
@@ -61,30 +55,25 @@ async function initUsers(ctx: BaseTestContext) {
       .into("t_users")
       .values([
         {
-          id: userIds[0],
           first_name: "Alice",
           last_name: "Smith",
           email: "alice@smith.com",
         },
         {
-          id: userIds[1],
           first_name: "bob",
           last_name: "johnson",
           email: "bob@johnson.com",
         },
         {
-          id: userIds[2],
           first_name: "CAROL",
           last_name: "DOE",
           email: "carol.doe@example.com",
         },
       ])
-      .returning(["internal_id"]),
+      .returning(["id"]),
   );
 
-  const internalUserIds = result.map((row) => row.internal_id);
-
-  const groupIds = [randomUUID() as GroupId, randomUUID() as GroupId];
+  const userIds = result.map((row) => row.id);
 
   const groupResult = await ctx.db.query(
     emptyContext(),
@@ -93,18 +82,16 @@ async function initUsers(ctx: BaseTestContext) {
       .into("t_groups")
       .values([
         {
-          id: groupIds[0],
           label: "AAA",
         },
         {
-          id: groupIds[1],
           label: "bbb",
         },
       ])
-      .returning(["internal_id"]),
+      .returning(["id"]),
   );
 
-  const internalGroupIds = groupResult.map((row) => row.internal_id);
+  const groupIds = groupResult.map((row) => row.id);
 
   await ctx.db.query(
     emptyContext(),
@@ -113,23 +100,23 @@ async function initUsers(ctx: BaseTestContext) {
       .into("t_memberships")
       .values([
         {
-          user_id: internalUserIds[0],
-          group_id: internalGroupIds[0],
+          user_id: userIds[0],
+          group_id: groupIds[0],
           role: 0,
         },
         {
-          user_id: internalUserIds[1],
-          group_id: internalGroupIds[0],
+          user_id: userIds[1],
+          group_id: groupIds[0],
           role: 1,
         },
         {
-          user_id: internalUserIds[1],
-          group_id: internalGroupIds[1],
+          user_id: userIds[1],
+          group_id: groupIds[1],
           role: 2,
         },
         {
-          user_id: internalUserIds[2],
-          group_id: internalGroupIds[1],
+          user_id: userIds[2],
+          group_id: groupIds[1],
           role: 3,
         },
       ]),
@@ -145,17 +132,17 @@ async function initUsers(ctx: BaseTestContext) {
       .values([
         {
           id: sessionIds[0],
-          user_id: internalUserIds[0],
+          user_id: userIds[0],
           expires_at: new Date(Date.now() + 1_000),
         },
         {
           id: sessionIds[1],
-          user_id: internalUserIds[1],
+          user_id: userIds[1],
           expires_at: new Date(Date.now() + 1_000),
         },
         {
           id: sessionIds[2],
-          user_id: internalUserIds[2],
+          user_id: userIds[2],
           expires_at: new Date(Date.now() + 1_000),
         },
       ]),
