@@ -30,17 +30,17 @@ await db.run(
     .into("t_users")
     .values([
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         first_name: "alice",
         last_name: "smith",
       },
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         first_name: "bob",
         last_name: "jones",
       },
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         first_name: "carol",
         last_name: "davis",
       },
@@ -54,15 +54,15 @@ await db.run(
     .into("t_groups")
     .values([
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         label: "group 1",
       },
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         label: "group 2",
       },
       {
-        id: randomUUID(),
+        external_id: randomUUID(),
         label: "group 3",
       },
     ]),
