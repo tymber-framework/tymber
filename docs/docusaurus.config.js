@@ -119,6 +119,11 @@ const config = {
               },
               {
                 type: 'doc',
+                label: '@tymber/openapi',
+                docId: 'first-party-modules/openapi',
+              },
+              {
+                type: 'doc',
                 label: '@tymber/sse',
                 docId: 'first-party-modules/sse',
               },
@@ -161,6 +166,10 @@ const config = {
               {
                 label: '@tymber/mail',
                 to: '/docs/first-party-modules/mail',
+              },
+              {
+                label: '@tymber/openapi',
+                to: '/docs/first-party-modules/openapi',
               },
               {
                 label: '@tymber/sse',
