@@ -53,6 +53,7 @@ const sidebars = {
           collapsed: false,
           collapsible: false,
           items: [
+              'deployment/deployment-checklist',
               'deployment/scaling-out',
           ]
       },
