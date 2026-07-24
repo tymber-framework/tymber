@@ -330,7 +330,7 @@
             <input type="checkbox" v-model="item.value" :disabled="!isEditing"/>
         </label>
 
-        <input v-if="item.type === 'string' && !item.enum" class="input" type="text" v-model="item.value" :disabled="!isEditing"/>
+        <input v-if="item.type === 'string' && !item.enum" class="input" :type="item.key.endsWith('_SECRET') ? 'password' : 'text'" v-model="item.value" :disabled="!isEditing"/>
 
         <div v-if="item.type === 'string' && item.enum" class="select">
             <select v-model="item.value" :disabled="!isEditing">
