@@ -85,6 +85,10 @@ export function buildSpecification(moduleDefinitions: ModuleDefinitions) {
   };
 
   for (const module of moduleDefinitions.modules) {
+    if (module.name === "@tymber/admin") {
+      continue;
+    }
+
     for (const endpoint of [...module.endpoints, ...module.userEndpoints]) {
       const method = endpoint.method.toLowerCase() as OpenAPIV3.HttpMethods;
       const path = endpoint.path.replace(/:(\w+)/g, "{$1}");
