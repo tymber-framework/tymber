@@ -9,6 +9,59 @@ import {
 export class GetSelf extends UserEndpoint {
   static [INJECT] = [I18nService];
 
+  public openapi = {
+    summary: "Get the current user",
+    responses: {
+      200: {
+        description: "The current user",
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              required: ["id", "role", "groups"],
+              properties: {
+                id: { type: "string", format: "uuid" },
+                firstName: { type: "string" },
+                lastName: { type: "string" },
+                email: { type: "string", format: "email" },
+                role: {
+                  type: "object",
+                  required: ["id", "label"],
+                  properties: {
+                    id: { type: "integer" },
+                    label: { type: "string" },
+                  },
+                },
+                groups: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    required: ["id", "role", "label"],
+                    properties: {
+                      id: { type: "string", format: "uuid" },
+                      label: { type: "string" },
+                      role: {
+                        type: "object",
+                        required: ["id", "label"],
+                        properties: {
+                          id: { type: "integer" },
+                          label: { type: "string" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      401: {
+        description: "Unauthorized",
+      },
+    },
+  };
+
   constructor(private readonly i18n: I18nService) {
     super();
   }

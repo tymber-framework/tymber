@@ -8,6 +8,18 @@ import { CookieService } from "../services/CookieService.js";
 export class LogOut extends UserEndpoint {
   static [INJECT] = [SessionRepository, CookieService];
 
+  public openapi = {
+    summary: "Logout the current user",
+    responses: {
+      204: {
+        description: "User logged out successfully",
+      },
+      401: {
+        description: "Unauthorized",
+      },
+    },
+  };
+
   constructor(
     private readonly sessionRepository: SessionRepository,
     private readonly cookieService: CookieService,
