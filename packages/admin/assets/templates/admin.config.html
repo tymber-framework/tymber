@@ -46,7 +46,10 @@
             <% } %>
           </ul>
           <% } %> <% } else { %>
-          <code><%= conf.value %></code>
+          <code
+            ><%= conf.value && conf.key.endsWith('_SECRET') ? '********' :
+            conf.value %></code
+          >
           <% } %>
         </div>
       </td>
