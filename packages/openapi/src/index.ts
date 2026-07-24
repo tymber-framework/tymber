@@ -3,7 +3,7 @@ import { Console } from "./views/Console.js";
 
 export const OpenAPIModule: Module = {
   name: "@tymber/openapi",
-  version: "0.1.2",
+  version: "0.1.3",
 
   assetsDir: FS.join(import.meta.dirname, "..", "assets"),
 
