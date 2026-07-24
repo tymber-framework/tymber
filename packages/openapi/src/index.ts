@@ -1,7 +1,7 @@
 import { FS, type Module } from "@tymber/core";
 import { Console } from "./views/Console.js";
 
-export const OpenApiModule: Module = {
+export const OpenAPIModule: Module = {
   name: "@tymber/openapi",
   version: "0.1.2",
 

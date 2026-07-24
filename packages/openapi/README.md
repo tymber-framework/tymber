@@ -19,11 +19,11 @@ npm i @tymber/openapi
 ## Usage
 
 ```ts
-import { OpenApiModule } from "@tymber/openapi";
+import { OpenAPIModule } from "@tymber/openapi";
 
 const app = await App.create({
   components: [db],
-  modules: [OpenApiModule]
+  modules: [OpenAPIModule]
 });
 ```
 
