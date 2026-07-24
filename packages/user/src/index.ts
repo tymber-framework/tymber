@@ -100,8 +100,16 @@ export const UserModule: Module = {
 export {
   UserRepository,
   GroupRepository,
+  MembershipRepository,
   UserService,
   CookieService,
   UserRoleRegistry,
   GroupRoleRegistry,
 };
+
+export { type User } from "./repositories/UserRepository.js";
+export { type Group } from "./repositories/GroupRepository.js";
+export {
+  type Membership,
+  type MembershipId,
+} from "./repositories/MembershipRepository.js";

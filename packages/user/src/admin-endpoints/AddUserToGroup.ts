@@ -100,9 +100,9 @@ export class AddUserToGroup extends AdminEndpoint {
   async handle(ctx: HttpContext<Payload, PathParams>) {
     const { payload, pathParams } = ctx;
     const { userId, groupId } = pathParams;
-    const { role } = payload;
+    const role = payload.role as GroupRole;
 
-    if (!this.groupRoleRegistry.has(role as GroupRole)) {
+    if (!this.groupRoleRegistry.has(role)) {
       return this.badRequest("invalid role");
     }
 

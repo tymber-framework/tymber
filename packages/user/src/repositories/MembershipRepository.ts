@@ -1,17 +1,22 @@
-import { type GroupId, type UserId, Repository } from "@tymber/core";
+import {
+  type GroupId,
+  type UserId,
+  Repository,
+  type GroupRole,
+} from "@tymber/core";
 
-interface UserRoleId {
+export interface MembershipId {
   userId: UserId;
   groupId: GroupId;
 }
 
-interface UserRole {
+export interface Membership {
   userId: UserId;
   groupId: GroupId;
-  role: number;
+  role: GroupRole;
 }
 
-export class MembershipRepository extends Repository<UserRoleId, UserRole> {
+export class MembershipRepository extends Repository<MembershipId, Membership> {
   tableName = "t_memberships";
   idFields = ["userId", "groupId"];
 }
