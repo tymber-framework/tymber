@@ -22,6 +22,7 @@
     "dist/"
   ],
   "exports": {
+    "default": "./dist/index.js",
     "node": "./dist/index.js",
     "bun": "./src/index.ts",
     "deno": "./src/index.ts"
