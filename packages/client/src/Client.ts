@@ -13,6 +13,7 @@ interface HttpRequest {
   query?: Record<string, any>;
   payload?: any;
   headers?: Record<string, string>;
+  signal?: AbortSignal;
 }
 
 function camelToSnakeCase(str: string) {
@@ -34,6 +35,7 @@ export class Client {
     query,
     payload,
     headers,
+    signal,
   }: HttpRequest) {
     const requestHeaders = new Headers(this.defaultHeaders);
     requestHeaders.set("x-csrf-token", "1");
@@ -48,6 +50,7 @@ export class Client {
       method: method || "GET",
       headers: requestHeaders,
       credentials: this.baseUrl.startsWith("/") ? "same-origin" : "include",
+      signal,
     };
 
     if (payload) {
