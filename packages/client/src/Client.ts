@@ -37,10 +37,6 @@ export class Client {
   }: HttpRequest) {
     const requestHeaders = new Headers(this.defaultHeaders);
     requestHeaders.set("x-csrf-token", "1");
-    requestHeaders.set(
-      "credentials",
-      this.baseUrl.startsWith("/") ? "same-origin" : "include",
-    );
 
     if (headers) {
       Object.keys(headers).forEach((key) => {
@@ -51,6 +47,7 @@ export class Client {
     const options: RequestInit = {
       method: method || "GET",
       headers: requestHeaders,
+      credentials: this.baseUrl.startsWith("/") ? "same-origin" : "include",
     };
 
     if (payload) {
