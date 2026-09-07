@@ -1,6 +1,6 @@
 {
   "name": "@tymber/client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Client module for the Tymber framework",
   "license": "MIT",
   "author": "Damien ARRACHEQUESNE",
