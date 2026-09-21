@@ -38,6 +38,7 @@ describe("AddUserToGroup", () => {
       user_id: userId,
       group_id: ctx.groupIds[0],
       role: 3,
+      created_at: rows[0].created_at,
     });
   });
 
@@ -78,6 +79,7 @@ describe("AddUserToGroup", () => {
             user_id: userId,
             group_id: ctx.groupIds[0],
             role: 0,
+            created_at: new Date(),
           },
         ]),
     );

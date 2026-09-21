@@ -103,21 +103,25 @@ async function initUsers(ctx: BaseTestContext) {
           user_id: userIds[0],
           group_id: groupIds[0],
           role: 0,
+          created_at: new Date(),
         },
         {
           user_id: userIds[1],
           group_id: groupIds[0],
           role: 1,
+          created_at: new Date(),
         },
         {
           user_id: userIds[1],
           group_id: groupIds[1],
           role: 2,
+          created_at: new Date(),
         },
         {
           user_id: userIds[2],
           group_id: groupIds[1],
           role: 3,
+          created_at: new Date(),
         },
       ]),
   );

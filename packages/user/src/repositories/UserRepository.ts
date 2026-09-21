@@ -159,7 +159,8 @@ export class UserRepository<UserData = any> extends Repository<
         .leftJoin("t_memberships m", { "m.user_id": "u.id" })
         .leftJoin("t_groups g", { "g.id": "m.group_id" })
         .where({ "s.id": sessionId })
-        .where(sql.gt("s.expires_at", new Date())),
+        .where(sql.gt("s.expires_at", new Date()))
+        .orderBy(["m.created_at ASC", "m.group_id ASC"]),
     );
     if (rows.length > 0) {
       const row = rows[0];

@@ -27,9 +27,10 @@ CREATE INDEX t_idx_groups_label ON t_groups (LOWER(label));
 
 CREATE TABLE t_memberships
 (
-    user_id  BIGINT  NOT NULL REFERENCES t_users (id) ON DELETE CASCADE,
-    group_id BIGINT  NOT NULL REFERENCES t_groups (id) ON DELETE CASCADE,
-    role     INTEGER NOT NULL,
+    user_id    BIGINT  NOT NULL REFERENCES t_users (id) ON DELETE CASCADE,
+    group_id   BIGINT  NOT NULL REFERENCES t_groups (id) ON DELETE CASCADE,
+    role       INTEGER NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
 
     PRIMARY KEY (user_id, group_id)
 );

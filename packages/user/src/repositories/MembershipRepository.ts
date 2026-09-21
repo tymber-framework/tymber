@@ -14,9 +14,11 @@ export interface Membership {
   userId: UserId;
   groupId: GroupId;
   role: GroupRole;
+  createdAt: Date;
 }
 
 export class MembershipRepository extends Repository<MembershipId, Membership> {
   tableName = "t_memberships";
   idFields = ["userId", "groupId"];
+  dateFields = ["createdAt"];
 }

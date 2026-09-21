@@ -25,6 +25,7 @@ describe("RemoveUserFromGroup", () => {
             user_id: userId,
             group_id: ctx.groupIds[0],
             role: 0,
+            created_at: new Date(),
           },
         ]),
     );

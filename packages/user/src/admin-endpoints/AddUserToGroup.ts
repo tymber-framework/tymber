@@ -139,6 +139,7 @@ export class AddUserToGroup extends AdminEndpoint {
           userId: user.id,
           groupId: group.id,
           role,
+          createdAt: ctx.startedAt,
         });
 
         await this.adminAuditService.log(ctx, "ADD_USER_TO_GROUP", {

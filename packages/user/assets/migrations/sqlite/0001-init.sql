@@ -27,9 +27,10 @@ CREATE INDEX t_idx_groups_label ON t_groups (LOWER(label));
 
 CREATE TABLE t_memberships
 (
-    user_id  INTEGER NOT NULL REFERENCES t_users (id),
-    group_id INTEGER NOT NULL REFERENCES t_groups (id),
-    role     INTEGER NOT NULL,
+    user_id    INTEGER NOT NULL REFERENCES t_users (id),
+    group_id   INTEGER NOT NULL REFERENCES t_groups (id),
+    role       INTEGER NOT NULL,
+    created_at INTEGER NOT NULL,
 
     PRIMARY KEY (user_id, group_id)
 ) STRICT;
