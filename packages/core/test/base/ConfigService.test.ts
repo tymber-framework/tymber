@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import * as assert from "node:assert";
 import { ConfigService } from "../../src";
+import { InvalidConfigError } from "../../src/ConfigService";
 
 describe("ConfigService", () => {
   it("should work", async () => {
@@ -65,5 +66,54 @@ describe("ConfigService", () => {
     value = 3;
     await configService.init();
     assert.equal(count, 2);
+  });
+
+  it("should throw if a config is not provided and has no default value", async () => {
+    const configService = new (class extends ConfigService {
+      protected override getCurrentValues() {
+        return Promise.resolve({
+          A: 1,
+        });
+      }
+    })();
+
+    interface Config {
+      A: number;
+      B: string;
+      C: number;
+    }
+
+    configService.subscribe<Config>(
+      {
+        A: {
+          type: "number",
+        },
+        B: {
+          type: "string",
+        },
+        C: {
+          type: "string",
+          default: "123",
+        },
+      },
+      () => {},
+    );
+
+    await assert.rejects(
+      () => configService.init(),
+      (err: InvalidConfigError) => {
+        assert.equal(err.message, "invalid configuration");
+        assert.deepStrictEqual(err.errors, [
+          {
+            instancePath: "",
+            keyword: "required",
+            message: "must have required property 'B'",
+            params: { missingProperty: "B" },
+            schemaPath: "#/required",
+          },
+        ]);
+        return true;
+      },
+    );
   });
 });

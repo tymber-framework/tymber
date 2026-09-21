@@ -18,7 +18,7 @@ interface ConfigHandler {
   previousConfigHash: string;
 }
 
-class InvalidConfigError extends Error {
+export class InvalidConfigError extends Error {
   constructor(public readonly errors: ErrorObject[]) {
     super("invalid configuration");
   }
@@ -44,15 +44,21 @@ export abstract class ConfigService extends Component {
 
   override async init() {
     const properties = {};
+    const required = new Set<string>();
 
     for (const handler of this.handlers) {
       Object.assign(properties, handler.configDefinitions);
+      for (const key in handler.configDefinitions) {
+        if (!Object.hasOwn(handler.configDefinitions[key], "default")) {
+          required.add(key);
+        }
+      }
     }
 
     this.validateConfig = AJV_INSTANCE_STRICT.compile({
       type: "object",
       properties,
-      required: [],
+      required: [...required],
     });
 
     const values = await this.getCurrentValues(emptyContext());
