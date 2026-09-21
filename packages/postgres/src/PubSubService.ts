@@ -80,7 +80,7 @@ export class PostgresPubSubService extends PubSubService {
     );
   }
 
-  override publish(ctx: Context, type: string, payload: any) {
+  override publish(ctx: Context, type: string, payload?: any) {
     const message = JSON.stringify({
       from: this.id,
       type,
