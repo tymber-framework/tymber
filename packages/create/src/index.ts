@@ -47,8 +47,11 @@ async function main() {
           message: "Modules to include",
           options: [
             { value: "admin", label: "Admin dashboard" },
+            { value: "client", label: "HTTP client for tests" },
             { value: "config", label: "Configuration management" },
+            { value: "mail", label: "Mail management" },
             { value: "openapi", label: "OpenAPI console" },
+            { value: "sse", label: "Server-sent events" },
             { value: "user", label: "User Management" },
           ],
           required: false,
