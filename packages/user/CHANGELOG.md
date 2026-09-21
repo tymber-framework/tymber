@@ -7,6 +7,15 @@
 | [0.1.0](#010-2026-02-19) | February 2026 |
 | [0.0.1](#001-2026-01-27) | January 2026  |
 
+## [0.2.2](https://github.com/tymber-framework/tymber/compare/@tymber/user@0.2.1...@tymber/user@0.2.2) (2026-09-21)
+
+
+### Bug Fixes
+
+* ensure stable group order in /self endpoint ([06df41c](https://github.com/tymber-framework/tymber/commit/06df41caf27d144010a10afa40c778d3530ba293))
+
+
+
 ## [0.2.1](https://github.com/tymber-framework/tymber/compare/@tymber/user@0.2.0...@tymber/user@0.2.1) (2026-07-24)
 
 
