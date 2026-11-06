@@ -17,7 +17,12 @@ import { runMigrations } from "./utils/runMigrations.js";
 import { createDebug } from "./utils/createDebug.js";
 import { DB } from "./DB.js";
 import { isProduction } from "./utils/isProduction.js";
-import { Component, ComponentFactory, type Ctor } from "./Component.js";
+import {
+  type AbstractCtor,
+  Component,
+  ComponentFactory,
+  type Ctor,
+} from "./Component.js";
 import { PubSubService } from "./PubSubService.js";
 import { FS } from "./utils/fs.js";
 import { EnvironmentBasedConfigService } from "./ConfigService.js";
@@ -369,7 +374,7 @@ export class App {
     }
   }
 
-  public getInstance<T extends Component>(ctor: Ctor<T>) {
+  public getInstance<T extends Component>(ctor: Ctor<T> | AbstractCtor<T>) {
     return this.components.findLast((c) => c instanceof ctor) as T;
   }
 

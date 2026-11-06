@@ -4,7 +4,7 @@ import { sortBy } from "./utils/sortBy.js";
 export const INJECT = Symbol("dependencies");
 
 export type Ctor<T> = new (...args: any[]) => T;
-type AbstractCtor<T> = abstract new (...args: any[]) => T;
+export type AbstractCtor<T> = abstract new (...args: any[]) => T;
 
 type Dependency = Ctor<Component> | AbstractCtor<Component>;
 

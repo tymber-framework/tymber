@@ -4,14 +4,14 @@ import { type AddressInfo } from "node:net";
 import { type Module } from "../Module.js";
 import { App } from "../App.js";
 import { toNodeHandler } from "./toNodeHandler.js";
-import { type Component, type Ctor } from "../Component.js";
+import { type AbstractCtor, type Component, type Ctor } from "../Component.js";
 
 const CLOSE_DELAY_MS = 200;
 
 export interface BaseTestContext {
   baseUrl: string;
   db: DB;
-  getInstance: <T extends Component>(ctor: Ctor<T>) => T;
+  getInstance: <T extends Component>(ctor: Ctor<T> | AbstractCtor<T>) => T;
   close: () => Promise<void>;
 }
 
