@@ -29,6 +29,7 @@ import { FS } from "./utils/fs.js";
 import { EnvironmentBasedConfigService } from "./ConfigService.js";
 import { snakeToCamelCase } from "./utils/snakeToCamelCase.js";
 import { NoopAdminAuditService } from "./AdminAuditService.js";
+import { ConsoleLogService } from "./LogService.js";
 
 const debug = createDebug("App");
 
@@ -113,6 +114,7 @@ export class App {
     componentFactory.register(EnvironmentBasedConfigService);
     componentFactory.register(BaseI18nService);
     componentFactory.register(BaseTemplateEngine);
+    componentFactory.register(ConsoleLogService);
     componentFactory.register(NoopAdminAuditService);
     componentFactory.register(ViewRenderer, (instance) => {
       viewRenderer = instance;

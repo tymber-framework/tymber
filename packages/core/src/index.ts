@@ -38,6 +38,12 @@ export { Helmet } from "./middlewares/Helmet.js";
 export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateEngine } from "./TemplateEngine.js";
 export { AdminAuditService } from "./AdminAuditService.js";
+export {
+  LogService,
+  ScopedLogService,
+  LogLevel,
+  type LogEntry,
+} from "./LogService.js";
 
 export { type Locale } from "./contrib/accept-language-parser.js";
 export { createCookie, parseCookieHeader } from "./contrib/cookie.js";
