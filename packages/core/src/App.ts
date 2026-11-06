@@ -3,6 +3,7 @@ import {
   type Module,
   type ModuleDefinition,
   ModuleDefinitions,
+  type MiddlewareWithOrder,
 } from "./Module.js";
 import { Middleware } from "./Middleware.js";
 import { parseCookieHeader } from "./contrib/cookie.js";
@@ -67,6 +68,16 @@ function parseQueryParams(url: URL) {
   return query;
 }
 
+function mergeAndSortMiddlewares(modules: ModuleDefinition[]) {
+  const middlewares: MiddlewareWithOrder[] = [];
+  for (const module of modules) {
+    middlewares.push(...module.middlewares);
+  }
+  return middlewares
+    .sort((a, b) => a.order - b.order)
+    .map(({ middleware }) => middleware);
+}
+
 export class App {
   private readonly router: Router;
   private readonly middlewares: Middleware[] = [];
@@ -78,9 +89,7 @@ export class App {
     private readonly components: Component[],
   ) {
     this.router = createRouter(modules);
-    for (const module of modules) {
-      this.middlewares.push(...module.middlewares);
-    }
+    this.middlewares = mergeAndSortMiddlewares(modules);
     this.fetch = this.fetch.bind(this);
   }
 

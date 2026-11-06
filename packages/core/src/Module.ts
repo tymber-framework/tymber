@@ -36,7 +36,7 @@ export interface AppInit {
     ctor: Ctor<AdminEndpoint>,
   ): void;
   adminView(path: string, ctor: Ctor<AdminView>): void;
-  middleware(ctor: Ctor<Middleware>): void;
+  middleware(ctor: Ctor<Middleware>, order?: number): void;
 }
 
 export interface Route {
@@ -44,6 +44,11 @@ export interface Route {
   path: string;
   handlerName: string;
   handler: Handler;
+}
+
+export interface MiddlewareWithOrder {
+  middleware: Middleware;
+  order: number;
 }
 
 export interface ModuleDefinition {
@@ -58,7 +63,7 @@ export interface ModuleDefinition {
   userViews: Route[];
   adminEndpoints: Route[];
   adminViews: Route[];
-  middlewares: Middleware[];
+  middlewares: MiddlewareWithOrder[];
 }
 
 export class ModuleDefinitions extends Component {

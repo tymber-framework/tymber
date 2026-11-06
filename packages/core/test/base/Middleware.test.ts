@@ -72,4 +72,140 @@ describe("Middleware", () => {
 
     return ctx.close();
   });
+
+  it("should execute middlewares in the specified order", async () => {
+    const executionOrder: string[] = [];
+
+    const ctx = await createTestApp(
+      () => createTestDB(),
+      [
+        {
+          name: "test",
+          version: "0.0.1",
+          init(app) {
+            app.middleware(
+              class Middleware1 extends Middleware {
+                handle() {
+                  executionOrder.push("middleware-5");
+                }
+              },
+              5,
+            );
+
+            app.middleware(
+              class Middleware2 extends Middleware {
+                handle() {
+                  executionOrder.push("middleware-10");
+                }
+              },
+              10,
+            );
+
+            app.middleware(
+              class Middleware3 extends Middleware {
+                handle() {
+                  executionOrder.push("middleware-100");
+                }
+              },
+            ); // default order 100
+
+            app.middleware(
+              class Middleware4 extends Middleware {
+                handle() {
+                  executionOrder.push("middleware-200");
+                }
+              },
+              200,
+            );
+          },
+        },
+      ],
+    );
+
+    const client = new Client(ctx.baseUrl);
+    await client.fetch({
+      method: "GET",
+      path: "/test",
+    });
+
+    assert.deepEqual(executionOrder, [
+      "middleware-5",
+      "middleware-10",
+      "middleware-100",
+      "middleware-200",
+    ]);
+
+    return ctx.close();
+  });
+
+  it("should execute middlewares from different modules in the correct global order", async () => {
+    const executionOrder: string[] = [];
+
+    const ctx = await createTestApp(
+      () => createTestDB(),
+      [
+        {
+          name: "module-a",
+          version: "0.0.1",
+          init(app) {
+            app.middleware(
+              class MiddlewareA1 extends Middleware {
+                handle() {
+                  executionOrder.push("module-a-200");
+                }
+              },
+              200,
+            );
+
+            app.middleware(
+              class MiddlewareA2 extends Middleware {
+                handle() {
+                  executionOrder.push("module-a-50");
+                }
+              },
+              50,
+            );
+          },
+        },
+        {
+          name: "module-b",
+          version: "0.0.1",
+          init(app) {
+            app.middleware(
+              class MiddlewareB1 extends Middleware {
+                handle() {
+                  executionOrder.push("module-b-10");
+                }
+              },
+              10,
+            );
+
+            app.middleware(
+              class MiddlewareB2 extends Middleware {
+                handle() {
+                  executionOrder.push("module-b-150");
+                }
+              },
+              150,
+            );
+          },
+        },
+      ],
+    );
+
+    const client = new Client(ctx.baseUrl);
+    await client.fetch({
+      method: "GET",
+      path: "/test",
+    });
+
+    assert.deepEqual(executionOrder, [
+      "module-b-10",
+      "module-a-50",
+      "module-b-150",
+      "module-a-200",
+    ]);
+
+    return ctx.close();
+  });
 });

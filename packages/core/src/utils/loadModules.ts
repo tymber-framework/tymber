@@ -30,7 +30,7 @@ export async function loadModules(
       middlewares: [],
     };
 
-    let middlewareCount = 0;
+    let defaultMiddlewareOrder = 100;
 
     const appInit = {
       component<T extends Component>(ctor: Ctor<T>) {
@@ -118,12 +118,17 @@ export async function loadModules(
         });
       },
 
-      middleware: (ctor: Ctor<Middleware>) => {
-        debug("adding middleware %s", ctor.name);
+      middleware: (
+        ctor: Ctor<Middleware>,
+        order = defaultMiddlewareOrder++,
+      ) => {
+        debug("adding middleware %s with order %d", ctor.name, order);
 
-        const index = middlewareCount++;
         componentFactory.register(ctor, (instance) => {
-          moduleDefinition.middlewares[index] = instance;
+          moduleDefinition.middlewares.push({
+            middleware: instance,
+            order,
+          });
         });
       },
     };
