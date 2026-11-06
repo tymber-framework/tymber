@@ -34,6 +34,7 @@ export { View, UserView, AdminView } from "./View.js";
 export { Middleware } from "./Middleware.js";
 export { CORS } from "./middlewares/CORS.js";
 export { CSRF } from "./middlewares/CSRF.js";
+export { Helmet } from "./middlewares/Helmet.js";
 export { Repository, type Page, EntityNotFoundError } from "./Repository.js";
 export { TemplateEngine } from "./TemplateEngine.js";
 export { AdminAuditService } from "./AdminAuditService.js";
