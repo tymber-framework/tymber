@@ -11,6 +11,7 @@ export interface HttpContext<
   payload: Payload;
   path: string;
   pathParams: PathParams;
+  matchedRoute?: string;
   query: QueryParams;
   headers: Headers;
   cookies: Record<string, string>;

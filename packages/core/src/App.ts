@@ -293,6 +293,7 @@ export class App {
 
     // @ts-expect-error
     ctx.pathParams = route.pathParams;
+    ctx.matchedRoute = route.matchedRoute;
 
     const contentType = req.headers.get("content-type");
 

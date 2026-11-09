@@ -71,18 +71,22 @@ export class Router {
       return {
         handler: staticHandler,
         pathParams: {},
+        matchedRoute: path,
       };
     }
 
     const segments = path.split("/").filter((s) => s.length > 0);
     let currentNode = this.trieRoot;
     const pathParams: Record<string, string> = {};
+    const matchedRouteSegments: string[] = [];
 
     for (const segment of segments) {
       const nextNode = currentNode.staticChildren.get(segment);
       if (nextNode) {
+        matchedRouteSegments.push(segment);
         currentNode = nextNode;
       } else if (currentNode.dynamicChild) {
+        matchedRouteSegments.push(`:${currentNode.dynamicChild.paramName}`);
         pathParams[currentNode.dynamicChild.paramName] = segment;
         currentNode = currentNode.dynamicChild.node;
       } else {
@@ -95,6 +99,7 @@ export class Router {
       return {
         handler,
         pathParams,
+        matchedRoute: "/" + matchedRouteSegments.join("/"),
       };
     }
   }
