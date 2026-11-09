@@ -2,6 +2,7 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.4.0](#040-2026-11-09) | November 2026 |
 | [0.3.2](#032-2026-07-23) | July 2026     |
 | [0.3.1](#031-2026-07-02) | July 2026     |
 | [0.3.0](#030-2026-06-19) | June 2026     |
@@ -11,6 +12,27 @@
 | [0.2.0](#020-2026-02-19) | February 2026 |
 | [0.1.0](#010-2026-01-27) | January 2026  |
 | [0.0.1](#001-2025-12-09) | December 2025 |
+
+## [0.4.0](https://github.com/tymber-framework/tymber/compare/%40tymber%2Fcore%400.3.2...%40tymber%2Fcore%400.4.0) (2026-11-09)
+
+### Bug Fixes
+
+* allow using getInstance() with an abstract class ([dca9e66](https://github.com/tymber-framework/tymber/commit/dca9e662c9c6dd247ac734ca1097c1699a5a80b6))
+* throw if a config is not provided and has no default value ([e8c686b](https://github.com/tymber-framework/tymber/commit/e8c686ba0006e816c627cc9a66560247b8cf69f4))
+
+### Features
+
+* add Helmet middleware ([f189e24](https://github.com/tymber-framework/tymber/commit/f189e24ac12562887ea30a351d924076e3e32b29))
+* add LogService ([78577dc](https://github.com/tymber-framework/tymber/commit/78577dcb19c1e9e1a1c394215fae0e2fdfb5ccd5))
+* add matched route name ([ea06d3f](https://github.com/tymber-framework/tymber/commit/ea06d3f6c096d2f40ac6d554ae0397a57b4030a2))
+* add middleware custom order ([0a8b162](https://github.com/tymber-framework/tymber/commit/0a8b16282967adec0ec985fc2795c8ded7b225cd))
+* move CORS and CSRF middleware to core ([4d9d4dd](https://github.com/tymber-framework/tymber/commit/4d9d4dd066b61e4816e4f0d0a413ff07d49ff2c6))
+
+### Dependencies
+
+- [`ajv@~8.18.0`](https://www.npmjs.com/package/ajv/v/8.18.0) (no change)
+- [`ajv-formats@~3.0.1`](https://www.npmjs.com/package/ajv-formats/v/3.0.1) (no change)
+
 
 ## [0.3.2](https://github.com/tymber-framework/tymber/compare/@tymber/core@0.3.1...@tymber/core@0.3.2) (2026-07-23)
 
