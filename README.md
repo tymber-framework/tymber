@@ -42,11 +42,12 @@ This repository contains the following packages:
 | `@tymber/config`   | The config module                                                          |
 | `@tymber/core`     | The internals of the framework                                             |
 | `@tymber/create`   | CLI to scaffold a new Tymber project                                       |
+| `@tymber/log`      | The log module                                                             |
 | `@tymber/openapi`  | The OpenAPI module                                                         |
 | `@tymber/postgres` | The PostgreSQL module (DB & PubSubService components)                      |
+| `@tymber/sse`      | The server-sent events module                                              |
 | `@tymber/sqlite`   | The SQLite module                                                          |
 | `@tymber/user`     | The user module                                                            |
-| `@tymber/sse`      | The server-sent events module                                              |
 
 ## License
 
