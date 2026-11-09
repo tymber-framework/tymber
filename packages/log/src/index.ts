@@ -8,7 +8,7 @@ import { ListLogsView } from "./admin-views/ListLogsView.js";
 
 export const LogModule: Module = {
   name: "@tymber/log",
-  version: "0.0.0",
+  version: "0.0.1",
 
   assetsDir: join(import.meta.dirname, "..", "assets"),
 
