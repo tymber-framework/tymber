@@ -114,6 +114,11 @@ const config = {
               },
               {
                 type: 'doc',
+                label: '@tymber/log',
+                docId: 'first-party-modules/log',
+              },
+              {
+                type: 'doc',
                 label: '@tymber/mail',
                 docId: 'first-party-modules/mail',
               },
@@ -162,6 +167,10 @@ const config = {
               {
                 label: '@tymber/config',
                 to: '/docs/first-party-modules/config',
+              },
+              {
+                label: '@tymber/log',
+                to: '/docs/first-party-modules/log',
               },
               {
                 label: '@tymber/mail',
