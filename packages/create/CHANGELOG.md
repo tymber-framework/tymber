@@ -2,9 +2,17 @@
 
 | Release                  | Date          |
 |--------------------------|---------------|
+| [0.0.4](#003-2026-11-09) | November 2026 |
 | [0.0.3](#003-2026-11-09) | November 2026 |
 | [0.0.2](#002-2026-05-23) | May 2026      |
 | [0.0.1](#001-2026-05-23) | May 2026      |
+
+## [0.0.4](https://github.com/tymber-framework/tymber/compare/%40tymber%2Fcreate%400.0.3...%40tymber%2Fcreate%400.0.4) (2026-11-09)
+
+### Bug Fixes
+
+* update templates with new modules ([e456239](https://github.com/tymber-framework/tymber/commit/e45623917981eedc4df5c919af568b703bb705d4))
+
 
 ## [0.0.3](https://github.com/tymber-framework/tymber/compare/%40tymber%2Fcreate%400.0.2...%40tymber%2Fcreate%400.0.3) (2026-11-09)
 
