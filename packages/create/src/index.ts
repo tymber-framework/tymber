@@ -49,6 +49,7 @@ async function main() {
             { value: "admin", label: "Admin dashboard" },
             { value: "client", label: "HTTP client for tests" },
             { value: "config", label: "Configuration management" },
+            { value: "log", label: "Logs" },
             { value: "mail", label: "Mail management" },
             { value: "openapi", label: "OpenAPI console" },
             { value: "sse", label: "Server-sent events" },
