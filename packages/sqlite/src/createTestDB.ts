@@ -7,6 +7,9 @@ export async function createTestDB() {
     filename: ":memory:",
     driver: sqlite3.Database,
   });
+
+  await db.run("PRAGMA foreign_keys = ON");
+
   const testDB = new SQLiteDB(db);
 
   testDB.close = () => {
