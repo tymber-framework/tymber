@@ -12,8 +12,17 @@ import { type BaseTestContext, createTestApp } from "@tymber/core";
 <% if (modules.includes("config")) { %>
 import { ConfigModule } from "@tymber/config";
 <% } %>
+<% if (modules.includes("log")) { %>
+import { LogModule } from "@tymber/log";
+<% } %>
+<% if (modules.includes("mail")) { %>
+import { MailModule, MailProvider, Mail } from "@tymber/mail";
+<% } %>
 <% if (modules.includes("openapi")) { %>
-import { OpenApiModule } from "@tymber/openapi";
+import { OpenAPIModule } from "@tymber/openapi";
+<% } %>
+<% if (modules.includes("sse")) { %>
+import { SSEModule } from "@tymber/sse";
 <% } %>
 <% if (modules.includes("user")) { %>
 import { UserModule } from "@tymber/user";
@@ -26,8 +35,20 @@ export interface TestContext extends BaseTestContext {
   adminUserId: AdminUserId;
   <% } %>
 }
+<% if (modules.includes("mail")) { %>
+class TestMailProvider extends MailProvider {
+  sendMail(mail: Mail) {
+    console.log(`sending ${mail.subject} to ${mail.to}`);
+    return Promise.resolve();
+  }
+}
+<% } %>
 
 export async function setup(): Promise<TestContext> {
+  <% if (modules.includes("config")) { %>
+  process.env.CONFIG_SECRET_KEYS = "S3cr3T";
+  <% } %>
+
   const ctx = await createTestApp(() => createTestDB(), [
     <% if (modules.includes("admin")) { %>
     AdminModule,
@@ -35,8 +56,24 @@ export async function setup(): Promise<TestContext> {
     <% if (modules.includes("config")) { %>
     ConfigModule,
     <% } %>
+    <% if (modules.includes("log")) { %>
+    LogModule,
+    <% } %>
+    <% if (modules.includes("mail")) { %>
+    MailModule,
+    {
+      name: "test",
+      version: "0.0.0",
+      init(app) {
+        app.component(TestMailProvider);
+      }
+    },
+    <% } %>
     <% if (modules.includes("openapi")) { %>
-    OpenApiModule,
+    OpenAPIModule,
+    <% } %>
+    <% if (modules.includes("sse")) { %>
+    SSEModule,
     <% } %>
     <% if (modules.includes("user")) { %>
     UserModule,
@@ -45,9 +82,6 @@ export async function setup(): Promise<TestContext> {
   ]);
   <% if (modules.includes("admin")) { %>
   const { adminSessionId, adminUserId } = await initTestDB(ctx.db);
-  <% } %>
-  <% if (modules.includes("config")) { %>
-  process.env.CONFIG_SECRET_KEYS = "S3cr3T";
   <% } %>
 
   return {

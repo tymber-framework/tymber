@@ -14,8 +14,17 @@ import { AdminModule } from "@tymber/admin";
 <% if (modules.includes("config")) { %>
 import { ConfigModule } from "@tymber/config";
 <% } %>
+<% if (modules.includes("log")) { %>
+import { LogModule } from "@tymber/log";
+<% } %>
+<% if (modules.includes("mail")) { %>
+import { MailModule } from "@tymber/mail";
+<% } %>
 <% if (modules.includes("openapi")) { %>
-import { OpenApiModule } from "@tymber/openapi";
+import { OpenAPIModule } from "@tymber/openapi";
+<% } %>
+<% if (modules.includes("sse")) { %>
+import { SSEModule } from "@tymber/sse";
 <% } %>
 <% if (modules.includes("user")) { %>
 import { UserModule } from "@tymber/user";
@@ -50,8 +59,17 @@ async function main() {
       <% if (modules.includes("config")) { %>
       ConfigModule,
       <% } %>
+      <% if (modules.includes("log")) { %>
+      LogModule,
+      <% } %>
+      <% if (modules.includes("mail")) { %>
+      MailModule,
+      <% } %>
       <% if (modules.includes("openapi")) { %>
-      OpenApiModule,
+      OpenAPIModule,
+      <% } %>
+      <% if (modules.includes("sse")) { %>
+      SSEModule,
       <% } %>
       <% if (modules.includes("user")) { %>
       UserModule,
