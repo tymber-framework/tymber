@@ -1,0 +1,41 @@
+{
+  "name": "@tymber/log",
+  "version": "0.0.0",
+  "description": "Logging module for the Tymber framework",
+  "license": "MIT",
+  "author": "Damien ARRACHEQUESNE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tymber-framework/tymber.git"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "rm -rf dist/ && tsc",
+    "format:check": "prettier -c src/ test/",
+    "format:fix": "prettier -w src/ test/",
+    "test": "tsx --test",
+    "test:sqlite": "USE_SQLITE=1 npm test"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "assets/"
+  ],
+  "exports": {
+    "node": "./dist/index.js",
+    "bun": "./src/index.ts",
+    "deno": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "@tymber/core": "*"
+  },
+  "keywords": [
+    "tymber",
+    "typescript",
+    "framework",
+    "log",
+    "logging"
+  ]
+}

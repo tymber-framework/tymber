@@ -12,3 +12,6 @@ export { ConfigAdminClient } from "./config/ConfigAdminClient.js";
 
 // @tymber/mail
 export { MailAdminClient } from "./mail/MailAdminClient.js";
+
+// @tymber/log
+export { LogAdminClient } from "./log/LogAdminClient.js";

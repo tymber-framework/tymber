@@ -1,0 +1,17 @@
+{
+  "tymber": {
+    "log": {
+      "logs": "Logs",
+      "level": "Level",
+      "component": "Component",
+      "message": "Message",
+      "createdAt": "Date",
+      "allLevels": "All levels",
+      "allComponents": "All components",
+      "fromDate": "From",
+      "toDate": "To",
+      "filter": "Filter",
+      "clearFilters": "Clear filters"
+    }
+  }
+}

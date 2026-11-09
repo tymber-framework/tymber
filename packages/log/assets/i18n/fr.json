@@ -1,0 +1,17 @@
+{
+  "tymber": {
+    "log": {
+      "logs": "Journaux",
+      "level": "Niveau",
+      "component": "Composant",
+      "message": "Message",
+      "createdAt": "Date",
+      "allLevels": "Tous les niveaux",
+      "allComponents": "Tous les composants",
+      "fromDate": "Du",
+      "toDate": "Au",
+      "filter": "Filtrer",
+      "clearFilters": "Effacer les filtres"
+    }
+  }
+}

@@ -16,7 +16,8 @@
     "packages/config",
     "packages/create",
     "packages/sse",
-    "packages/mail"
+    "packages/mail",
+    "packages/log"
   ],
   "devDependencies": {
     "@clack/prompts": "^1.4.0",
