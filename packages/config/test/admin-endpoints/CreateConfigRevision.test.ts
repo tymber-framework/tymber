@@ -25,7 +25,7 @@ describe("CreateConfigRevision", () => {
   it("should fail with an invalid config", async () => {
     const res = await ctx.adminClient.createConfigRevision({
       values: {
-        CORS_ALLOW_ORIGINS: "1",
+        ADMIN_COOKIE_SAME_SITE_ATTRIBUTE: "invalid",
       },
       comment: "hello",
     });

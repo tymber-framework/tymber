@@ -2,8 +2,6 @@ import { type AppInit, FS, type Module } from "@tymber/core";
 import { MiscRepository } from "./repositories/MiscRepository.js";
 import { AdminUserRepository } from "./repositories/AdminUserRepository.js";
 import { MigrationRepository } from "./repositories/MigrationRepository.js";
-import { CSRF } from "./middlewares/CSRF.js";
-import { CORS } from "./middlewares/CORS.js";
 import { ParseAdminSession } from "./middlewares/ParseAdminSession.js";
 import { CreateAdminUser } from "./admin-endpoints/CreateAdminUser.js";
 import { Init } from "./admin-endpoints/Init.js";
@@ -90,8 +88,6 @@ export const AdminModule: Module = {
     app.component(AdminUserService);
     app.component(AdminAuditServiceImpl);
 
-    app.middleware(CORS);
-    app.middleware(CSRF);
     app.middleware(CheckInit);
     app.middleware(ParseAdminSession);
 
