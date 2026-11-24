@@ -50,16 +50,21 @@ describe("ListMigrations", () => {
     const res = await ctx.adminClient.listMigrations();
 
     assert.equal(res.status, 200);
-    assert.equal(res.body.items.length, 4);
+    assert.equal(res.body.items.length, 5);
 
     assert.partialDeepStrictEqual(res.body.items[0], {
       module: "@tymber/admin",
-      id: 1,
-      name: "init",
-      // runAt
+      id: 2,
+      name: "requests",
     });
 
-    assert.deepStrictEqual(res.body.items[1], {
+    assert.partialDeepStrictEqual(res.body.items[1], {
+      module: "@tymber/admin",
+      id: 1,
+      name: "init",
+    });
+
+    assert.deepStrictEqual(res.body.items[2], {
       module: "module2",
       id: 1,
       name: "init",
@@ -73,7 +78,7 @@ describe("ListMigrations", () => {
     });
 
     assert.equal(res.status, 200);
-    assert.equal(res.body.items.length, 4);
+    assert.equal(res.body.items.length, 5);
 
     assert.deepStrictEqual(res.body.items[0], {
       module: "module1",

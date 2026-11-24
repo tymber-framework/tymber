@@ -1,0 +1,59 @@
+import { type HttpContext, INJECT, AdminEndpoint } from "@tymber/core";
+import { type JSONSchemaType } from "ajv";
+import {
+  type FindQuery,
+  IncomingRequestRepository,
+} from "../repositories/IncomingRequestRepository.js";
+
+interface Query {
+  size: number;
+  sort: "created_at:asc" | "created_at:desc";
+
+  from?: string;
+  to?: string;
+  requestId?: string;
+  methods?: string[];
+  statusList?: number[];
+  matchedRoute?: string;
+  minDurationInMs?: number;
+}
+
+export class ListIncomingRequests extends AdminEndpoint {
+  static [INJECT] = [IncomingRequestRepository];
+
+  constructor(private readonly requestRepository: IncomingRequestRepository) {
+    super();
+  }
+
+  querySchema: JSONSchemaType<Query> = {
+    type: "object",
+    properties: {
+      size: { type: "integer", minimum: 1, maximum: 1000, default: 100 },
+      sort: {
+        type: "string",
+        enum: ["created_at:asc", "created_at:desc"],
+        default: "created_at:desc",
+      },
+      from: { type: "string", format: "date-time", nullable: true },
+      to: { type: "string", format: "date-time", nullable: true },
+      requestId: { type: "string", nullable: true },
+      methods: { type: "array", items: { type: "string" }, nullable: true },
+      statusList: { type: "array", items: { type: "integer" }, nullable: true },
+      matchedRoute: { type: "string", nullable: true },
+      minDurationInMs: { type: "integer", nullable: true },
+    },
+    required: [],
+  };
+
+  override async handle(ctx: HttpContext<never, never, FindQuery>) {
+    const { query } = ctx;
+
+    const output = await this.requestRepository.find(ctx, {
+      ...query,
+      from: query.from ? new Date(query.from) : undefined,
+      to: query.to ? new Date(query.to) : undefined,
+    });
+
+    return Response.json(output);
+  }
+}

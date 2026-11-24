@@ -1,0 +1,392 @@
+<% TITLE = `${CTX.app.name} -
+${$t("tymber.outgoingRequests.outgoingRequests")}`; %>
+
+<nav class="breadcrumb" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="/admin" aria-current="page"><%= $t("tymber.common.home") %></a>
+    </li>
+    <li class="is-active">
+      <a href="#" aria-current="page"
+        ><%= $t("tymber.outgoingRequests.outgoingRequests") %></a
+      >
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-spaced">
+  <%= $t("tymber.outgoingRequests.outgoingRequests") %>
+</h1>
+
+<div id="app"></div>
+
+<script type="module">
+  import { createApp } from "vue";
+  import {
+    doFetch,
+    DataTable,
+    snakeToCamelCase,
+    camelToSnakeCase,
+  } from "./utils";
+
+  const RequestStatus = {
+    props: {
+      status: Number,
+    },
+
+    computed: {
+      color() {
+        if (this.status >= 200 && this.status < 300) return "is-success";
+        if (this.status >= 300 && this.status < 400) return "is-info";
+        if (this.status >= 400 && this.status < 500) return "is-warning";
+        if (this.status >= 500) return "is-danger";
+      },
+    },
+
+    template: `
+      <span class="tag" :class="color">{{ status }}</span>
+    `,
+  };
+
+  const OutgoingRequestsTable = {
+    components: {
+      DataTable,
+      RequestStatus,
+    },
+
+    data() {
+      return {
+        headers: [
+          {
+            text: "<%= $t('tymber.outgoingRequests.createdAt') %>",
+            value: "createdAt",
+            isSortable: true,
+          },
+          {
+            text: "<%= $t('tymber.outgoingRequests.origin') %>",
+            value: "origin",
+            isSortable: false,
+          },
+          {
+            text: "<%= $t('tymber.outgoingRequests.method') %>",
+            value: "method",
+            isSortable: false,
+          },
+          {
+            text: "<%= $t('tymber.outgoingRequests.path') %>",
+            value: "path",
+            isSortable: false,
+          },
+          {
+            text: "<%= $t('tymber.outgoingRequests.status') %>",
+            value: "status",
+            isSortable: false,
+          },
+          {
+            text: "<%= $t('tymber.outgoingRequests.durationInMs') %>",
+            value: "durationInMs",
+            isSortable: false,
+          },
+        ],
+        isLoading: false,
+        shouldRerun: false,
+        items: [],
+        options: {
+          sortBy: "createdAt",
+          sortDesc: true,
+        },
+        status: "",
+        method: "",
+        fromDate: "",
+        toDate: "",
+      };
+    },
+
+    methods: {
+      readQueryParams() {
+        const query = new URLSearchParams(window.location.search);
+
+        this.status = query.get("st") || "";
+        this.method = query.get("m") || "";
+
+        const fromParam = query.get("from");
+        const toParam = query.get("to");
+
+        // Convert ISO 8601 to datetime-local format (YYYY-MM-DDTHH:MM)
+        this.fromDate = fromParam ? this.toDateTimeLocal(fromParam) : "";
+        this.toDate = toParam ? this.toDateTimeLocal(toParam) : "";
+
+        const sort = query.get("s");
+
+        if (sort) {
+          const parts = sort.split("|");
+          const column = snakeToCamelCase(parts[0]);
+          if (
+            this.headers.some((h) => h.value === column) &&
+            ["asc", "desc"].includes(parts[1])
+          ) {
+            this.options.sortBy = column;
+            this.options.sortDesc = parts[1] === "desc";
+          }
+        }
+      },
+
+      updateQueryParams() {
+        const query = new URLSearchParams();
+
+        query.set(
+          "s",
+          `${camelToSnakeCase(this.options.sortBy)}|${this.options.sortDesc ? "desc" : "asc"}`,
+        );
+
+        if (this.method) {
+          query.set("m", this.method);
+        }
+
+        if (this.status) {
+          query.set("st", this.status);
+        }
+
+        if (this.fromDate) {
+          query.set("from", this.toISO8601(this.fromDate));
+        }
+
+        if (this.toDate) {
+          query.set("to", this.toISO8601(this.toDate));
+        }
+
+        window.history.replaceState(
+          null,
+          "",
+          `${window.location.pathname}?${query}`,
+        );
+      },
+
+      toISO8601(dateTimeLocal) {
+        if (!dateTimeLocal) return "";
+        return new Date(dateTimeLocal).toISOString();
+      },
+
+      toDateTimeLocal(isoString) {
+        if (!isoString) return "";
+        const date = new Date(isoString);
+        const pad = (num) => num.toString().padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      },
+
+      async loadItems() {
+        if (this.isLoading) {
+          this.shouldRerun = true;
+          return;
+        }
+        this.isLoading = true;
+
+        const query = {
+          page: 1,
+          size: 100,
+          sort: `${camelToSnakeCase(this.options.sortBy)}:${this.options.sortDesc ? "desc" : "asc"}`,
+        };
+
+        if (this.method) {
+          query.methods = this.method;
+        }
+
+        if (this.status) {
+          // TODO handle status range
+          query.statusList = this.status;
+        }
+
+        if (this.fromDate) {
+          query.from = this.toISO8601(this.fromDate);
+        }
+
+        if (this.toDate) {
+          query.to = this.toISO8601(this.toDate);
+        }
+
+        const res = await doFetch({
+          path: "/api/admin/outgoing_requests",
+          query,
+        });
+
+        this.items = res.body?.items || [];
+        this.isLoading = false;
+
+        if (this.shouldRerun) {
+          this.shouldRerun = false;
+          return this.loadItems();
+        }
+      },
+
+      async loadComponents() {
+        const res = await doFetch({
+          path: "/api/admin/outgoingRequests/components",
+        });
+
+        this.components = res.body?.items || [];
+      },
+
+      onOptionsUpdate(options) {
+        this.options.sortBy = options.sortBy;
+        this.options.sortDesc = options.sortDesc;
+
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onMethodSelection(event) {
+        this.method = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onStatusSelection(event) {
+        this.status = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onFromDateChange(event) {
+        this.fromDate = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      onToDateChange(event) {
+        this.toDate = event.target.value;
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      clearFilters() {
+        this.status = "";
+        this.component = "";
+        this.fromDate = "";
+        this.toDate = "";
+        this.updateQueryParams();
+        this.loadItems();
+      },
+
+      formatDate(dateString) {
+        if (!dateString) return "-";
+        const date = new Date(dateString);
+        return date.toLocaleString();
+      },
+    },
+
+    async created() {
+      this.readQueryParams();
+      await this.loadItems();
+    },
+
+    template: `
+        <div class="is-flex is-flex-wrap-wrap is-align-items-center mb-4">
+          <div class="field mr-3">
+            <label class="label"><%= $t("tymber.outgoingRequests.fromDate") %></label>
+            <div class="control">
+              <input
+                type="datetime-local"
+                class="input"
+                :value="fromDate"
+                @change="onFromDateChange"
+              />
+            </div>
+          </div>
+
+          <div class="field mr-3">
+            <label class="label"><%= $t("tymber.outgoingRequests.toDate") %></label>
+            <div class="control">
+              <input
+                type="datetime-local"
+                class="input"
+                :value="toDate"
+                @change="onToDateChange"
+              />
+            </div>
+          </div>
+
+          <div class="field mr-3">
+            <label class="label"><%= $t("tymber.outgoingRequests.method") %></label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select :value="method" @change="onMethodSelection">
+                  <option value=""><%= $t("tymber.outgoingRequests.allMethods") %></option>
+                  <option>GET</option>
+                  <option>POST</option>
+                  <option>PUT</option>
+                  <option>DELETE</option>
+                  <option>PATCH</option>
+                  <option>HEAD</option>
+                  <option>OPTIONS</option>
+                  <option>TRACE</option>
+                  <option>CONNECT</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="field mr-3">
+            <label class="label"><%= $t("tymber.outgoingRequests.status") %></label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                <select :value="status" @change="onStatusSelection">
+                  <option value=""><%= $t("tymber.outgoingRequests.allStatus") %></option>
+                  <option>200</option>
+                  <option>201</option>
+                  <option>204</option>
+                  <option>400</option>
+                  <option>401</option>
+                  <option>403</option>
+                  <option>404</option>
+                  <option>500</option>
+                  <option>502</option>
+                  <option>503</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control" style="margin-top: 20px">
+              <button
+                class="button is-text"
+                @click="clearFilters"
+              >
+                <%= $t("tymber.outgoingRequests.clearFilters") %>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <DataTable
+          :headers="headers"
+          :value="items"
+          :is-loading="isLoading"
+          :options="options"
+          @update:options="onOptionsUpdate"
+        >
+          <template #["item.createdAt"]="{ value }">
+            {{ formatDate(value) }}
+          </template>
+
+          <template #["item.method"]="{ value }">
+            <span class="tag" >{{ value }}</span>
+          </template>
+
+          <template #["item.status"]="{ value }">
+            <RequestStatus :status="value" />
+          </template>
+        </DataTable>
+    `,
+  };
+
+  createApp({
+    components: {
+      OutgoingRequestsTable,
+    },
+
+    template: `
+      <OutgoingRequestsTable />
+    `,
+  }).mount("#app");
+</script>

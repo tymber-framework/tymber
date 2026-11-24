@@ -104,6 +104,33 @@
         "label": "Exécution d'une requête",
         "description": "Exécution de la requête <b>#<%= id %></b> : <b><%= affectedRows %></b> ligne(s) affectée(s)"
       }
+    },
+    "incomingRequests": {
+      "incomingRequests": "Requêtes entrantes",
+      "createdAt": "Reçue le",
+      "method": "Méthode",
+      "path": "Chemin",
+      "status": "Statut",
+      "durationInMs": "Durée (ms)",
+      "clearFilters": "Effacer les filtres",
+      "allMethods": "Toutes",
+      "allStatus": "Tous",
+      "fromDate": "Du",
+      "toDate": "Au"
+    },
+    "outgoingRequests": {
+      "outgoingRequests": "Requêtes sortantes",
+      "createdAt": "Envoyée le",
+      "origin": "Origine",
+      "method": "Méthode",
+      "path": "Chemin",
+      "status": "Statut",
+      "durationInMs": "Durée (ms)",
+      "clearFilters": "Effacer les filtres",
+      "allMethods": "Toutes",
+      "allStatus": "Tous",
+      "fromDate": "Du",
+      "toDate": "Au"
     }
   }
 }

@@ -104,6 +104,33 @@
         "label": "Run admin query",
         "description": "Run admin query <b>#<%= id %></b>: <b><%= affectedRows %></b> affected row(s)"
       }
+    },
+    "incomingRequests": {
+      "incomingRequests": "Incoming requests",
+      "createdAt": "Received at",
+      "method": "Method",
+      "path": "Path",
+      "status": "Status",
+      "durationInMs": "Duration (ms)",
+      "clearFilters": "Clear the filters",
+      "allMethods": "All",
+      "allStatus": "All",
+      "fromDate": "From",
+      "toDate": "To"
+    },
+    "outgoingRequests": {
+      "outgoingRequests": "Outgoing requests",
+      "createdAt": "Sent at",
+      "origin": "Origin",
+      "method": "Method",
+      "path": "path",
+      "status": "Status",
+      "durationInMs": "Duration (ms)",
+      "clearFilters": "Clear the filters",
+      "allMethods": "All",
+      "allStatus": "All",
+      "fromDate": "From",
+      "toDate": "To"
     }
   }
 }

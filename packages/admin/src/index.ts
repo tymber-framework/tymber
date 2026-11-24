@@ -31,6 +31,17 @@ import { InitPassword } from "./admin-endpoints/InitPassword.js";
 import { InitPasswordView } from "./admin-views/InitPasswordView.js";
 import { AdminAuditServiceImpl } from "./services/AdminAuditServiceImpl.js";
 import { AdminAuditRepository } from "./repositories/AdminAuditRepository.js";
+import { IncomingRequestRepository } from "./repositories/IncomingRequestRepository.js";
+import { OutgoingRequestRepository } from "./repositories/OutgoingRequestRepository.js";
+import { LogRequest } from "./middlewares/LogRequest.js";
+import { HttpClient } from "./services/HttpClient.js";
+import { ListIncomingRequests } from "./admin-endpoints/ListIncomingRequests.js";
+import { ListOutgoingRequests } from "./admin-endpoints/ListOutgoingRequests.js";
+import { ListIncomingRequestsView } from "./admin-views/ListIncomingRequestsView.js";
+import { ListOutgoingRequestsView } from "./admin-views/ListOutgoingRequestsView.js";
+import { CleanUpService } from "./services/CleanUpService.js";
+
+const LOG_REQUEST_MIDDLEWARE_ORDER = 50;
 
 export const AdminModule: Module = {
   name: "@tymber/admin",
@@ -50,6 +61,18 @@ export const AdminModule: Module = {
       path: "/admin/routes",
       // source: https://pictogrammers.com/library/mdi/icon/format-list-bulleted/
       icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>format-list-bulleted</title><path d="M7,5H21V7H7V5M7,13V11H21V13H7M4,4.5A1.5,1.5 0 0,1 5.5,6A1.5,1.5 0 0,1 4,7.5A1.5,1.5 0 0,1 2.5,6A1.5,1.5 0 0,1 4,4.5M4,10.5A1.5,1.5 0 0,1 5.5,12A1.5,1.5 0 0,1 4,13.5A1.5,1.5 0 0,1 2.5,12A1.5,1.5 0 0,1 4,10.5M7,19V17H21V19H7M4,16.5A1.5,1.5 0 0,1 5.5,18A1.5,1.5 0 0,1 4,19.5A1.5,1.5 0 0,1 2.5,18A1.5,1.5 0 0,1 4,16.5Z" fill="currentColor" /></svg>',
+    },
+    {
+      label: "tymber.incomingRequests.incomingRequests",
+      path: "/admin/incoming_requests",
+      // source: https://pictogrammers.com/library/mdi/icon/debug-step-into/
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>debug-step-into</title><path d="M12,22A2,2 0 0,1 10,20A2,2 0 0,1 12,18A2,2 0 0,1 14,20A2,2 0 0,1 12,22M13,2V13L17.5,8.5L18.92,9.92L12,16.84L5.08,9.92L6.5,8.5L11,13V2H13Z" fill="currentColor" /></svg>',
+    },
+    {
+      label: "tymber.outgoingRequests.outgoingRequests",
+      path: "/admin/outgoing_requests",
+      // source: https://pictogrammers.com/library/mdi/icon/debug-step-out/
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>debug-step-out</title><path d="M12,22A2,2 0 0,1 10,20A2,2 0 0,1 12,18A2,2 0 0,1 14,20A2,2 0 0,1 12,22M13,16H11V6L6.5,10.5L5.08,9.08L12,2.16L18.92,9.08L17.5,10.5L13,6V16Z" fill="currentColor" /></svg>',
     },
     {
       label: "tymber.adminUsers.adminUsers",
@@ -83,11 +106,16 @@ export const AdminModule: Module = {
     app.component(MigrationRepository);
     app.component(AdminQueryRepository);
     app.component(AdminAuditRepository);
+    app.component(IncomingRequestRepository);
+    app.component(OutgoingRequestRepository);
 
     app.component(AdminCookieService);
     app.component(AdminUserService);
     app.component(AdminAuditServiceImpl);
+    app.component(HttpClient);
+    app.component(CleanUpService);
 
+    app.middleware(LogRequest, LOG_REQUEST_MIDDLEWARE_ORDER);
     app.middleware(CheckInit);
     app.middleware(ParseAdminSession);
 
@@ -105,6 +133,8 @@ export const AdminModule: Module = {
     app.adminView("/admin/routes", ListRoutesView);
     app.adminView("/admin/admin_queries", ListAdminQueriesView);
     app.adminView("/admin/admin_audit_logs", ListAdminAuditLogsView);
+    app.adminView("/admin/incoming_requests", ListIncomingRequestsView);
+    app.adminView("/admin/outgoing_requests", ListOutgoingRequestsView);
 
     app.adminEndpoint("POST", "/api/admin/init_password", InitPassword);
     app.adminEndpoint("GET", "/api/admin/self", GetSelf);
@@ -120,7 +150,22 @@ export const AdminModule: Module = {
     );
     app.adminEndpoint("POST", "/api/admin/admin_queries", RunAdminQuery);
     app.adminEndpoint("GET", "/api/admin/admin_audit_logs", ListAdminAuditLogs);
+    app.adminEndpoint(
+      "GET",
+      "/api/admin/incoming_requests",
+      ListIncomingRequests,
+    );
+    app.adminEndpoint(
+      "GET",
+      "/api/admin/outgoing_requests",
+      ListOutgoingRequests,
+    );
   },
 };
 
 export { initTestDB } from "./utils/initTestDB.js";
+export {
+  HttpClient,
+  type HttpResponse,
+  type HttpClientError,
+} from "./services/HttpClient.js";

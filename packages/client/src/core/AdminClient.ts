@@ -31,6 +31,29 @@ interface AdminAuditLog {
   description: string;
 }
 
+interface IncomingRequest {
+  id: string;
+  createdAt: string;
+  requestId: string;
+  method: string;
+  path: string;
+  matchedRoute?: string;
+  userId?: string;
+  status: number;
+  durationInMs: number;
+}
+
+interface OutgoingRequest {
+  id: string;
+  createdAt: string;
+  requestId: string;
+  method: string;
+  origin: string;
+  path: string;
+  status: number;
+  durationInMs: number;
+}
+
 export class AdminClient extends Client {
   public getSelf() {
     return this.fetch<{ id: number }>({
@@ -140,6 +163,40 @@ export class AdminClient extends Client {
   }) {
     return this.fetch<{ items: AdminAuditLog[] }>({
       path: "/api/admin/admin_audit_logs",
+      query,
+    });
+  }
+
+  public listIncomingRequests(query?: {
+    size?: number;
+    sort?: "created_at:asc" | "created_at:desc";
+    from?: string;
+    to?: string;
+    requestId?: string;
+    methods?: string[];
+    statusList?: number[];
+    matchedRoute?: string;
+    minDurationInMs?: number;
+  }) {
+    return this.fetch<{ items: IncomingRequest[] }>({
+      path: "/api/admin/incoming_requests",
+      query,
+    });
+  }
+
+  public listOutgoingRequests(query?: {
+    size?: number;
+    sort?: "created_at:asc" | "created_at:desc";
+    from?: string;
+    to?: string;
+    requestId?: string;
+    methods?: string[];
+    origin?: string;
+    statusList?: number[];
+    minDurationInMs?: number;
+  }) {
+    return this.fetch<{ items: OutgoingRequest[] }>({
+      path: "/api/admin/outgoing_requests",
       query,
     });
   }
