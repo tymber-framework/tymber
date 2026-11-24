@@ -40,5 +40,14 @@ describe("Init", () => {
     });
 
     assert.equal(reinitResponse.status, 400);
+
+    {
+      const res = await client.fetch({
+        method: "GET",
+        path: "/admin/login",
+      });
+
+      assert.equal(res.status, 200);
+    }
   });
 });

@@ -8,4 +8,5 @@ interface Value {
 export class MiscRepository extends Repository<string, Value> {
   tableName = "t_misc";
   idFields = ["key"];
+  jsonFields = ["value"];
 }
